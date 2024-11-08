@@ -27,7 +27,7 @@ vec3 point_i_rayon(int i, int nb_segment, vec3 dir, vec3 campos, float dist_max)
     float distance = (dist_max * float(i)) / float(nb_segment);
 
     // Calculer le point en fonction de la distance
-    vec3 point = campos + dir_normalized * distance;
+    vec3 point = campos + (dir_normalized * distance);
 
     return point;
 }
@@ -36,23 +36,24 @@ vec3 point_i_rayon(int i, int nb_segment, vec3 dir, vec3 campos, float dist_max)
 vec3 rayTrace(vec3 inpos){
         vec3 camPos = (inverse(view_mat) * vec4(0, 0, 0, 1)).xyz;
         vec3 dir = normalize(inpos - camPos);
-        vec3 intensity = vec3(0.0,0.0,0.0);
+        float intensity = 0.0;
         for (int i = 0 ; i <10 ; i++ )
         {
-            intensity += i * texture(tex , point_i_rayon(i ,10,dir,campos,128.O));
+            intensity += i * texture(tex , point_i_rayon(i ,10,dir,camPos,128. ) ).r;
 
 
         }
-        intensity = exp( -intensity , absorption);
+        float absorption =0.3;
+        intensity = exp( -intensity * absorption);
 
 
 
-        return intensity;
+        return vec3(1,  intensity, 1);
 }
 
 void main() {
-    vec4 color = rayTrace(position);
-    vec4 color = texture(tex , textCoord);
+    vec4 color = vec4 (rayTrace(position),1.0);
+    //vec4 color = texture(tex , textCoord);
 
     gl_FragColor = color;
 }
