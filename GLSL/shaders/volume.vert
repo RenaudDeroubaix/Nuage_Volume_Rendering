@@ -1,35 +1,43 @@
-// --------------------------------------------------
-// shader definition
-// --------------------------------------------------
-
-#version 130
-
-
-uniform mat4 mv_matrix;
-uniform mat4 proj_matrix;
+#version 330 core
 
 // --------------------------------------------------
-// varying variables
+// Shader definition
 // --------------------------------------------------
-varying vec3 position;
-varying vec3 textCoord;
-varying vec3 view_mat;
+
+uniform mat4 mv_matrix; // Model-view matrix
+uniform mat4 proj_matrix; // Projection matrix
+
+// --------------------------------------------------
+// In/Out variables
+// --------------------------------------------------
+in vec3 position;
+
+
+out vec3 fragPosition;  // Output vertex position to fragment shader
+out vec3 fragTexCoord;  // Output texture coordinates to fragment shader
+out mat4 view_mat;  // View matrix to pass to fragment shader
+
 // --------------------------------------------------
 // Vertex-Shader
 // --------------------------------------------------
-uniform float xMax;
-uniform float yMax;
-uniform float zMax;
 
+uniform float xMax;  // Max value for the X axis
+uniform float yMax;  // Max value for the Y axis
+uniform float zMax;  // Max value for the Z axis
 
 void main()
 {
-        view_mat = mv_matrix;
-	gl_Position = proj_matrix * mv_matrix * gl_Vertex;
-	position = gl_Vertex.xyz;
+    // Pass the model-view matrix to the fragment shader
+    view_mat = mv_matrix;
 
-        textCoord.x = position.x / xMax;
-        textCoord.y = position.y / yMax;
-        textCoord.z = position.z / zMax;
+    // Calculate the final position for the vertex in clip space
+    gl_Position = proj_matrix * mv_matrix * vec4(position, 1.0);
 
+    // Pass the position and texture coordinates to the fragment shader
+    fragPosition = position;
+
+    // Normalize the texture coordinates based on the maximum values
+    fragTexCoord.x = position.x / xMax;
+    fragTexCoord.y = position.y / yMax;
+    fragTexCoord.z = position.z / zMax;
 }

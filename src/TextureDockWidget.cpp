@@ -12,7 +12,7 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
 
     QVBoxLayout * contentLayout = new QVBoxLayout(contents);
 
-    QGroupBox * groupBox = new QGroupBox("Paramètre", parent);
+    QGroupBox * groupBox = new QGroupBox("Paramètres", parent);
     groupBox->setMaximumSize(QSize(16777215, 200));
 
     contentLayout->addWidget ( groupBox) ;

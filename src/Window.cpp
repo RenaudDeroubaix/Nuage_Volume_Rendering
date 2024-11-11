@@ -33,7 +33,7 @@ Window::Window()
 
     connect(recompileShaders, &QAction::triggered, viewer, &TextureViewer::recompileShaders);
 
-    QGroupBox * viewerGroupBox = new QGroupBox ("Volume Rendering", this);
+    QGroupBox * viewerGroupBox = new QGroupBox ("Clouds: Volume Rendering", this);
     QHBoxLayout * viewerLayout = new QHBoxLayout (viewerGroupBox);
     viewerLayout->addWidget (textureWidget);
 

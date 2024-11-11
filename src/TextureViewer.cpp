@@ -20,7 +20,7 @@ void TextureViewer::draw(){
     glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
     glDisable(GL_BLEND);
     
-    camera()->setSceneRadius(1000);
+    camera()->setSceneRadius(10);
 
     texture->draw(camera());
 }

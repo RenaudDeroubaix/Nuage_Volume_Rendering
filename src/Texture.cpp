@@ -322,39 +322,54 @@ void Texture::draw( const qglviewer::Camera * camera ){
 }
 
 void Texture::drawCube(){
+    // Définition des limites du cube entre -0.5 et 0.5 pour x, y et z
+    float xMinCube = -0.5, xMaxCube = 0.5;
+    float yMinCube = -0.5, yMaxCube = 0.5;
+    float zMinCube = -0.5, zMaxCube = 0.5;
+
+    // float xMinCube =0, xMaxCube = 128;
+    // float yMinCube = 0, yMaxCube = 128;
+    // float zMinCube = 0, zMaxCube = 128;
+
+
     glBegin(GL_QUADS);
 
-    glVertex3f(0.0f, 0.0f, 0.0f);	// Bottom Right Of The Texture and Quad
-    glVertex3f(0.0f, yMax, 0.0f);	// Top Right Of The Texture and Quad
-    glVertex3f(xMax, yMax, 0.0f);	// Top Left Of The Texture and Quad
-    glVertex3f(xMax, 0.0f, 0.0f);	// Bottom Left Of The Texture and Quad
-    // Bottom Face
-    glVertex3f(0.0f, 0.0f, 0.0f);	// Top Right Of The Texture and Quad
-    glVertex3f(xMax, 0.0f, 0.0f);	// Top Left Of The Texture and Quad
-    glVertex3f(xMax, 0.0f, zMax);	// Bottom Left Of The Texture and Quad
-    glVertex3f(0.0f, 0.0f, zMax);	// Bottom Right Of The Texture and Quad
-    // Left Face
-    glVertex3f(0.0f, 0.0f, 0.0f);	// Bottom Left Of The Texture and Quad
-    glVertex3f(0.0f, 0.0f, zMax);	// Bottom Right Of The Texture and Quad
-    glVertex3f(0.0f, yMax, zMax);	// Top Right Of The Texture and Quad
-    glVertex3f(0.0f, yMax, 0.0f);	// Top Left Of The Texture and Quad
-    // Right face
-    glVertex3f(xMax, 0.0f, 0.0f);	// Bottom Right Of The Texture and Quad
-    glVertex3f(xMax, yMax, 0.0f);	// Top Right Of The Texture and Quad
-    glVertex3f(xMax, yMax, zMax);	// Top Left Of The Texture and Quad
-    glVertex3f(xMax, 0.0f,  zMax);	// Bottom Left Of The Texture and Quad
+    // Face arrière
+    glVertex3f(xMinCube, yMinCube, zMinCube);	// Bottom Left
+    glVertex3f(xMaxCube, yMinCube, zMinCube);	// Bottom Right
+    glVertex3f(xMaxCube, yMaxCube, zMinCube);	// Top Right
+    glVertex3f(xMinCube, yMaxCube, zMinCube);	// Top Left
 
-    // Front Face
-    glVertex3f(0.0f, 0.0f, zMax);	// Bottom Left Of The Texture and Quad
-    glVertex3f(xMax, 0.0f, zMax);	// Bottom Right Of The Texture and Quad
-    glVertex3f(xMax, yMax, zMax);	// Top Right Of The Texture and Quad
-    glVertex3f(0.0f,  yMax,  zMax);	// Top Left Of The Texture and Quad
+    // Face avant
+    glVertex3f(xMinCube, yMinCube, zMaxCube);	// Bottom Left
+    glVertex3f(xMinCube, yMaxCube, zMaxCube);	// Top Left
+    glVertex3f(xMaxCube, yMaxCube, zMaxCube);	// Top Right
+    glVertex3f(xMaxCube, yMinCube, zMaxCube);	// Bottom Right
 
-    // Top Face
-    glVertex3f(0.0f,  yMax, 0.0f);	// Top Left Of The Texture and Quad
-    glVertex3f(0.0f, yMax,  zMax);	// Bottom Left Of The Texture and Quad
-    glVertex3f(xMax, yMax, zMax);	// Bottom Right Of The Texture and Quad
-    glVertex3f(xMax, yMax, 0.0f);	// Top Right Of The Texture and Quad
+    // Face gauche
+    glVertex3f(xMinCube, yMinCube, zMinCube);	// Bottom Left
+    glVertex3f(xMinCube, yMinCube, zMaxCube);	// Bottom Right
+    glVertex3f(xMinCube, yMaxCube, zMaxCube);	// Top Right
+    glVertex3f(xMinCube, yMaxCube, zMinCube);	// Top Left
+
+    // Face droite
+    glVertex3f(xMaxCube, yMinCube, zMinCube);	// Bottom Left
+    glVertex3f(xMaxCube, yMaxCube, zMinCube);	// Top Left
+    glVertex3f(xMaxCube, yMaxCube, zMaxCube);	// Top Right
+    glVertex3f(xMaxCube, yMinCube, zMaxCube);	// Bottom Right
+
+    // Face du bas
+    glVertex3f(xMinCube, yMinCube, zMinCube);	// Top Right
+    glVertex3f(xMaxCube, yMinCube, zMinCube);	// Top Left
+    glVertex3f(xMaxCube, yMinCube, zMaxCube);	// Bottom Left
+    glVertex3f(xMinCube, yMinCube, zMaxCube);	// Bottom Right
+
+    // Face du haut
+    glVertex3f(xMinCube, yMaxCube, zMinCube);	// Top Left
+    glVertex3f(xMinCube, yMaxCube, zMaxCube);	// Bottom Left
+    glVertex3f(xMaxCube, yMaxCube, zMaxCube);	// Bottom Right
+    glVertex3f(xMaxCube, yMaxCube, zMinCube);	// Top Right
+
     glEnd();
 }
 
