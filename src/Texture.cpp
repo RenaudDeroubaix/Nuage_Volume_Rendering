@@ -32,6 +32,58 @@ void Texture::init(){
     yMax = 128;
     zMax = 128;
 
+    BBmin = QVector3D(-0.5,-0.5,-0.5);
+
+    BBmax = QVector3D(0.5,0.5,0.5);
+
+
+    plans.push_back(Plan(
+        QVector3D(BBmin.x(), BBmin.y(), BBmin.z()), // Bottom-left de la face arrière
+        QVector3D(-1.0, 0, 0),
+        (QVector3D(BBmin.x(), BBmax.y(), BBmin.z()) - QVector3D(BBmin.x(), BBmin.y(), BBmin.z())),
+        (QVector3D(BBmin.x(), BBmin.y(), BBmax.z()) - QVector3D(BBmin.x(), BBmin.y(), BBmin.z()))
+    ));
+
+    plans.push_back(Plan(
+        QVector3D(BBmin.x(), BBmin.y(), BBmin.z()), // Bottom-left de la face inférieure
+        QVector3D(0, -1.0, 0),
+        (QVector3D(BBmax.x(), BBmin.y(), BBmin.z()) - QVector3D(BBmin.x(), BBmin.y(), BBmin.z())),
+        (QVector3D(BBmin.x(), BBmin.y(), BBmax.z()) - QVector3D(BBmin.x(), BBmin.y(), BBmin.z()))
+    ));
+
+    plans.push_back(Plan(
+        QVector3D(BBmin.x(), BBmin.y(), BBmin.z()), // Bottom-left de la face gauche
+        QVector3D(0, 0, -1.0),
+        (QVector3D(BBmax.x(), BBmin.y(), BBmin.z()) - QVector3D(BBmin.x(), BBmin.y(), BBmin.z())),
+        (QVector3D(BBmin.x(), BBmax.y(), BBmin.z()) - QVector3D(BBmin.x(), BBmin.y(), BBmin.z()))
+    ));
+
+    plans.push_back(Plan(
+        QVector3D(BBmax.x(), BBmin.y(), BBmin.z()), // Bottom-left de la face avant
+        QVector3D(1.0, 0, 0),
+        (QVector3D(BBmax.x(), BBmax.y(), BBmin.z()) - QVector3D(BBmax.x(), BBmin.y(), BBmin.z())),
+        (QVector3D(BBmax.x(), BBmin.y(), BBmax.z()) - QVector3D(BBmax.x(), BBmin.y(), BBmin.z()))
+    ));
+
+    plans.push_back(Plan(
+        QVector3D(BBmin.x(), BBmax.y(), BBmin.z()), // Bottom-left de la face supérieure
+        QVector3D(0, 1.0, 0),
+        (QVector3D(BBmax.x(), BBmax.y(), BBmin.z()) - QVector3D(BBmin.x(), BBmax.y(), BBmin.z())),
+        (QVector3D(BBmin.x(), BBmax.y(), BBmax.z()) - QVector3D(BBmin.x(), BBmax.y(), BBmin.z()))
+    ));
+
+    plans.push_back(Plan(
+        QVector3D(BBmin.x(), BBmin.y(), BBmax.z()), // Bottom-left de la face droite
+        QVector3D(0, 0, 1.0),
+        (QVector3D(BBmax.x(), BBmin.y(), BBmax.z()) - QVector3D(BBmin.x(), BBmin.y(), BBmax.z())),
+        (QVector3D(BBmin.x(), BBmax.y(), BBmax.z()) - QVector3D(BBmin.x(), BBmin.y(), BBmax.z()))
+    ));
+
+
+
+    absorptionNuage = 90.0;
+    couleurNuage =QVector3D(1.0,1.0,1.0);
+
     textureCreated = false;
 
 
@@ -302,6 +354,42 @@ void Texture::draw( const qglviewer::Camera * camera ){
    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "yMax"), yMax);
    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "zMax"), zMax);
 
+   glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "absorptionNuage"), absorptionNuage);
+   glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "couleurNuage"),1,&couleurNuage[0]);
+
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[0].normale"),1, &plans[0].normale[0]);
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[0].point"),1, &plans[0].point[0]);
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[0].up_vect"),1, &plans[0].up_vect[0]);
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[0].right_vect"),1, &plans[0].right_vect[0]);
+
+
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[1].normale"),1, &plans[1].normale[0]);
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[1].point"),1, &plans[1].point[0]);
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[1].up_vect"),1, &plans[1].up_vect[0]);
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[1].right_vect"),1, &plans[1].right_vect[0]);
+
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[2].normale"),1, &plans[2].normale[0]);
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[2].point"),1, &plans[2].point[0]);
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[2].up_vect"),1, &plans[2].up_vect[0]);
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[2].right_vect"),1, &plans[2].right_vect[0]);
+
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[3].normale"),1, &plans[3].normale[0]);
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[3].point"),1, &plans[3].point[0]);
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[3].up_vect"),1, &plans[3].up_vect[0]);
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[3].right_vect"),1, &plans[3].right_vect[0]);
+
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[4].normale"),1, &plans[4].normale[0]);
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[4].point"),1, &plans[4].point[0]);
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[4].up_vect"),1, &plans[4].up_vect[0]);
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[4].right_vect"),1, &plans[4].right_vect[0]);
+
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[5].normale"),1, &plans[5].normale[0]);
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[5].point"),1, &plans[5].point[0]);
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[5].up_vect"),1, &plans[5].up_vect[0]);
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[5].right_vect"),1, &plans[5].right_vect[0]);
+
+
+
 //   glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "xCutPosition"), xCutPosition);
 //   glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "yCutPosition"), yCutPosition);
 //   glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "zCutPosition"), zCutPosition);
@@ -323,13 +411,17 @@ void Texture::draw( const qglviewer::Camera * camera ){
 
 void Texture::drawCube(){
     // Définition des limites du cube entre -0.5 et 0.5 pour x, y et z
-    float xMinCube = -0.5, xMaxCube = 0.5;
-    float yMinCube = -0.5, yMaxCube = 0.5;
-    float zMinCube = -0.5, zMaxCube = 0.5;
+//    float xMinCube = -0.5, xMaxCube = 0.5;
+//    float yMinCube = -0.5, yMaxCube = 0.5;
+//    float zMinCube = -0.5, zMaxCube = 0.5;
 
-    // float xMinCube =0, xMaxCube = 128;
-    // float yMinCube = 0, yMaxCube = 128;
-    // float zMinCube = 0, zMaxCube = 128;
+//     float xMinCube =0, xMaxCube = 128;
+//     float yMinCube = 0, yMaxCube = 128;
+//     float zMinCube = 0, zMaxCube = 128;
+
+    float xMinCube = BBmin.x(), xMaxCube = BBmax.x();
+    float yMinCube = BBmin.y(), yMaxCube = BBmax.y();
+    float zMinCube = BBmin.z(), zMaxCube = BBmax.z();
 
 
     glBegin(GL_QUADS);

@@ -12,6 +12,22 @@
 #include <QOpenGLExtraFunctions>
 #include <QGLViewer/camera.h>
 
+struct Plan{
+
+    QVector3D point;
+    QVector3D normale;
+    QVector3D up_vect;
+    QVector3D right_vect;
+    Plan( QVector3D p ,QVector3D n , QVector3D up , QVector3D right )
+    {
+        point = p;
+        normale = n;
+        up_vect = up;
+        right_vect = right;
+    }
+
+};
+
 class Texture
 {
 
@@ -36,6 +52,13 @@ private :
     double xMax;
     double yMax;
     double zMax;
+
+    QVector3D BBmin;
+    QVector3D BBmax;
+
+    double absorptionNuage;
+    QVector3D couleurNuage;
+    QVector<Plan> plans;
 
 
     bool textureCreated;
