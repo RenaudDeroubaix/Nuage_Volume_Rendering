@@ -167,7 +167,8 @@ void main() {
     vec3 couleur = couleurNuage;
     vec3 camPos = -vec3(view_mat[3][0], view_mat[3][1], view_mat[3][2]) * mat3(view_mat);
     float dist= (fragPosition - intersectionRayPlan(fragPosition,camPos)).length();
-    float a = 1 ;//* beersLaw(dist,absorptionNuage);
+    float a = 1 * beersLaw(dist,absorptionNuage/100.0);
     // Apply the color to the output fragment color
-    fragColor = vec4( fragPosition - intersectionRayPlan(fragPosition,camPos),a);
+    //fragColor = vec4( fragPosition - intersectionRayPlan(fragPosition,camPos),a);
+    fragColor = vec4(couleur, a);
 }
