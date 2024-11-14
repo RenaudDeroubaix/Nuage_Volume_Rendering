@@ -1,6 +1,3 @@
-# -------------------------------------------------
-# Project created by QtCreator 2010-01-27T15:21:45
-# -------------------------------------------------
 QT += xml
 QT += opengl
 TARGET = nuage
@@ -26,6 +23,21 @@ RESOURCES += \
     GLSL/shaders/volume.comp \
 
 INCLUDEPATH = ./GLSL
-LIBS = -lQGLViewer-qt5 \
-    -lglut \
+EXT_DIR = external
+
+{
+ INCLUDEPATH += $${EXT_DIR}/libQGLViewer-2.6.1
+ LIBS += -L$${EXT_DIR}/libQGLViewer-2.6.1/QGLViewer -lQGLViewer
+
+}
+
+LIBS += -lglut \
     -lGLU
+LIBS += -lgsl \
+    -lgomp
+LIBS += -lblas \
+    -lgomp
+release:QMAKE_CXXFLAGS_RELEASE += -O3 \
+    -fopenmp
+release:QMAKE_CFLAGS_RELEASE += -O3 \
+    -fopenmp

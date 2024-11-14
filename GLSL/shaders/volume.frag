@@ -96,8 +96,9 @@ vec3 intersectionRayPlan(vec3 fragPos , vec3 camPos) {
         float t =( D - dot(fragPos ,  vec3(nplan)) )/dot(dir , vec3(nplan));
 
         vec3 r = fragPos + t * dir;
-        float sqearelenr = length(rplan) * length(rplan);
-        float sqearelenu = length(uplan) * length(uplan);
+        float sqearelenr = length(rplan.xyz) * length(rplan.xyz);
+        float sqearelenu = length(uplan.xyz) * length(uplan.xyz);
+
 
 //        vec3 ProjX = dot(vec3(rplan) , r - vec3(pplan))/ sqearelenr * vec3(rplan);
 //        float u = ProjX.x/rplan.x;
@@ -166,9 +167,14 @@ void main() {
     vec4 color = texture(tex, fragTexCoord);
     vec3 couleur = couleurNuage;
     vec3 camPos = -vec3(view_mat[3][0], view_mat[3][1], view_mat[3][2]) * mat3(view_mat);
-    float dist= (fragPosition - intersectionRayPlan(fragPosition,camPos)).length();
+    vec3 intersectionPoint = intersectionRayPlan(fragPosition, camPos);
+    float dist = 0.0;
+    if (intersectionPoint != fragPosition) {
+        dist = length(fragPosition - intersectionPoint);
+    }
+
     float a = 1 * beersLaw(dist,absorptionNuage/100.0);
     // Apply the color to the output fragment color
-    //fragColor = vec4( fragPosition - intersectionRayPlan(fragPosition,camPos),a);
-    fragColor = vec4(couleur, a);
+    fragColor = vec4( fragPosition - intersectionRayPlan(fragPosition,camPos),a);
+    //fragColor = vec4(couleur, a);
 }
