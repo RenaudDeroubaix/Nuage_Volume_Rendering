@@ -33,15 +33,27 @@ EXT_DIR = external
 
 # Check if libQGLViewer-qt5.so exists in the system path
 # Try to use system's -lQGLViewer-qt5
-exists(-lQGLViewer-qt5) {
-    message("Found system QGLViewer-qt5. Linking with it.")
-    LIBS += -lQGLViewer-qt5
+# Attempt to link against QGLViewer-qt5 by default
+CONFIG(debug, debug|release) {
+    QGLVIEWER_TESTLIB = QGLViewer-qt5d
 } else {
-    # If the system library is not found, "fallback" to the local version
-    message("System QGLViewer-qt5 not found. Falling back to local QGLViewer.")
-    INCLUDEPATH += $${EXT_DIR}/libQGLViewer-2.6.1
-    LIBS += -L$${EXT_DIR}/libQGLViewer-2.6.1/QGLViewer -lQGLViewer
+    QGLVIEWER_TESTLIB = QGLViewer-qt5
 }
+
+# Try linking the library
+LIBS += -l$$QGLVIEWER_TESTLIB
+QMAKE_LFLAGS += -Wl,--no-undefined # Optional, ensures all symbols are found
+
+# Fallback to local library if the linker test fails
+isEmpty(LIBS:QGLViewer-qt5) {
+    message("System QGLViewer-qt5 not found. Falling back to local library.")
+    INCLUDEPATH += $${EXT_DIR}/libQGLViewer-2.6.1
+    LIBS -= -l$$QGLVIEWER_TESTLIB
+    LIBS += -L$${EXT_DIR}/libQGLViewer-2.6.1/QGLViewer -lQGLViewer
+} else {
+    message("Using system QGLViewer-qt5.")
+}
+
 
 LIBS += -lglut \
     -lGLU
