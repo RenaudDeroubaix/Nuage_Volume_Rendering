@@ -87,13 +87,19 @@ vec3 intersectionRayPlan(vec3 fragPos, vec3 camPos) {
     return closestPoint;
 }
 
-vec3 findIntersection(vec3 fragPos, vec3 camPos) {
+vec3 IntersectionPlan(vec3 fragPos, vec3 camPos) {
     vec3 dir = normalize(fragPos - camPos);
     float tExit = 1000.0; // Initialisation pour trouver le plus petit tMax
-    float epsilon = 0.000001;
+    float epsilon = 0.0001;
     for (int i = 0; i < 6; i++) {
         vec3 planNormal = plans[i].normale;
         vec3 planPoint = plans[i].point;
+
+        // vec4 nplan = view_mat * vec4(plans[i].normale, 0.0);
+        // vec4 pplan = view_mat * vec4(plans[i].point, 1.0);
+        // vec3 planNormal = nplan.xyz;
+        // vec3 planPoint = pplan.xyz;
+
 
         // Calcul de t pour ce plan
         float denom = dot(planNormal, dir);
@@ -108,13 +114,13 @@ vec3 findIntersection(vec3 fragPos, vec3 camPos) {
         float u = dot(localCoord, plans[i].right_vect);
         float v = dot(localCoord, plans[i].up_vect);
 
-        if (u >= 0.0 && u <= 1.0 && v >= 0.0 && v <= 1.0 && t > epsilon) {
+        if (u >= 0.0 && u <= 1.0 && v >= 0.0 && v <= 1.0 && t >= epsilon) {
             tExit = min(tExit, t); // Plus proche sortie
 
         }
     }
 
-    if (tExit > 0.0) {
+    if (tExit > 0.0 && tExit < 1000.0) {
         vec3 exitPoint = fragPos + tExit * dir;
         return exitPoint; // Point de sortie
     }
@@ -142,10 +148,11 @@ void main() {
     // //fragColor = vec4(  intersectionRayPlan(fragPosition,camPos),a);
     // fragColor = vec4(couleurNuage, a);
 
-    vec3 exitPoint = findIntersection(fragPosition, camPos);
+    vec3 exitPoint = IntersectionPlan(fragPosition, camPos);
     float a = 0.0;
     float dist = length(exitPoint - fragPosition);
     if(dist > 0.0001){
+
         a = 1 - beersLaw(dist,absorptionNuage );
     }
 

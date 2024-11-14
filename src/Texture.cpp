@@ -538,7 +538,19 @@ void Texture::build(const std::vector<unsigned char> & data, const std::vector<u
     computePass();
 }
 
+void Texture::setRedNuageDisplay(float _r){
+    couleurNuage[0]=_r;
+}
+void Texture::setGreenNuageDisplay(float _g){
+    couleurNuage[1]=_g;
+}
+void Texture::setBlueNuageDisplay(float _b){
+    couleurNuage[0]=_b;
+}
 
+void Texture::setAbsorptionNuageDisplay(float _a){
+    absorptionNuage=_a;
+}
 //void Texture::setXCut(int _xCut){
 //    xCut = 1.-double(_xCut)/n[0];
 //    xCutPosition = xMax*xCut;

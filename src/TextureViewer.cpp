@@ -389,6 +389,23 @@ void TextureViewer::openIMA(const QString & fileName, std::vector<unsigned char>
 //    update();
 //}
 
+void TextureViewer::setRedNuage(float _r){
+    texture->setRedNuageDisplay(_r);
+    update();
+}
+void TextureViewer::setGreenNuage(float _g){
+    texture->setGreenNuageDisplay(_g);
+    update();
+}
+void TextureViewer::setBlueNuage(float _b){
+    texture->setBlueNuageDisplay(_b);
+    update();
+}
+void TextureViewer::setAbsorptionNuage(float _a){
+    texture->setAbsorptionNuageDisplay(_a);
+    update();
+}
+
 void TextureViewer::recompileShaders() {
     texture->recompileShaders();
     update();

@@ -105,6 +105,10 @@ public:
     void initGLSL();
 
 public slots:
+    void setRedNuageDisplay(float _r);
+    void setGreenNuageDisplay(float _g);
+    void setBlueNuageDisplay(float _b);
+    void setAbsorptionNuageDisplay(float _a);
     void recompileShaders();
 
 };
