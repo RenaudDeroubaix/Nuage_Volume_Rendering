@@ -10,7 +10,7 @@ Window::Window()
 {
     if (this->objectName().isEmpty())
         this->setObjectName("mainWindow");
-    this->resize(929, 891);
+    this->resize(1280, 720);
 
     viewer = new TextureViewer(this);
 

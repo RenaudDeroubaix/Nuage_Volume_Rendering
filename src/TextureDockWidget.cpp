@@ -31,16 +31,19 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     // Create the second tab for light/color parameters
     QWidget *lightTab = new QWidget();
     QVBoxLayout *lightLayout = new QVBoxLayout(lightTab);
-
+    lightLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    lightTab->setMaximumWidth(450);  // Set a maximum width
+    lightTab->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     // Create a frame for "Nuage" section
     QFrame *nuageFrame = new QFrame();
     nuageFrame->setFrameShape(QFrame::StyledPanel);
     nuageFrame->setFrameShadow(QFrame::Sunken);
 
+
     QVBoxLayout *nuageLayout = new QVBoxLayout(nuageFrame);
 
     QLabel *nuageLabel = new QLabel("Paramètre du Nuage:", nuageFrame);
-    nuageLayout->addWidget(nuageLabel);
+    lightLayout->addWidget(nuageLabel);
 
     // Color controls layout
     QHBoxLayout *colorNuageLayout = new QHBoxLayout();
@@ -51,19 +54,19 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     redColorNuageSpinBox->setRange(0.0, 1.0);
     redColorNuageSpinBox->setSingleStep(0.01);
     redColorNuageSpinBox->setValue(1.0);
-    redColorNuageSpinBox->setFixedWidth(60); // Reduce the width of the spinboxes
+    redColorNuageSpinBox->setFixedWidth(50); // Reduce the width of the spinboxes
 
     greenColorNuageSpinBox = new QDoubleSpinBox(nuageFrame);
     greenColorNuageSpinBox->setRange(0.0, 1.0);
     greenColorNuageSpinBox->setSingleStep(0.01);
     greenColorNuageSpinBox->setValue(1.0);
-    greenColorNuageSpinBox->setFixedWidth(60);
+    greenColorNuageSpinBox->setFixedWidth(50);
 
     blueColorNuageSpinBox = new QDoubleSpinBox(nuageFrame);
     blueColorNuageSpinBox->setRange(0.0, 1.0);
     blueColorNuageSpinBox->setSingleStep(0.01);
     blueColorNuageSpinBox->setValue(1.0);
-    blueColorNuageSpinBox->setFixedWidth(60);
+    blueColorNuageSpinBox->setFixedWidth(50);
 
     // Add the color controls to the color layout
     colorNuageLayout->addWidget(colorNuageLabel);
@@ -77,10 +80,12 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     absorptionSlider = new QSlider(Qt::Horizontal, nuageFrame);
     absorptionSlider->setRange(60,300);
     absorptionSlider->setValue(90);
+    absorptionSlider->setFixedWidth(100);
     absorptionSpinBox = new QDoubleSpinBox(nuageFrame);
     absorptionSpinBox->setRange(0.6, 3.0);
     absorptionSpinBox->setSingleStep(0.1);
     absorptionSpinBox->setValue(0.90);
+    absorptionSpinBox->setFixedWidth(50);
     QHBoxLayout *absorptionLayout = new QHBoxLayout();
     absorptionLayout->addWidget(absorptionLabel);
     absorptionLayout->addWidget(absorptionSlider);
@@ -105,8 +110,6 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
 
     // Add Light frame to main layout
     lightLayout->addWidget(lightFrame);
-
-
 
 
     // Add the light/color tab to the tab widget
@@ -204,9 +207,6 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     connect(absorptionSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, [this](double value) {
         absorptionSlider->setValue(static_cast<int>(value * 100));  // Assuming max slider value is 300
     });
-
-    // contentLayout->addStretch(0);
-    // this->setWidget(contents);
 }
 
 void TextureDockWidget::redNuageSpinBoxChangedSlot(float value){emit redNuageValueChanged(value) ;}
