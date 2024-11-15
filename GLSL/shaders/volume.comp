@@ -4,22 +4,72 @@ layout(local_size_x = 8, local_size_y = 8, local_size_z = 8) in;
 
 layout(rgba32f, binding = 0) uniform image3D img_out;
 
+//gl_LocalInvocationID
+//gl_GlobalInvocationID
+//gl_WorkGroupID
+
+#ifdef GL_ES
+precision mediump float;
+#endif
+
+// Cellular noise ("Worley noise") in 3D in GLSL.
+// Copyright (c) Stefan Gustavson 2011-04-19. All rights reserved.
+// This code is released under the conditions of the MIT license.
+// See LICENSE file for details.
+
+vec2 random2( vec2 p ) {
+    return fract(sin(vec2(dot(p,vec2(127.1,311.7)),dot(p,vec2(269.5,183.3))))*43758.5453);
+}
+
 void main() {
   // Aucun tableau de donnée n'étant passé au moment de la création de la texture,
   // c'est le compute shader qui va dessiner à l'intérieur de l'image associé
   // à la texture.
+    ivec3 coords = ivec3(gl_GlobalInvocationID);
+    vec4 pixel = vec4(.0);
 
-  // gl_LocalInvocationID.xy * gl_WorkGroupID.xy == gl_GlobalInvocationID
-  ivec3 coords = ivec3(gl_GlobalInvocationID);
+    vec2 st = coords.xy/vec2(128.0);
+    st *= 8.;
 
-  // Pour mettre en evidence. Les groupes de travail locaux on dessine un damier.
-  vec4 pixel;
-  if ( ((gl_WorkGroupID.x & 1u) != 1u) != ((gl_WorkGroupID.y & 1u) == 1u)) {
-    pixel = vec4(1.0,.5,.0,1.0);
-  }
-  else {
-    pixel = vec4(.0,.5,1.0,1.0);
-  }
+// Tile the space
+    vec2 i_st = floor(st);
+    vec2 f_st = fract(st);
 
-  imageStore(img_out, coords, pixel);
+    float m_dist = 1.;  // minimum distance
+    float u_time=1.0;
+    for (int y= -1; y <= 1; y++) {
+        for (int x= -1; x <= 1; x++) {
+            // Neighbor place in the grid
+            vec2 neighbor = vec2(float(x),float(y));
+
+            // Random position from current + neighbor place in the grid
+            vec2 point = random2(i_st + neighbor);
+
+                        // Animate the point
+            point = 0.5 + 0.5*sin(u_time + 6.2831*point);
+
+                        // Vector between the pixel and the point
+            vec2 diff = neighbor + point - f_st;
+
+            // Distance to the point
+            float dist = length(diff);
+
+            // Keep the closer distance
+            m_dist = min(m_dist, dist);
+        }
+    }
+
+    // Draw the min distance (distance field)
+    pixel += m_dist;
+
+    // Draw cell center
+    pixel += 1.-step(.02, m_dist);
+
+    // Draw grid
+    pixel.r += step(.98, f_st.x) + step(.98, f_st.y);
+
+    pixel.a=1.0;
+    pixel=vec4(gl_WorkGroupID.x/16.0,gl_WorkGroupID.y/16.0,gl_WorkGroupID.z/16.0,1.0);
+
+    imageStore(img_out, coords, pixel);
 }

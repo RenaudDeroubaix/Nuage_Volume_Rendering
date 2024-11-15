@@ -156,6 +156,7 @@ void main() {
         a = 1 - beersLaw(dist,absorptionNuage );
     }
 
-    fragColor = vec4(couleurNuage, a); // Visualisation distance
+    //fragColor = vec4(couleurNuage, a); // Visualisation distance
+    gl_FragColor = vec4(noise);
 
 }

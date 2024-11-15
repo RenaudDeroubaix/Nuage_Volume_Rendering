@@ -545,7 +545,7 @@ void Texture::setGreenNuageDisplay(float _g){
     couleurNuage[1]=_g;
 }
 void Texture::setBlueNuageDisplay(float _b){
-    couleurNuage[0]=_b;
+    couleurNuage[2]=_b;
 }
 
 void Texture::setAbsorptionNuageDisplay(float _a){
