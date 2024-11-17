@@ -361,8 +361,9 @@ void Texture::draw( const qglviewer::Camera * camera ){
    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "xMax"), xMax);
    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "yMax"), yMax);
    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "zMax"), zMax);
-   glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "LightSample"), zMax);
-   glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "NuageSample"), zMax);
+
+   glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "LightSample"), LightEch);
+   glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "NuageSample"), NuageEch);
 
    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "absorptionNuage"), absorptionNuage);
    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "couleurNuage"),1, &couleurNuage[0]);
@@ -374,7 +375,7 @@ void Texture::draw( const qglviewer::Camera * camera ){
    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "BBmin"),1,&BBmin[0]);
    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "BBmax"),1,&BBmax[0]);
 
-   qDebug() << "Light Pos: " <<LightPos;
+   qDebug() << "NuageEch: " <<NuageEch;
 
     glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[0].normale"),1, &plans[0].normale[0]);
     glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[0].point"),1, &plans[0].point[0]);

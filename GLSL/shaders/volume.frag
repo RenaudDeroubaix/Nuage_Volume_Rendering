@@ -90,6 +90,7 @@ vec3 IntersectionPlan(vec3 camPos , float epsilon , vec3 dir) {
 vec3 point_i_in_tex3D(vec3 exitPoint , vec3 dir ,int i)
 {
     float dist = length(exitPoint - fragPosition) / float(NuageSample);
+
     vec3 point_i = fragPosition + i * dist * dir;
 
     return point_i;
@@ -101,7 +102,7 @@ vec3 point_i_in_tex3D(vec3 exitPoint , vec3 dir ,int i)
 // Main Shader Logic
 // --------------------------------------------------
 void main() {
-    float epsilon = 0.0001;
+    float epsilon = 0.01;
     float a = 0.0;
 
     vec3 camPos = -vec3(view_mat[3][0], view_mat[3][1], view_mat[3][2]) * mat3(view_mat);
@@ -115,9 +116,9 @@ void main() {
        vec3 point_i = point_i_in_tex3D(exitPoint , dir , i);
        intensite = texture(tex,  point_i);
         if (length(point_i - fragPosition) > epsilon){
-            a += 1 - beersLaw(intensite.r / 255.0  , absorptionNuage);
-
+            a += 1 - beersLaw(intensite.r / NuageSample , absorptionNuage );
         }
+
     }
 
     fragColor = vec4(couleurNuage, a); // Visualisation distance

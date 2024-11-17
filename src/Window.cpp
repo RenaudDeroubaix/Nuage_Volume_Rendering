@@ -53,6 +53,12 @@ Window::Window()
 
     connect(madDockWidget, &TextureDockWidget::absorptionValueChanged, viewer, &TextureViewer::setAbsorptionNuage);
 
+    connect(madDockWidget, &TextureDockWidget::onNuageSliderChanged, viewer, &TextureViewer::onNuageSliderChanged);
+    connect(madDockWidget, &TextureDockWidget::onNuageSpinBoxChanged, viewer, &TextureViewer::onNuageSpinBoxChanged);
+
+    connect(madDockWidget, &TextureDockWidget::onLightSliderChanged, viewer, &TextureViewer::onLightSliderChanged);
+    connect(madDockWidget, &TextureDockWidget::onLightSpinBoxChanged, viewer, &TextureViewer::onLightSpinBoxChanged);
+
 
 //    connect(madDockWidget, &TextureDockWidget::xValueChanged, viewer, &TextureViewer::setXCut);
 //    connect(madDockWidget, &TextureDockWidget::yValueChanged, viewer, &TextureViewer::setYCut);
