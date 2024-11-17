@@ -12,9 +12,7 @@ struct Plan{
 // --------------------------------------------------
 uniform sampler3D tex;
 
-uniform float xMax;  // Max value for the X axis
-uniform float yMax;  // Max value for the Y axis
-uniform float zMax;  // Max value for the Z axis
+
 
 uniform int NuageSample;
 uniform int LightSample;
@@ -91,8 +89,8 @@ vec3 IntersectionPlan(vec3 camPos , float epsilon , vec3 dir) {
 
 vec3 point_i_in_tex3D(vec3 exitPoint , vec3 dir ,int i)
 {
-    float dist = length(exitPoint - fragPosition) / float(i);
-    vec3 point_i = fragPosition + dist * dir;
+    float dist = length(exitPoint - fragPosition) / float(NuageSample);
+    vec3 point_i = fragPosition + i * dist * dir;
 
     return point_i;
 
@@ -117,7 +115,7 @@ void main() {
        vec3 point_i = point_i_in_tex3D(exitPoint , dir , i);
        intensite = texture(tex,  point_i);
         if (length(point_i - fragPosition) > epsilon){
-            a += 1 - beersLaw(intensite.b  , absorptionNuage);
+            a += 1 - beersLaw(intensite.r / 255.0  , absorptionNuage);
 
         }
     }

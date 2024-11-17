@@ -12,6 +12,9 @@ uniform mat4 proj_matrix; // Projection matrix
 // --------------------------------------------------
 in vec3 position;
 
+uniform float xMax;  // Max value for the X axis
+uniform float yMax;  // Max value for the Y axis
+uniform float zMax;  // Max value for the Z axis
 
 out vec3 fragPosition;  // Output vertex position to fragment shader
 out mat4 view_mat;  // View matrix to pass to fragment shader
