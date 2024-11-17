@@ -10,7 +10,7 @@ Window::Window()
 {
     if (this->objectName().isEmpty())
         this->setObjectName("mainWindow");
-    this->resize(929, 891);
+    this->resize(1280, 720);
 
     viewer = new TextureViewer(this);
 
@@ -33,7 +33,7 @@ Window::Window()
 
     connect(recompileShaders, &QAction::triggered, viewer, &TextureViewer::recompileShaders);
 
-    QGroupBox * viewerGroupBox = new QGroupBox ("Volume Rendering", this);
+    QGroupBox * viewerGroupBox = new QGroupBox ("Clouds: Volume Rendering", this);
     QHBoxLayout * viewerLayout = new QHBoxLayout (viewerGroupBox);
     viewerLayout->addWidget (textureWidget);
 
@@ -42,6 +42,16 @@ Window::Window()
     this->addDockWidget(Qt::RightDockWidgetArea, madDockWidget);
 
     //TODO : Connect madDockWidget signals to viewer slots
+
+    connect(madDockWidget, &TextureDockWidget::redNuageValueChanged, viewer, &TextureViewer::setRedNuage);
+    connect(madDockWidget, &TextureDockWidget::blueNuageValueChanged, viewer, &TextureViewer::setBlueNuage);
+    connect(madDockWidget, &TextureDockWidget::greenNuageValueChanged, viewer, &TextureViewer::setGreenNuage);
+
+    connect(madDockWidget, &TextureDockWidget::setlightposXValueChanged, viewer, &TextureViewer::setXlightpos);
+    connect(madDockWidget, &TextureDockWidget::setlightposYValueChanged, viewer, &TextureViewer::setYlightpos);
+    connect(madDockWidget, &TextureDockWidget::setlightposZValueChanged, viewer, &TextureViewer::setZlightpos);
+
+    connect(madDockWidget, &TextureDockWidget::absorptionValueChanged, viewer, &TextureViewer::setAbsorptionNuage);
 
 
 //    connect(madDockWidget, &TextureDockWidget::xValueChanged, viewer, &TextureViewer::setXCut);

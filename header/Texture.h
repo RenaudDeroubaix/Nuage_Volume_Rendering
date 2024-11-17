@@ -12,6 +12,22 @@
 #include <QOpenGLExtraFunctions>
 #include <QGLViewer/camera.h>
 
+struct Plan{
+
+    QVector3D point;
+    QVector3D normale;
+    QVector3D up_vect;
+    QVector3D right_vect;
+    Plan( QVector3D p ,QVector3D n , QVector3D up , QVector3D right )
+    {
+        point = p;
+        normale = n;
+        up_vect = up;
+        right_vect = right;
+    }
+
+};
+
 class Texture
 {
 
@@ -37,6 +53,20 @@ private :
     double yMax;
     double zMax;
 
+    QVector3D BBmin;
+    QVector3D BBmax;
+
+    double absorptionNuage;
+    QVector3D couleurNuage;
+
+    int LightEch;
+    int NuageEch;
+
+    QVector3D LightPos;
+    QVector3D LightColor;
+
+    QVector<Plan> plans;
+
 
     bool textureCreated;
 
@@ -60,10 +90,7 @@ public:
 
     float getGridStep(){return minD;}
 
-    void build(const std::vector<unsigned char> & data, const std::vector<unsigned char> & labesl,
-               unsigned int & nx , unsigned int & ny , unsigned int & nz,
-               float & dx , float & dy , float & dz,
-               std::map<unsigned char, QColor> & colorMap );
+
 
     bool printShaderErrors(GLuint shader);
     bool printProgramErrors(int program);
@@ -82,6 +109,19 @@ public:
     void initGLSL();
 
 public slots:
+    void setNuageEch(int value);
+    void setLightEch(int value);
+
+    void setRedNuageDisplay(float _r);
+    void setGreenNuageDisplay(float _g);
+    void setBlueNuageDisplay(float _b);
+    void setXlightposDisplay(float _x);
+    void setYlightposDisplay(float _y);
+    void setZlightposDisplay(float _z);
+    void setRlightcolDisplay(float _r);
+    void setGlightcolDisplay(float _g);
+    void setBlightcolDisplay(float _b);
+    void setAbsorptionNuageDisplay(float _a);
     void recompileShaders();
 
 };

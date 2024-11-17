@@ -1,59 +1,127 @@
-#version 140
+#version 330 core
 
+struct Plan{
+    vec3 point;
+    vec3 normale;
+    vec3 up_vect;
+    vec3 right_vect;
+};
 
 // --------------------------------------------------
-// shader definition
+// Uniforms
 // --------------------------------------------------
-
 uniform sampler3D tex;
-uniform  int segment;
 
-varying vec3 position;
-varying vec3 textCoord;
+uniform float xMax;  // Max value for the X axis
+uniform float yMax;  // Max value for the Y axis
+uniform float zMax;  // Max value for the Z axis
 
-varying mat4 view_mat;
+uniform int NuageSample;
+uniform int LightSample;
+
+
+uniform vec3 couleurNuage;
+uniform float absorptionNuage;
+
+uniform Plan plans[6];
+
+uniform vec3 LightPos;
+uniform vec3 LightColor;
+
+
+uniform vec3 BBmin;
+uniform vec3 BBmax;
 
 
 // --------------------------------------------------
-// Fragment Shader:
+// In/Out Variables
 // --------------------------------------------------
 
-vec3 point_i_rayon(int i, int nb_segment, vec3 dir, vec3 campos, float dist_max)
-{
-    // Normaliser la direction pour obtenir un vecteur unitaire
-    vec3 dir_normalized = normalize(dir);
+in mat4 view_mat;  // View matrix passed from the vertex shader
+in mat4 proj_mat;
 
-    // Calculer la distance entre les points sur le rayon
-    float distance = (dist_max * float(i)) / float(nb_segment);
+in vec3 fragPosition;  // Output vertex position to fragment shader
 
-    // Calculer le point en fonction de la distance
-    vec3 point = campos + (dir_normalized * distance);
+out vec4 fragColor;  // The output color of the fragment
 
-    return point;
+
+
+
+
+// --------------------------------------------------
+// Functions
+// --------------------------------------------------
+float beersLaw(float distance, float absorption) {
+    return exp(-distance * absorption);
 }
 
+vec3 IntersectionPlan(vec3 camPos , float epsilon , vec3 dir) {
+    float tExit = 1000.0; // Initialisation pour trouver le plus petit tMax
 
-vec3 rayTrace(vec3 inpos){
-        vec3 camPos = (inverse(view_mat) * vec4(0, 0, 0, 1)).xyz;
-        vec3 dir = normalize(inpos - camPos);
-        float intensity = 0.0;
-        for (int i = 0 ; i <10 ; i++ )
-        {
-            intensity += i * texture(tex , point_i_rayon(i ,10,dir,camPos,128. ) ).r;
+    for (int i = 0; i < 6; i++) {
+        vec3 planNormal = plans[i].normale;
+        vec3 planPoint = plans[i].point;
 
+        // Calcul de t pour ce plan
+        float denom = dot(planNormal, dir);
+        if (abs(denom) < epsilon) continue; // Rayon parallèle au plan
+
+        float t = dot(planPoint - fragPosition, planNormal) / denom;
+
+        // Vérification si le point est dans les limites du plan
+        vec3 intersection = fragPosition + t * dir;
+        vec3 localCoord = intersection - planPoint;
+
+        float u = dot(localCoord, plans[i].right_vect);
+        float v = dot(localCoord, plans[i].up_vect);
+
+        if (u >= 0.0 && u <= 1.0 && v >= 0.0 && v <= 1.0 && t >= epsilon) {
+            tExit = min(tExit, t); // Plus proche sortie
 
         }
-        float absorption =0.3;
-        intensity = exp( -intensity * absorption);
+    }
 
+    if (tExit > 0.0 && tExit < 1000.0) {
+        vec3 exitPoint = fragPosition + tExit * dir;
+        return exitPoint; // Point de sortie
+    }
 
-
-        return vec3(1,  intensity, 1);
+    return fragPosition; // Aucun point trouvé
 }
 
-void main() {
-    vec4 color = vec4 (rayTrace(position),1.0);
-    //vec4 color = texture(tex , textCoord);
+vec3 point_i_in_tex3D(vec3 exitPoint , vec3 dir ,int i)
+{
+    float dist = length(exitPoint - fragPosition) / float(i);
+    vec3 point_i = fragPosition + dist * dir;
 
-    gl_FragColor = color;
+    return point_i;
+
+
+}
+
+// --------------------------------------------------
+// Main Shader Logic
+// --------------------------------------------------
+void main() {
+    float epsilon = 0.0001;
+    float a = 0.0;
+
+    vec3 camPos = -vec3(view_mat[3][0], view_mat[3][1], view_mat[3][2]) * mat3(view_mat);
+    vec3 dir = normalize(fragPosition - camPos);
+
+    vec3 exitPoint = IntersectionPlan(camPos , epsilon , dir);
+
+    vec4 intensite = vec4(0.0);
+    for (int i = 1 ; i < NuageSample ; i++){
+
+       vec3 point_i = point_i_in_tex3D(exitPoint , dir , i);
+       intensite = texture(tex,  point_i);
+        if (length(point_i - fragPosition) > epsilon){
+            a += 1 - beersLaw(intensite.b  , absorptionNuage);
+
+        }
+    }
+
+    fragColor = vec4(couleurNuage, a); // Visualisation distance
+
 }

@@ -13,14 +13,15 @@ TextureViewer::TextureViewer(QWidget *parent):QGLViewer(parent){
 
 void TextureViewer::draw(){
 
-    drawClippingPlane();
+    //drawClippingPlane();
 
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
+
+    camera()->setSceneRadius(10);
     glEnable(GL_DEPTH_TEST);
-
-    glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
-    glDisable(GL_BLEND);
-    
-    camera()->setSceneRadius(1000);
 
     texture->draw(camera());
 }
@@ -66,21 +67,18 @@ void TextureViewer::drawMesh() {
 
 void TextureViewer::init()
 {
-
-    texture = new Texture (QOpenGLContext::currentContext() );
+    texture = new Texture (QOpenGLContext::currentContext());
     
     // The ManipulatedFrame will be used as the clipping plane
     setManipulatedFrame(new ManipulatedFrame());
-    
     // Enable plane clipping
     glEnable(GL_CLIP_PLANE0);
-    
-    //Set background color
-    setBackgroundColor(QColor(255,255,255));
-    glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
-    
-    //Set blend parameters
-    glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+    // Initialisation
+    //glDisable(GL_BLEND);
+    glClearColor(0.2f, 0.3f, 0.8f, 1.f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
 
     
     imageLoaded = false;
@@ -386,6 +384,64 @@ void TextureViewer::openIMA(const QString & fileName, std::vector<unsigned char>
 //    texture->setZCutDisplay(_zCutDisplay);
 //    update();
 //}
+
+void TextureViewer::onNuageSliderChanged(int value){
+    texture->setNuageEch(value);
+    update();
+}
+void TextureViewer::onNuageSpinBoxChanged(int value){
+    texture->setNuageEch(value);
+    update();
+}
+void TextureViewer::onLightSliderChanged(int value){
+    texture->setLightEch(value);
+    update();
+}
+void TextureViewer::onLightSpinBoxChanged(int value){
+    texture->setLightEch(value);
+    update();
+}
+
+void TextureViewer::setRedNuage(float _r){
+    texture->setRedNuageDisplay(_r);
+    update();
+}
+void TextureViewer::setGreenNuage(float _g){
+    texture->setGreenNuageDisplay(_g);
+    update();
+}
+void TextureViewer::setBlueNuage(float _b){
+    texture->setBlueNuageDisplay(_b);
+    update();
+}
+void TextureViewer::setXlightpos(float _x){
+    texture->setXlightposDisplay(_x);
+    update();
+}
+void TextureViewer::setYlightpos(float _y){
+    texture->setYlightposDisplay(_y);
+    update();
+}
+void TextureViewer::setZlightpos(float _z){
+    texture->setZlightposDisplay(_z);
+    update();
+}
+void TextureViewer::setRlightcol(float _r){
+    texture->setRlightcolDisplay(_r);
+    update();
+}
+void TextureViewer::setGlightcol(float _g){
+    texture->setGlightcolDisplay(_g);
+    update();
+}
+void TextureViewer::setBlightcol(float _b){
+    texture->setBlightcolDisplay(_b);
+    update();
+}
+void TextureViewer::setAbsorptionNuage(float _a){
+    texture->setAbsorptionNuageDisplay(_a);
+    update();
+}
 
 void TextureViewer::recompileShaders() {
     texture->recompileShaders();
