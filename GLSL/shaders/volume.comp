@@ -6,6 +6,9 @@ layout(rgba32f, binding = 0) uniform image3D img_out;
 
 uniform float u_time;
 
+
+/////////////////////////////BRUIT WORLEY LYGIA LIB
+
 // Paramètres de bruit de Worley
 #ifndef FNC_WORLEY
 #define FNC_WORLEY
