@@ -64,7 +64,7 @@ vec3 IntersectionPlan(vec3 camPos , float epsilon , vec3 dir) {
         float denom = dot(planNormal, dir);
         if (abs(denom) < epsilon) continue; // Rayon parallèle au plan
 
-        float t = dot(planPoint - fragPosition, planNormal) / denom;
+        float t = dot(planPoint - (fragPosition ) , planNormal) / denom;
 
         // Vérification si le point est dans les limites du plan
         vec3 intersection = fragPosition + t * dir;

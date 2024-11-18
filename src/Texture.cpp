@@ -27,6 +27,8 @@ Texture::~Texture(){
 void Texture::init(){
 
     //Set texture to cube of size 1.
+    timer.start();
+
     xMax = 128;
     yMax = 128;
     zMax = 128;
@@ -75,54 +77,6 @@ void Texture::init(){
         QVector3D(BBmax.x() - BBmin.x(), 0.0, 0.0), // Right vector spans in X
         QVector3D(0.0, BBmax.y() - BBmin.y(), 0.0)  // Up vector spans in Y
         ));
-
-
-    absorptionNuage = 0.9;
-    couleurNuage =QVector3D(1.0,1.0,1.0);
-
-    BBmin = QVector3D(-0.5,-0.5,-0.5);
-
-    BBmax = QVector3D(0.5,0.5,0.5);
-
-
-    plans.push_back(Plan(
-        QVector3D(BBmin.x(), BBmin.y(), BBmin.z()),  // Bottom-left corner of the back face
-        QVector3D(-1.0, 0.0, 0.0),                  // Normal points towards -X
-        QVector3D(0.0, BBmax.y() - BBmin.y(), 0.0), // Right vector spans in Y
-        QVector3D(0.0, 0.0, BBmax.z() - BBmin.z())  // Up vector spans in Z
-        ));
-    plans.push_back(Plan(
-        QVector3D(BBmin.x(), BBmin.y(), BBmin.z()),  // Bottom-left corner of the bottom face
-        QVector3D(0.0, -1.0, 0.0),                  // Normal points towards -Y
-        QVector3D(BBmax.x() - BBmin.x(), 0.0, 0.0), // Right vector spans in X
-        QVector3D(0.0, 0.0, BBmax.z() - BBmin.z())  // Up vector spans in Z
-        ));
-    plans.push_back(Plan(
-        QVector3D(BBmin.x(), BBmin.y(), BBmin.z()),  // Bottom-left corner of the left face
-        QVector3D(0.0, 0.0, -1.0),                  // Normal points towards -Z
-        QVector3D(BBmax.x() - BBmin.x(), 0.0, 0.0), // Right vector spans in X
-        QVector3D(0.0, BBmax.y() - BBmin.y(), 0.0)  // Up vector spans in Y
-        ));
-    plans.push_back(Plan(
-        QVector3D(BBmax.x(), BBmin.y(), BBmin.z()),  // Bottom-left corner of the front face
-        QVector3D(1.0, 0.0, 0.0),                   // Normal points towards +X
-        QVector3D(0.0, BBmax.y() - BBmin.y(), 0.0), // Right vector spans in Y
-        QVector3D(0.0, 0.0, BBmax.z() - BBmin.z())  // Up vector spans in Z
-        ));
-    plans.push_back(Plan(
-        QVector3D(BBmin.x(), BBmax.y(), BBmin.z()),  // Bottom-left corner of the top face
-        QVector3D(0.0, 1.0, 0.0),                   // Normal points towards +Y
-        QVector3D(BBmax.x() - BBmin.x(), 0.0, 0.0), // Right vector spans in X
-        QVector3D(0.0, 0.0, BBmax.z() - BBmin.z())  // Up vector spans in Z
-        ));
-    plans.push_back(Plan(
-        QVector3D(BBmin.x(), BBmin.y(), BBmax.z()),  // Bottom-left corner of the right face
-        QVector3D(0.0, 0.0, 1.0),                   // Normal points towards +Z
-        QVector3D(BBmax.x() - BBmin.x(), 0.0, 0.0), // Right vector spans in X
-        QVector3D(0.0, BBmax.y() - BBmin.y(), 0.0)  // Up vector spans in Y
-        ));
-
-
 
 
     absorptionNuage = 0.9;
@@ -369,6 +323,9 @@ void Texture::deleteTexture(){
 void Texture::computePass() {
     glFunctions->glUseProgram(0);
     glFunctions->glUseProgram(computeID);
+
+    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(computeID, "u_time"), timer.elapsed()/1000.0);
+
     glFunctions->glBindTexture(GL_TEXTURE_3D, textureId);
     glFunctions->glBindImageTexture (0, textureId, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
     glFunctions->glDispatchCompute(16,16,16);
@@ -379,6 +336,7 @@ void Texture::computePass() {
 }
 
 void Texture::draw( const qglviewer::Camera * camera ){
+    computePass();
 
 
     if(!textureCreated)
@@ -386,7 +344,7 @@ void Texture::draw( const qglviewer::Camera * camera ){
 
     glDisable(GL_LIGHTING);
     glEnable(GL_TEXTURE_3D);
-    //glPolygonMode( GL_FRONT_AND_BACK , GL_FILL );
+    //glPolygonMode( GL_FRONT , GL_FILL );
 
     // GPU start
     // Récuperation des matrices de projection / vue-modèle
@@ -470,7 +428,6 @@ void Texture::draw( const qglviewer::Camera * camera ){
    glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "tex"), textureId);
 
     /***********************************************************************/
-
     drawBoundingBox(false);
 
 }
@@ -491,77 +448,57 @@ void Texture::drawCube(){
 
     glBegin(GL_QUADS);
 
-    // Face arrière
-    glVertex3f(xMinCube, yMinCube, zMinCube);	// Bottom Left
-    glVertex3f(xMaxCube, yMinCube, zMinCube);	// Bottom Right
-    glVertex3f(xMaxCube, yMaxCube, zMinCube);	// Top Right
-    glVertex3f(xMinCube, yMaxCube, zMinCube);	// Top Left
+        // Face arrière (normale vers -Z)
+        glNormal3f(0.0f, 0.0f, -1.0f);
+        glVertex3f(xMinCube, yMinCube, zMinCube); // Bottom Left
+        glVertex3f(xMaxCube, yMinCube, zMinCube); // Bottom Right
+        glVertex3f(xMaxCube, yMaxCube, zMinCube); // Top Right
+        glVertex3f(xMinCube, yMaxCube, zMinCube); // Top Left
 
-    // Face avant
-    glVertex3f(xMinCube, yMinCube, zMaxCube);	// Bottom Left
-    glVertex3f(xMinCube, yMaxCube, zMaxCube);	// Top Left
-    glVertex3f(xMaxCube, yMaxCube, zMaxCube);	// Top Right
-    glVertex3f(xMaxCube, yMinCube, zMaxCube);	// Bottom Right
+        // Face avant (normale vers +Z)
+        glNormal3f(0.0f, 0.0f, 1.0f);
+        glVertex3f(xMinCube, yMinCube, zMaxCube); // Bottom Left
+        glVertex3f(xMinCube, yMaxCube, zMaxCube); // Top Left
+        glVertex3f(xMaxCube, yMaxCube, zMaxCube); // Top Right
+        glVertex3f(xMaxCube, yMinCube, zMaxCube); // Bottom Right
 
-    // Face gauche
-    glVertex3f(xMinCube, yMinCube, zMinCube);	// Bottom Left
-    glVertex3f(xMinCube, yMinCube, zMaxCube);	// Bottom Right
-    glVertex3f(xMinCube, yMaxCube, zMaxCube);	// Top Right
-    glVertex3f(xMinCube, yMaxCube, zMinCube);	// Top Left
+        // Face gauche (normale vers -X)
+        glNormal3f(-1.0f, 0.0f, 0.0f);
+        glVertex3f(xMinCube, yMinCube, zMaxCube); // Bottom Right
+        glVertex3f(xMinCube, yMinCube, zMinCube); // Bottom Left
 
-    // Face droite
-    glVertex3f(xMaxCube, yMinCube, zMinCube);	// Bottom Left
-    glVertex3f(xMaxCube, yMaxCube, zMinCube);	// Top Left
-    glVertex3f(xMaxCube, yMaxCube, zMaxCube);	// Top Right
-    glVertex3f(xMaxCube, yMinCube, zMaxCube);	// Bottom Right
-    // Face arrière
-    glVertex3f(xMinCube, yMinCube, zMinCube);	// Bottom Left
-    glVertex3f(xMaxCube, yMinCube, zMinCube);	// Bottom Right
-    glVertex3f(xMaxCube, yMaxCube, zMinCube);	// Top Right
-    glVertex3f(xMinCube, yMaxCube, zMinCube);	// Top Left
+        glVertex3f(xMinCube, yMaxCube, zMinCube); // Top Left
 
-    // Face avant
-    glVertex3f(xMinCube, yMinCube, zMaxCube);	// Bottom Left
-    glVertex3f(xMinCube, yMaxCube, zMaxCube);	// Top Left
-    glVertex3f(xMaxCube, yMaxCube, zMaxCube);	// Top Right
-    glVertex3f(xMaxCube, yMinCube, zMaxCube);	// Bottom Right
+        glVertex3f(xMinCube, yMaxCube, zMaxCube); // Top Right
 
-    // Face gauche
-    glVertex3f(xMinCube, yMinCube, zMinCube);	// Bottom Left
-    glVertex3f(xMinCube, yMinCube, zMaxCube);	// Bottom Right
-    glVertex3f(xMinCube, yMaxCube, zMaxCube);	// Top Right
-    glVertex3f(xMinCube, yMaxCube, zMinCube);	// Top Left
+        // Face droite (normale vers +X)
+        glNormal3f(1.0f, 0.0f, 0.0f);
+         glVertex3f(xMaxCube, yMaxCube, zMinCube); // Top Left
+        glVertex3f(xMaxCube, yMinCube, zMinCube); // Bottom Left
 
-    // Face droite
-    glVertex3f(xMaxCube, yMinCube, zMinCube);	// Bottom Left
-    glVertex3f(xMaxCube, yMaxCube, zMinCube);	// Top Left
-    glVertex3f(xMaxCube, yMaxCube, zMaxCube);	// Top Right
-    glVertex3f(xMaxCube, yMinCube, zMaxCube);	// Bottom Right
+               glVertex3f(xMaxCube, yMinCube, zMaxCube); // Bottom Right
+        glVertex3f(xMaxCube, yMaxCube, zMaxCube); // Top Right
 
-    // Face du bas
-    glVertex3f(xMinCube, yMinCube, zMinCube);	// Top Right
-    glVertex3f(xMaxCube, yMinCube, zMinCube);	// Top Left
-    glVertex3f(xMaxCube, yMinCube, zMaxCube);	// Bottom Left
-    glVertex3f(xMinCube, yMinCube, zMaxCube);	// Bottom Right
-    // Face du bas
-    glVertex3f(xMinCube, yMinCube, zMinCube);	// Top Right
-    glVertex3f(xMaxCube, yMinCube, zMinCube);	// Top Left
-    glVertex3f(xMaxCube, yMinCube, zMaxCube);	// Bottom Left
-    glVertex3f(xMinCube, yMinCube, zMaxCube);	// Bottom Right
 
-    // Face du haut
-    glVertex3f(xMinCube, yMaxCube, zMinCube);	// Top Left
-    glVertex3f(xMinCube, yMaxCube, zMaxCube);	// Bottom Left
-    glVertex3f(xMaxCube, yMaxCube, zMaxCube);	// Bottom Right
-    glVertex3f(xMaxCube, yMaxCube, zMinCube);	// Top Right
+        // Face du bas (normale vers -Y)
+        glNormal3f(0.0f, -1.0f, 0.0f);
+        glVertex3f(xMaxCube, yMinCube, zMinCube); // Bottom Right
+        glVertex3f(xMinCube, yMinCube, zMinCube); // Bottom Left
 
-    // Face du haut
-    glVertex3f(xMinCube, yMaxCube, zMinCube);	// Top Left
-    glVertex3f(xMinCube, yMaxCube, zMaxCube);	// Bottom Left
-    glVertex3f(xMaxCube, yMaxCube, zMaxCube);	// Bottom Right
-    glVertex3f(xMaxCube, yMaxCube, zMinCube);	// Top Right
+            glVertex3f(xMinCube, yMinCube, zMaxCube); // Top Left
+        glVertex3f(xMaxCube, yMinCube, zMaxCube); // Top Right
 
-    glEnd();
+
+        // Face du haut (normale vers +Y)
+        glNormal3f(0.0f, 1.0f, 0.0f);
+        glVertex3f(xMinCube, yMaxCube, zMaxCube); // Bottom Right
+        glVertex3f(xMinCube, yMaxCube, zMinCube); // Bottom Left
+
+        glVertex3f(xMaxCube, yMaxCube, zMinCube); // Top Left
+        glVertex3f(xMaxCube, yMaxCube, zMaxCube); // Top Right
+
+
+        glEnd();
 }
 
 
@@ -604,10 +541,10 @@ void Texture::drawCube(){
 
 void Texture::drawBoundingBox(bool fill){
 
-    glPolygonMode (GL_FRONT_AND_BACK, fill ? GL_FILL : GL_FILL);
-    glColor3f(1.f,0.f,0.f);
+    //glPolygonMode (GL_FRONT_AND_BACK, fill ? GL_FILL : GL_FILL);
+    //glColor3f(1.f,0.f,0.f);
     drawCube();
-    glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
+    //glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
 
 }
 
