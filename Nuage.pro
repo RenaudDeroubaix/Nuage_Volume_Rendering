@@ -55,4 +55,3 @@ release:QMAKE_CXXFLAGS_RELEASE += -O3 \
 release:QMAKE_CFLAGS_RELEASE += -O3 \
     -fopenmp
 
-DISTFILES +=
