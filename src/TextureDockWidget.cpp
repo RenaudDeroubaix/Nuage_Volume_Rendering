@@ -102,30 +102,132 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     QFrame *lightFrame = new QFrame();
     lightFrame->setFrameShape(QFrame::StyledPanel);
     lightFrame->setFrameShadow(QFrame::Sunken);
+    QVBoxLayout *lightlayout = new QVBoxLayout(lightFrame);
+    QHBoxLayout *lightposLayout = new QHBoxLayout();
+    QHBoxLayout *lightcolLayout = new QHBoxLayout();
 
-    QVBoxLayout *lightParamLayout = new QVBoxLayout(lightFrame);
-    QLabel *lightLabel = new QLabel("Paramètres de la lumière:", lightFrame);
-    lightParamLayout->addWidget(lightLabel);
+    QLabel *lightLabel = new QLabel("Paramètres de la lumière:", nuageFrame);
+    lightLayout->addWidget(lightLabel);
+
+
     // Add more light-related controls here
+
+    QLabel *positionLight = new QLabel("Position de la lumière:", lightFrame);
+    LightPosX = new QDoubleSpinBox(lightFrame);
+    LightPosX->setRange(-5.0, 5.0);
+    LightPosX->setSingleStep(0.1);
+    LightPosX->setValue(0.0);
+    LightPosX->setFixedWidth(50); // Reduce the width of the spinboxes
+
+    LightPosY = new QDoubleSpinBox(lightFrame);
+    LightPosY->setRange(-5.0, 5.0);
+    LightPosY->setSingleStep(0.1);
+    LightPosY->setValue(1.0);
+    LightPosY->setFixedWidth(50); // Reduce the width of the spinboxes
+
+    LightPosZ = new QDoubleSpinBox(lightFrame);
+    LightPosZ->setRange(-5.0, 5.0);
+    LightPosZ->setSingleStep(0.1);
+    LightPosZ->setValue(0.0);
+    LightPosZ->setFixedWidth(50); // Reduce the width of the spinboxes
+
+    QLabel *colorLight = new QLabel("Couleur de la lumière (R, G, B):", lightFrame);
+
+    LightColorR = new QDoubleSpinBox(lightFrame);
+    LightColorR->setRange(0.0, 1.0);
+    LightColorR->setSingleStep(0.01);
+    LightColorR->setValue(1.0);
+    LightColorR->setFixedWidth(50); // Reduce the width of the spinboxes
+
+    LightColorG = new QDoubleSpinBox(lightFrame);
+    LightColorG->setRange(0.0, 1.0);
+    LightColorG->setSingleStep(0.01);
+    LightColorG->setValue(1.0);
+    LightColorG->setFixedWidth(50); // Reduce the width of the spinboxes
+
+    LightColorB = new QDoubleSpinBox(lightFrame);
+    LightColorB->setRange(0.0, 1.0);
+    LightColorB->setSingleStep(0.01);
+    LightColorB->setValue(1.0);
+    LightColorB->setFixedWidth(50); // Reduce the width of the spinboxes
+
+    lightposLayout->addWidget(positionLight);
+    lightposLayout->addWidget(LightPosX);
+    lightposLayout->addWidget(LightPosY);
+    lightposLayout->addWidget(LightPosZ);
+
+    lightcolLayout->addWidget(colorLight);
+    lightcolLayout->addWidget(LightColorR);
+    lightcolLayout->addWidget(LightColorG);
+    lightcolLayout->addWidget(LightColorB);
+
+    lightlayout->addLayout(lightposLayout);
+    lightlayout->addLayout(lightcolLayout);
 
     // Add Light frame to main layout
     lightLayout->addWidget(lightFrame);
-
 
     // Add the light/color tab to the tab widget
     tabWidget->addTab(lightTab, "Lumière/Couleur");
 
     //////////////////////////////////////////////////////////////////////////////////other TAB je sais pas si jamais sinon on suppr
     QWidget *otherTab = new QWidget();
-    QVBoxLayout *otherLayout = new QVBoxLayout(otherTab);
-    QGroupBox *otherGroupBox = new QGroupBox("Autres Paramètres", otherTab);
-    otherLayout->addWidget(otherGroupBox);
+      QVBoxLayout *otherLayout = new QVBoxLayout(otherTab);
 
-    // Add the other tab to the tab widget
-    tabWidget->addTab(otherTab, "Autres");
+      QGroupBox *otherGroupBox = new QGroupBox("Échantillons", otherTab);
+      QVBoxLayout *groupBoxLayout = new QVBoxLayout(otherGroupBox);
 
-    //////////////////////////////////////////////////////////////////////////////////////
+      // Widgets pour le nuage
+      QLabel *SampleNuageLabel = new QLabel("Nuage :", otherGroupBox);
+      QSlider *NuageSampleSlider = new QSlider(Qt::Horizontal, otherGroupBox);
+      NuageSampleSlider->setRange(3, 50); // Plage entière
+      NuageSampleSlider->setValue(5);    // Valeur par défaut
 
+      QSpinBox *NuageSampleBox = new QSpinBox(otherGroupBox);
+      NuageSampleBox->setRange(3, 50);   // Plage entière
+      NuageSampleBox->setSingleStep(1);
+      NuageSampleBox->setValue(5);       // Valeur par défaut
+
+      // Disposition horizontale pour les contrôles de nuage
+      QHBoxLayout *nuageEchLayout = new QHBoxLayout();
+      nuageEchLayout->addWidget(SampleNuageLabel);
+      nuageEchLayout->addWidget(NuageSampleSlider);
+      nuageEchLayout->addWidget(NuageSampleBox);
+
+      // Synchronisation entre Slider et SpinBox pour le nuage
+      QObject::connect(NuageSampleSlider, &QSlider::valueChanged, NuageSampleBox, &QSpinBox::setValue);
+      QObject::connect(NuageSampleBox, QOverload<int>::of(&QSpinBox::valueChanged), NuageSampleSlider, &QSlider::setValue);
+
+      // Widgets pour la lumière
+      QLabel *SampleLightLabel = new QLabel("Lumière :", otherGroupBox);
+      QSlider *LightSampleSlider = new QSlider(Qt::Horizontal, otherGroupBox);
+      LightSampleSlider->setRange(3, 50); // Plage entière
+      LightSampleSlider->setValue(5);    // Valeur par défaut
+
+      QSpinBox *LightSampleBox = new QSpinBox(otherGroupBox);
+      LightSampleBox->setRange(3,  50);   // Plage entière
+      LightSampleBox->setSingleStep(1);
+      LightSampleBox->setValue(5);       // Valeur par défaut
+
+      // Disposition horizontale pour les contrôles de lumière
+      QHBoxLayout *lightEchLayout = new QHBoxLayout();
+      lightEchLayout->addWidget(SampleLightLabel);
+      lightEchLayout->addWidget(LightSampleSlider);
+      lightEchLayout->addWidget(LightSampleBox);
+
+      // Synchronisation entre Slider et SpinBox pour la lumière
+      QObject::connect(LightSampleSlider, &QSlider::valueChanged, LightSampleBox, &QSpinBox::setValue);
+      QObject::connect(LightSampleBox, QOverload<int>::of(&QSpinBox::valueChanged), LightSampleSlider, &QSlider::setValue);
+
+      // Ajout des layouts horizontaux au QGroupBox
+      groupBoxLayout->addLayout(nuageEchLayout);
+      groupBoxLayout->addLayout(lightEchLayout);
+
+      otherGroupBox->setLayout(groupBoxLayout);
+      otherLayout->addWidget(otherGroupBox);
+
+      // Ajout de l'onglet
+      tabWidget->addTab(otherTab, "Autres");
     // Add the tab widget to the main layout
     contentLayout->addWidget(tabWidget);
     contentLayout->addStretch(0);
@@ -197,6 +299,23 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     connect(redColorNuageSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::redNuageValueChanged);
     connect(greenColorNuageSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::greenNuageValueChanged);
     connect(blueColorNuageSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::blueNuageValueChanged);
+
+    connect(LightPosX, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::setlightposXValueChanged);
+    connect(LightPosY, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::setlightposYValueChanged);
+    connect(LightPosZ, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::setlightposZValueChanged);
+
+
+    connect(LightColorR, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::setlightcolRValueChanged);
+    connect(LightColorG, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::setlightcolGValueChanged);
+    connect(LightColorB, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::setlightcolBValueChanged);
+
+    connect(NuageSampleSlider, &QSlider::valueChanged, this, &TextureDockWidget::onNuageSliderChanged);
+     connect(NuageSampleBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &TextureDockWidget::onNuageSpinBoxChanged);
+
+     connect(LightSampleSlider, &QSlider::valueChanged, this, &TextureDockWidget::onLightSliderChanged);
+     connect(LightSampleBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &TextureDockWidget::onLightSpinBoxChanged);
+
+
     connect(absorptionSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::absorptionValueChanged);
     connect(absorptionSlider, &QSlider::valueChanged, this, &TextureDockWidget::absorptionSliderChangedSlot);
 
@@ -208,12 +327,22 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
         absorptionSlider->setValue(static_cast<int>(value * 100));  // Assuming max slider value is 300
     });
 }
-
+void TextureDockWidget::onNuageSliderChangedSlot(int value) {emit onNuageSliderChanged(value);}
+void TextureDockWidget::onNuageSpinBoxChangedSlot(int value){emit onNuageSpinBoxChanged(value);}
+void TextureDockWidget::onLightSliderChangedSlot(int value){emit onLightSliderChanged(value);}
+void TextureDockWidget::onLightSpinBoxChangedSlot(int value){emit onLightSpinBoxChanged(value);}
 void TextureDockWidget::redNuageSpinBoxChangedSlot(float value){emit redNuageValueChanged(value) ;}
 void TextureDockWidget::greenNuageSpinBoxChangedSlot(float value){emit greenNuageValueChanged(value) ;}
 void TextureDockWidget::blueNuageSpinBoxChangedSlot(float value){emit blueNuageValueChanged(value);}
+void TextureDockWidget::setlightposXSlot(float value){emit setlightposXValueChanged(value) ;}
+void TextureDockWidget::setlightposYSlot(float value){emit setlightposYValueChanged(value) ;}
+void TextureDockWidget::setlightposZSlot(float value){emit setlightposZValueChanged(value);}
+void TextureDockWidget::setlightcolRSlot(float value){emit setlightcolRValueChanged(value) ;}
+void TextureDockWidget::setlightcolGSlot(float value){emit setlightcolGValueChanged(value) ;}
+void TextureDockWidget::setlightcolBSlot(float value){emit setlightcolBValueChanged(value);}
 void TextureDockWidget::absorptionSpinBoxChangedSlot(float value){emit absorptionValueChanged(value) ;}
 void TextureDockWidget::absorptionSliderChangedSlot(int i){emit absorptionValueChanged((float) i/(float)sliderAbsorptionMax);}
+
 
 //void TextureDockWidget::xSliderChangedSlot(int i) {emit xValueChanged((float)i/(float) sliderMax);}
 //void TextureDockWidget::ySliderChangedSlot(int i) {emit yValueChanged((float)i/(float) sliderMax);}

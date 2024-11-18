@@ -46,7 +46,18 @@ Window::Window()
     connect(madDockWidget, &TextureDockWidget::redNuageValueChanged, viewer, &TextureViewer::setRedNuage);
     connect(madDockWidget, &TextureDockWidget::blueNuageValueChanged, viewer, &TextureViewer::setBlueNuage);
     connect(madDockWidget, &TextureDockWidget::greenNuageValueChanged, viewer, &TextureViewer::setGreenNuage);
+
+    connect(madDockWidget, &TextureDockWidget::setlightposXValueChanged, viewer, &TextureViewer::setXlightpos);
+    connect(madDockWidget, &TextureDockWidget::setlightposYValueChanged, viewer, &TextureViewer::setYlightpos);
+    connect(madDockWidget, &TextureDockWidget::setlightposZValueChanged, viewer, &TextureViewer::setZlightpos);
+
     connect(madDockWidget, &TextureDockWidget::absorptionValueChanged, viewer, &TextureViewer::setAbsorptionNuage);
+
+    connect(madDockWidget, &TextureDockWidget::onNuageSliderChanged, viewer, &TextureViewer::onNuageSliderChanged);
+    connect(madDockWidget, &TextureDockWidget::onNuageSpinBoxChanged, viewer, &TextureViewer::onNuageSpinBoxChanged);
+
+    connect(madDockWidget, &TextureDockWidget::onLightSliderChanged, viewer, &TextureViewer::onLightSliderChanged);
+    connect(madDockWidget, &TextureDockWidget::onLightSpinBoxChanged, viewer, &TextureViewer::onLightSpinBoxChanged);
 
 
 //    connect(madDockWidget, &TextureDockWidget::xValueChanged, viewer, &TextureViewer::setXCut);

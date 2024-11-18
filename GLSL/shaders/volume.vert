@@ -15,6 +15,7 @@ in vec3 position;
 
 out vec3 fragPosition;  // Output vertex position to fragment shader
 out vec3 fragTexCoord;  // Output texture coordinates to fragment shader
+
 out mat4 view_mat;  // View matrix to pass to fragment shader
 out mat4 prof_mat;
 

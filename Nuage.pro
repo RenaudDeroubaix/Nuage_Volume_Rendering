@@ -48,8 +48,8 @@ LIBS += -lglut \
     -lGLU
 LIBS += -lgsl \
     -lgomp
-LIBS += -lblas \
-    -lgomp
+#LIBS += -lblas \
+#    -lgomp
 release:QMAKE_CXXFLAGS_RELEASE += -O3 \
     -fopenmp
 release:QMAKE_CFLAGS_RELEASE += -O3 \

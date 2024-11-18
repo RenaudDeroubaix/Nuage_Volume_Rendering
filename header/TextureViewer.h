@@ -63,9 +63,24 @@ protected :
 
 public slots:
 
+    void onNuageSliderChanged(int value);
+    void onNuageSpinBoxChanged(int value);
+    void onLightSliderChanged(int value);
+    void onLightSpinBoxChanged(int value);
+
     void setRedNuage(float _r);
     void setGreenNuage(float _g);
     void setBlueNuage(float _b);
+
+    void setXlightpos(float _x);
+    void setYlightpos(float _y);
+    void setZlightpos(float _z);
+
+
+    void setRlightcol(float _r);
+    void setGlightcol(float _g);
+    void setBlightcol(float _b);
+
     void setAbsorptionNuage(float _q);
 
 //    void setXCut(float _x);
