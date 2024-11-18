@@ -5,6 +5,7 @@
 #include <QGroupBox>
 #include <QComboBox>
 
+
 using namespace std;
 TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
 {
@@ -12,10 +13,129 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
 
     QVBoxLayout * contentLayout = new QVBoxLayout(contents);
 
-    QGroupBox * groupBox = new QGroupBox("Paramètre", parent);
-    groupBox->setMaximumSize(QSize(16777215, 200));
 
-    contentLayout->addWidget ( groupBox) ;
+    // Create a tab widget to organize the sections
+    QTabWidget *tabWidget = new QTabWidget(contents);
+
+    //////////////////////////////////////////////////////////////////////////////////NOISE TAB
+    // Create the first tab for noise parameters
+    QWidget *noiseTab = new QWidget();
+    QVBoxLayout *noiseLayout = new QVBoxLayout(noiseTab);
+    QGroupBox *noiseGroupBox = new QGroupBox("Paramètres de Bruit", noiseTab);
+    noiseLayout->addWidget(noiseGroupBox);
+
+    // Add the noise tab to the tab widget
+    tabWidget->addTab(noiseTab, "Bruit");
+
+    //////////////////////////////////////////////////////////////////////////////////Light TAB
+    // Create the second tab for light/color parameters
+    QWidget *lightTab = new QWidget();
+    QVBoxLayout *lightLayout = new QVBoxLayout(lightTab);
+    lightLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    lightTab->setMaximumWidth(450);  // Set a maximum width
+    lightTab->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    // Create a frame for "Nuage" section
+    QFrame *nuageFrame = new QFrame();
+    nuageFrame->setFrameShape(QFrame::StyledPanel);
+    nuageFrame->setFrameShadow(QFrame::Sunken);
+
+
+    QVBoxLayout *nuageLayout = new QVBoxLayout(nuageFrame);
+
+    QLabel *nuageLabel = new QLabel("Paramètre du Nuage:", nuageFrame);
+    lightLayout->addWidget(nuageLabel);
+
+    // Color controls layout
+    QHBoxLayout *colorNuageLayout = new QHBoxLayout();
+
+    // Create three QDoubleSpinBoxes for RGB values (0.0 to 1.0)
+    QLabel *colorNuageLabel = new QLabel("Couleur du nuage (R, G, B):", nuageFrame);
+    redColorNuageSpinBox = new QDoubleSpinBox(nuageFrame);
+    redColorNuageSpinBox->setRange(0.0, 1.0);
+    redColorNuageSpinBox->setSingleStep(0.01);
+    redColorNuageSpinBox->setValue(1.0);
+    redColorNuageSpinBox->setFixedWidth(50); // Reduce the width of the spinboxes
+
+    greenColorNuageSpinBox = new QDoubleSpinBox(nuageFrame);
+    greenColorNuageSpinBox->setRange(0.0, 1.0);
+    greenColorNuageSpinBox->setSingleStep(0.01);
+    greenColorNuageSpinBox->setValue(1.0);
+    greenColorNuageSpinBox->setFixedWidth(50);
+
+    blueColorNuageSpinBox = new QDoubleSpinBox(nuageFrame);
+    blueColorNuageSpinBox->setRange(0.0, 1.0);
+    blueColorNuageSpinBox->setSingleStep(0.01);
+    blueColorNuageSpinBox->setValue(1.0);
+    blueColorNuageSpinBox->setFixedWidth(50);
+
+    // Add the color controls to the color layout
+    colorNuageLayout->addWidget(colorNuageLabel);
+    colorNuageLayout->addWidget(redColorNuageSpinBox);
+    colorNuageLayout->addWidget(greenColorNuageSpinBox);
+    colorNuageLayout->addWidget(blueColorNuageSpinBox);
+    nuageLayout->addLayout(colorNuageLayout);
+
+    // Absorption controls layout
+    QLabel *absorptionLabel = new QLabel("Coeff d'absorption:", nuageFrame);
+    absorptionSlider = new QSlider(Qt::Horizontal, nuageFrame);
+    absorptionSlider->setRange(60,300);
+    absorptionSlider->setValue(90);
+    absorptionSlider->setFixedWidth(100);
+    absorptionSpinBox = new QDoubleSpinBox(nuageFrame);
+    absorptionSpinBox->setRange(0.6, 3.0);
+    absorptionSpinBox->setSingleStep(0.1);
+    absorptionSpinBox->setValue(0.90);
+    absorptionSpinBox->setFixedWidth(50);
+    QHBoxLayout *absorptionLayout = new QHBoxLayout();
+    absorptionLayout->addWidget(absorptionLabel);
+    absorptionLayout->addWidget(absorptionSlider);
+    absorptionLayout->addWidget(absorptionSpinBox);
+    nuageLayout->addLayout(absorptionLayout);
+
+
+    nuageFrame->adjustSize();
+
+    // Add Nuage frame to layout
+    lightLayout->addWidget(nuageFrame);
+
+    // Create a frame for "Light" section
+    QFrame *lightFrame = new QFrame();
+    lightFrame->setFrameShape(QFrame::StyledPanel);
+    lightFrame->setFrameShadow(QFrame::Sunken);
+
+    QVBoxLayout *lightParamLayout = new QVBoxLayout(lightFrame);
+    QLabel *lightLabel = new QLabel("Paramètres de la lumière:", lightFrame);
+    lightParamLayout->addWidget(lightLabel);
+    // Add more light-related controls here
+
+    // Add Light frame to main layout
+    lightLayout->addWidget(lightFrame);
+
+
+    // Add the light/color tab to the tab widget
+    tabWidget->addTab(lightTab, "Lumière/Couleur");
+
+    //////////////////////////////////////////////////////////////////////////////////other TAB je sais pas si jamais sinon on suppr
+    QWidget *otherTab = new QWidget();
+    QVBoxLayout *otherLayout = new QVBoxLayout(otherTab);
+    QGroupBox *otherGroupBox = new QGroupBox("Autres Paramètres", otherTab);
+    otherLayout->addWidget(otherGroupBox);
+
+    // Add the other tab to the tab widget
+    tabWidget->addTab(otherTab, "Autres");
+
+    //////////////////////////////////////////////////////////////////////////////////////
+
+    // Add the tab widget to the main layout
+    contentLayout->addWidget(tabWidget);
+    contentLayout->addStretch(0);
+
+    this->setWidget(contents);
+
+    // QGroupBox * groupBox = new QGroupBox("Paramètres", parent);
+    // groupBox->setMaximumSize(QSize(16777215, 200));
+
+    // contentLayout->addWidget ( groupBox) ;
 
 //    QGridLayout * cuttingPlaneGridLayout = new QGridLayout(groupBox);
 //    xHSlider = new QSlider(groupBox);
@@ -74,10 +194,26 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
 //    connect(displayXCut, &QCheckBox::stateChanged, this, &TextureDockWidget::xDisplaySlot);
 //    connect(displayYCut, &QCheckBox::stateChanged, this, &TextureDockWidget::yDisplaySlot);
 //    connect(displayZCut, &QCheckBox::stateChanged, this, &TextureDockWidget::zDisplaySlot);
+    connect(redColorNuageSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::redNuageValueChanged);
+    connect(greenColorNuageSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::greenNuageValueChanged);
+    connect(blueColorNuageSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::blueNuageValueChanged);
+    connect(absorptionSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::absorptionValueChanged);
+    connect(absorptionSlider, &QSlider::valueChanged, this, &TextureDockWidget::absorptionSliderChangedSlot);
 
-    contentLayout->addStretch(0);
-    this->setWidget(contents);
+    // Make the two-way connections
+    connect(absorptionSlider, &QSlider::valueChanged, this, [this](int value) {
+        absorptionSpinBox->setValue(value / 100.0);  // Assuming max slider value is 300
+    });
+    connect(absorptionSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, [this](double value) {
+        absorptionSlider->setValue(static_cast<int>(value * 100));  // Assuming max slider value is 300
+    });
 }
+
+void TextureDockWidget::redNuageSpinBoxChangedSlot(float value){emit redNuageValueChanged(value) ;}
+void TextureDockWidget::greenNuageSpinBoxChangedSlot(float value){emit greenNuageValueChanged(value) ;}
+void TextureDockWidget::blueNuageSpinBoxChangedSlot(float value){emit blueNuageValueChanged(value);}
+void TextureDockWidget::absorptionSpinBoxChangedSlot(float value){emit absorptionValueChanged(value) ;}
+void TextureDockWidget::absorptionSliderChangedSlot(int i){emit absorptionValueChanged((float) i/(float)sliderAbsorptionMax);}
 
 //void TextureDockWidget::xSliderChangedSlot(int i) {emit xValueChanged((float)i/(float) sliderMax);}
 //void TextureDockWidget::ySliderChangedSlot(int i) {emit yValueChanged((float)i/(float) sliderMax);}
@@ -97,3 +233,5 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
 //        yHSlider->setRange(0,y);
 //        zHSlider->setRange(0,z);
 //}
+
+

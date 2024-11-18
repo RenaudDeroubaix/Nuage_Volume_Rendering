@@ -16,11 +16,13 @@ void TextureViewer::draw(){
     drawClippingPlane();
 
     glEnable(GL_DEPTH_TEST);
-
-    glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
-    glDisable(GL_BLEND);
+  //  glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
+    //glEnable(GL_CULL_FACE);
+   // glCullFace(GL_BACK);
+ //   glFrontFace(GL_CW);
+    glEnable(GL_BLEND);
     
-    camera()->setSceneRadius(1000);
+    camera()->setSceneRadius(10);
 
     texture->draw(camera());
 }
@@ -76,7 +78,7 @@ void TextureViewer::init()
     glEnable(GL_CLIP_PLANE0);
     
     //Set background color
-    setBackgroundColor(QColor(255,255,255));
+    setBackgroundColor(QColor(15,15,200));
     glPolygonMode(GL_FRONT_AND_BACK,GL_FILL);
     
     //Set blend parameters
@@ -386,6 +388,23 @@ void TextureViewer::openIMA(const QString & fileName, std::vector<unsigned char>
 //    texture->setZCutDisplay(_zCutDisplay);
 //    update();
 //}
+
+void TextureViewer::setRedNuage(float _r){
+    texture->setRedNuageDisplay(_r);
+    update();
+}
+void TextureViewer::setGreenNuage(float _g){
+    texture->setGreenNuageDisplay(_g);
+    update();
+}
+void TextureViewer::setBlueNuage(float _b){
+    texture->setBlueNuageDisplay(_b);
+    update();
+}
+void TextureViewer::setAbsorptionNuage(float _a){
+    texture->setAbsorptionNuageDisplay(_a);
+    update();
+}
 
 void TextureViewer::recompileShaders() {
     texture->recompileShaders();

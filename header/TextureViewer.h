@@ -63,6 +63,11 @@ protected :
 
 public slots:
 
+    void setRedNuage(float _r);
+    void setGreenNuage(float _g);
+    void setBlueNuage(float _b);
+    void setAbsorptionNuage(float _q);
+
 //    void setXCut(float _x);
 //    void setYCut(float _y);
 //    void setZCut(float _z);
