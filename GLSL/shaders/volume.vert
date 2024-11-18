@@ -45,6 +45,5 @@ void main()
     // Normalize the texture coordinates based on the maximum values
     fragTexCoord.x = (position.x -BBmin.x) / (BBmax.x - BBmin.x) ;
     fragTexCoord.y = (position.y -BBmin.y) / (BBmax.y - BBmin.y) ;
-    fragTexCoord.z = -(position.z -BBmin.z)  / (BBmax.z - BBmin.z) ;//OPENGL Z INVERSé
-
+    fragTexCoord.z = (position.z -BBmin.z)  / (BBmax.z - BBmin.z);
 }
