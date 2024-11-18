@@ -449,51 +449,40 @@ void Texture::drawCube(){
     glBegin(GL_QUADS);
 
         // Face arrière (normale vers -Z)
-        glNormal3f(0.0f, 0.0f, -1.0f);
         glVertex3f(xMinCube, yMinCube, zMinCube); // Bottom Left
         glVertex3f(xMaxCube, yMinCube, zMinCube); // Bottom Right
         glVertex3f(xMaxCube, yMaxCube, zMinCube); // Top Right
         glVertex3f(xMinCube, yMaxCube, zMinCube); // Top Left
 
         // Face avant (normale vers +Z)
-        glNormal3f(0.0f, 0.0f, 1.0f);
         glVertex3f(xMinCube, yMinCube, zMaxCube); // Bottom Left
         glVertex3f(xMinCube, yMaxCube, zMaxCube); // Top Left
         glVertex3f(xMaxCube, yMaxCube, zMaxCube); // Top Right
         glVertex3f(xMaxCube, yMinCube, zMaxCube); // Bottom Right
 
         // Face gauche (normale vers -X)
-        glNormal3f(-1.0f, 0.0f, 0.0f);
         glVertex3f(xMinCube, yMinCube, zMaxCube); // Bottom Right
         glVertex3f(xMinCube, yMinCube, zMinCube); // Bottom Left
-
         glVertex3f(xMinCube, yMaxCube, zMinCube); // Top Left
-
         glVertex3f(xMinCube, yMaxCube, zMaxCube); // Top Right
 
         // Face droite (normale vers +X)
-        glNormal3f(1.0f, 0.0f, 0.0f);
-         glVertex3f(xMaxCube, yMaxCube, zMinCube); // Top Left
+        glVertex3f(xMaxCube, yMaxCube, zMinCube); // Top Left
         glVertex3f(xMaxCube, yMinCube, zMinCube); // Bottom Left
-
-               glVertex3f(xMaxCube, yMinCube, zMaxCube); // Bottom Right
+        glVertex3f(xMaxCube, yMinCube, zMaxCube); // Bottom Right
         glVertex3f(xMaxCube, yMaxCube, zMaxCube); // Top Right
 
 
-        // Face du bas (normale vers -Y)
-        glNormal3f(0.0f, -1.0f, 0.0f);
+        // Face du bas (normale vers -Y
         glVertex3f(xMaxCube, yMinCube, zMinCube); // Bottom Right
         glVertex3f(xMinCube, yMinCube, zMinCube); // Bottom Left
-
-            glVertex3f(xMinCube, yMinCube, zMaxCube); // Top Left
+        glVertex3f(xMinCube, yMinCube, zMaxCube); // Top Left
         glVertex3f(xMaxCube, yMinCube, zMaxCube); // Top Right
 
 
         // Face du haut (normale vers +Y)
-        glNormal3f(0.0f, 1.0f, 0.0f);
         glVertex3f(xMinCube, yMaxCube, zMaxCube); // Bottom Right
         glVertex3f(xMinCube, yMaxCube, zMinCube); // Bottom Left
-
         glVertex3f(xMaxCube, yMaxCube, zMinCube); // Top Left
         glVertex3f(xMaxCube, yMaxCube, zMaxCube); // Top Right
 
