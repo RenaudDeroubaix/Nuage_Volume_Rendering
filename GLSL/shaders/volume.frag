@@ -115,11 +115,11 @@ void main() {
 
     vec4 intensite = vec4(0.0);
     for (int i = 1 ; i < NuageSample ; i++){
-
+       float dist = length(exitPoint - fragPosition) / float(NuageSample);
        vec3 point_i = point_i_in_tex3D(exitPoint , dir , i);
-       intensite = texture(tex,  point_i);
+       intensite = dist * texture(tex,  point_i);
         if (length(point_i - fragPosition) > epsilon){
-            a += 1 - beersLaw(intensite.r / NuageSample , absorptionNuage );
+            a += 1 - beersLaw(intensite.r , absorptionNuage );
         }
 
     }
