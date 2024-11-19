@@ -29,6 +29,8 @@ void Texture::init(){
     //Set texture to cube of size 1.
     timer.start();
 
+    resolutionBruit = QVector3D(128.0,128.0,128.0);
+
     xMax = 128;
     yMax = 128;
     zMax = 128;
@@ -325,6 +327,7 @@ void Texture::computePass() {
     glFunctions->glUseProgram(computeID);
 
     glFunctions->glUniform1f(glFunctions->glGetUniformLocation(computeID, "u_time"), timer.elapsed()/1000.0);
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(computeID, "resolution"),1, &resolutionBruit[0]);
 
     glFunctions->glBindTexture(GL_TEXTURE_3D, textureId);
     glFunctions->glBindImageTexture (0, textureId, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
@@ -576,6 +579,15 @@ void Texture::setBlightcolDisplay(float _b){
 }
 void Texture::setAbsorptionNuageDisplay(float _a){
     absorptionNuage=_a;
+}
+void Texture::setResolutionBruitX(float _x){
+    resolutionBruit[0]=_x;
+}
+void Texture::setResolutionBruitY(float _y){
+    resolutionBruit[1]=_y;
+}
+void Texture::setResolutionBruitZ(float _z){
+    resolutionBruit[2]=_z;
 }
 
 void Texture::clear(){

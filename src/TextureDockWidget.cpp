@@ -21,8 +21,53 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     // Create the first tab for noise parameters
     QWidget *noiseTab = new QWidget();
     QVBoxLayout *noiseLayout = new QVBoxLayout(noiseTab);
-    QGroupBox *noiseGroupBox = new QGroupBox("Paramètres de Bruit", noiseTab);
-    noiseLayout->addWidget(noiseGroupBox);
+    noiseLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
+    noiseTab->setMaximumWidth(450);  // Set a maximum width
+    noiseTab->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+    // Create a frame for "Nuage" section
+    QFrame *bruitFrame = new QFrame();
+    bruitFrame->setFrameShape(QFrame::StyledPanel);
+    bruitFrame->setFrameShadow(QFrame::Sunken);
+
+    QVBoxLayout *bruitLayout = new QVBoxLayout(bruitFrame);
+
+    QLabel *bruitLabel = new QLabel("Paramètre du Bruit Worley:", bruitFrame);
+    noiseLayout->addWidget(bruitLabel);
+
+    // Color controls layout
+    QHBoxLayout *bruitworleyLayout = new QHBoxLayout();
+
+    // Create three QDoubleSpinBoxes for RGB values (0.0 to 1.0)
+    QLabel *bruitworleyLabel = new QLabel("Value X/Y/Z: ", bruitFrame);
+    xbruitworleySpinBox = new QDoubleSpinBox(bruitFrame);
+    xbruitworleySpinBox->setRange(0.0, 512.0);
+    xbruitworleySpinBox->setSingleStep(1.0);
+    xbruitworleySpinBox->setValue(128.0);
+    xbruitworleySpinBox->setFixedWidth(50); // Reduce the width of the spinboxes
+
+    ybruitworleySpinBox = new QDoubleSpinBox(bruitFrame);
+    ybruitworleySpinBox->setRange(0.0, 512.0);
+    ybruitworleySpinBox->setSingleStep(1.0);
+    ybruitworleySpinBox->setValue(128.0);
+    ybruitworleySpinBox->setFixedWidth(50);
+
+    zbruitworleySpinBox = new QDoubleSpinBox(bruitFrame);
+    zbruitworleySpinBox->setRange(0.0, 512.0);
+    zbruitworleySpinBox->setSingleStep(1.0);
+    zbruitworleySpinBox->setValue(128.0);
+    zbruitworleySpinBox->setFixedWidth(50);
+
+    // Add the color controls to the color layout
+    bruitworleyLayout->addWidget(bruitworleyLabel);
+    bruitworleyLayout->addWidget(xbruitworleySpinBox);
+    bruitworleyLayout->addWidget(ybruitworleySpinBox);
+    bruitworleyLayout->addWidget(zbruitworleySpinBox);
+    bruitLayout->addLayout(bruitworleyLayout);
+
+    bruitFrame->adjustSize();
+
+    // Add Nuage frame to layout
+    noiseLayout->addWidget(bruitFrame);
 
     // Add the noise tab to the tab widget
     tabWidget->addTab(noiseTab, "Bruit");
@@ -326,6 +371,9 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     connect(absorptionSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, [this](double value) {
         absorptionSlider->setValue(static_cast<int>(value * 100));  // Assuming max slider value is 300
     });
+    connect(xbruitworleySpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::xResolutionBruitValueChanged);
+    connect(ybruitworleySpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::yResolutionBruitValueChanged);
+    connect(zbruitworleySpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::zResolutionBruitValueChanged);
 }
 void TextureDockWidget::onNuageSliderChangedSlot(int value) {emit onNuageSliderChanged(value);}
 void TextureDockWidget::onNuageSpinBoxChangedSlot(int value){emit onNuageSpinBoxChanged(value);}
@@ -342,6 +390,9 @@ void TextureDockWidget::setlightcolGSlot(float value){emit setlightcolGValueChan
 void TextureDockWidget::setlightcolBSlot(float value){emit setlightcolBValueChanged(value);}
 void TextureDockWidget::absorptionSpinBoxChangedSlot(float value){emit absorptionValueChanged(value) ;}
 void TextureDockWidget::absorptionSliderChangedSlot(int i){emit absorptionValueChanged((float) i/(float)sliderAbsorptionMax);}
+void TextureDockWidget::xResolutionBruitSpinBoxChangedSlot(float value){emit xResolutionBruitValueChanged(value) ;}
+void TextureDockWidget::yResolutionBruitSpinBoxChangedSlot(float value){emit yResolutionBruitValueChanged(value) ;}
+void TextureDockWidget::zResolutionBruitSpinBoxChangedSlot(float value){emit zResolutionBruitValueChanged(value);}
 
 
 //void TextureDockWidget::xSliderChangedSlot(int i) {emit xValueChanged((float)i/(float) sliderMax);}

@@ -49,6 +49,7 @@ private :
     float minD;
 
     QVector3D sizeTexture3D; //longueur largeur profondeur
+    QVector3D resolutionBruit;
 
     double xMax;
     double yMax;
@@ -126,6 +127,9 @@ public slots:
     void setBlightcolDisplay(float _b);
     void setAbsorptionNuageDisplay(float _a);
     void recompileShaders();
+    void setResolutionBruitX(float _x);
+    void setResolutionBruitY(float _y);
+    void setResolutionBruitZ(float _z);
 
 };
 

@@ -5,7 +5,7 @@ layout(local_size_x = 8, local_size_y = 8, local_size_z = 8) in;
 layout(rgba32f, binding = 0) uniform image3D img_out;
 
 uniform float u_time;
-
+uniform vec3 resolution;
 
 //gl_LocalInvocationID
 //gl_GlobalInvocationID
@@ -84,12 +84,13 @@ float worley(vec3 p) {
 
 #endif
 
+
 void main() {
     // Coordonnées globales dans la texture
     ivec3 coords = ivec3(gl_GlobalInvocationID);
 
-    // Dimensions de l'image
-    vec3 u_resolution = vec3(128.0);
+    // Dimensions du bruit
+    vec3 u_resolution = resolution;
 
     // Normaliser les coordonnées pour rester entre 0 et 1
     vec3 st = vec3(coords) / u_resolution;
@@ -98,7 +99,10 @@ void main() {
     vec2 d = worley2(st * 10.0 + vec3(u_time));
 
     // Génération de la couleur basée sur le bruit
-    vec4 color = vec4(vec3(1.0 - d.x), 1.0); // Inverser la distance pour un effet visuel clair
+    vec4 color = vec4(vec3(1.0 - d.x), 1.0); // Inverser la distance pour un effet visuel
+
+
+
     // Stocker la couleur dans l'image 3D
     imageStore(img_out, coords, color);
 }

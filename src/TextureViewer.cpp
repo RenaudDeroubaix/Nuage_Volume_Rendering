@@ -210,6 +210,18 @@ void TextureViewer::recompileShaders() {
     texture->recompileShaders();
     update();
 }
+void TextureViewer::setResolutionBruitX(float _x){
+    texture->setResolutionBruitX(_x);
+    update();
+}
+void TextureViewer::setResolutionBruitY(float _y){
+    texture->setResolutionBruitY(_y);
+    update();
+}
+void TextureViewer::setResolutionBruitZ(float _z){
+    texture->setResolutionBruitZ(_z);
+    update();
+}
 
 void TextureViewer::keyPressEvent(QKeyEvent *e)
 {
