@@ -11,6 +11,7 @@
 #include <QOpenGLContext>
 #include <QOpenGLExtraFunctions>
 #include <QGLViewer/camera.h>
+#include <QElapsedTimer>
 
 struct Plan{
 
@@ -52,6 +53,8 @@ private :
     double xMax;
     double yMax;
     double zMax;
+
+    QElapsedTimer timer;
 
     QVector3D BBmin;
     QVector3D BBmax;

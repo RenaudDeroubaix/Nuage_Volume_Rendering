@@ -343,6 +343,7 @@ void TextureDockWidget::setlightcolBSlot(float value){emit setlightcolBValueChan
 void TextureDockWidget::absorptionSpinBoxChangedSlot(float value){emit absorptionValueChanged(value) ;}
 void TextureDockWidget::absorptionSliderChangedSlot(int i){emit absorptionValueChanged((float) i/(float)sliderAbsorptionMax);}
 
+
 //void TextureDockWidget::xSliderChangedSlot(int i) {emit xValueChanged((float)i/(float) sliderMax);}
 //void TextureDockWidget::ySliderChangedSlot(int i) {emit yValueChanged((float)i/(float) sliderMax);}
 //void TextureDockWidget::zSliderChangedSlot(int i) {emit zValueChanged((float)i/(float) sliderMax);}

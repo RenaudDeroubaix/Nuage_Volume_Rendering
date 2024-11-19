@@ -12,11 +12,10 @@ uniform mat4 proj_matrix; // Projection matrix
 // --------------------------------------------------
 in vec3 position;
 
-uniform float xMax;  // Max value for the X axis
-uniform float yMax;  // Max value for the Y axis
-uniform float zMax;  // Max value for the Z axis
 
 out vec3 fragPosition;  // Output vertex position to fragment shader
+out vec3 fragTexCoord;  // Output texture coordinates to fragment shader
+
 out mat4 view_mat;  // View matrix to pass to fragment shader
 out mat4 prof_mat;
 
@@ -24,6 +23,12 @@ out mat4 prof_mat;
 // Vertex-Shader
 // --------------------------------------------------
 
+uniform float xMax;  // Max value for the X axis
+uniform float yMax;  // Max value for the Y axis
+uniform float zMax;  // Max value for the Z axis
+
+uniform vec3 BBmin;
+uniform vec3 BBmax;
 
 
 void main()
@@ -39,5 +44,7 @@ void main()
     fragPosition = position;
 
     // Normalize the texture coordinates based on the maximum values
-
+    fragTexCoord.x = (position.x -BBmin.x) / (BBmax.x - BBmin.x) ;
+    fragTexCoord.y = (position.y -BBmin.y) / (BBmax.y - BBmin.y) ;
+    fragTexCoord.z = (position.z -BBmin.z)  / (BBmax.z - BBmin.z);
 }

@@ -21,18 +21,10 @@ public :
 //    void open3DImage(const QString & fileName);
     void openOffMesh(const QString & fileName);
 
-    void openColors(const QString & fileName);
-    void selectIAll();
-    void discardIAll();
-    void setIVisibility(unsigned int i, bool visibility);
-    const std::map<unsigned char, QColor> & getIColorMap()const {return iColorMap;}
-    void getImageSubdomainIndices(std::vector<unsigned char> & _subdomain_indices){ _subdomain_indices = subdomain_indices;}
+
 
 protected :
-
     Texture * texture;
-
-    bool imageLoaded;
 
     virtual void draw();
     virtual void init();
@@ -40,66 +32,32 @@ protected :
     virtual QString helpString() const;
     virtual void keyPressEvent(QKeyEvent *e);
 
-    void drawClippingPlane();
     void drawMesh();
-
     void clear();
     void updateCamera(const qglviewer::Vec & center, float radius);
-
-
-    void openIMA(  const QString & filename,std::vector<unsigned char> & data, std::vector<unsigned char> & labels,
-                   unsigned int & nx , unsigned int & ny , unsigned int & nz, float & dx , float & dy , float & dz );
-
-    Vec3Df cut;
-    Vec3Df cutDirection;
-
-    std::map<unsigned char, bool> iDisplayMap;
-    std::map<unsigned char, QColor> iColorMap;
-    std::vector<unsigned char> subdomain_indices;
 
     std::vector<qglviewer::Vec> vertices;
     std::vector<std::array<size_t,3>> triangles;
 
 
 public slots:
-
     void onNuageSliderChanged(int value);
     void onNuageSpinBoxChanged(int value);
     void onLightSliderChanged(int value);
     void onLightSpinBoxChanged(int value);
-
     void setRedNuage(float _r);
     void setGreenNuage(float _g);
     void setBlueNuage(float _b);
-
     void setXlightpos(float _x);
     void setYlightpos(float _y);
     void setZlightpos(float _z);
-
-
     void setRlightcol(float _r);
     void setGlightcol(float _g);
     void setBlightcol(float _b);
-
     void setAbsorptionNuage(float _q);
-
-//    void setXCut(float _x);
-//    void setYCut(float _y);
-//    void setZCut(float _z);
-
-//    void invertXCut();
-//    void invertYCut();
-//    void invertZCut();
-
-//    void setXCutDisplay(bool _xCutDisplay);
-//    void setYCutDisplay(bool _yCutDisplay);
-//    void setZCutDisplay(bool _zCutDisplay);
-
     void recompileShaders();
 
 signals:
-//    void setMaxCutPlanes(int _xMax, int _yMax, int _zMax);
-    void setImageLabels();
 
 };
 

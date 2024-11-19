@@ -27,6 +27,8 @@ Texture::~Texture(){
 void Texture::init(){
 
     //Set texture to cube of size 1.
+    timer.start();
+
     xMax = 128;
     yMax = 128;
     zMax = 128;
@@ -321,6 +323,9 @@ void Texture::deleteTexture(){
 void Texture::computePass() {
     glFunctions->glUseProgram(0);
     glFunctions->glUseProgram(computeID);
+
+    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(computeID, "u_time"), timer.elapsed()/1000.0);
+
     glFunctions->glBindTexture(GL_TEXTURE_3D, textureId);
     glFunctions->glBindImageTexture (0, textureId, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
     glFunctions->glDispatchCompute(16,16,16);
@@ -331,6 +336,7 @@ void Texture::computePass() {
 }
 
 void Texture::draw( const qglviewer::Camera * camera ){
+    computePass();
 
 
     if(!textureCreated)
@@ -338,7 +344,7 @@ void Texture::draw( const qglviewer::Camera * camera ){
 
     glDisable(GL_LIGHTING);
     glEnable(GL_TEXTURE_3D);
-    //glPolygonMode( GL_FRONT_AND_BACK , GL_FILL );
+    //glPolygonMode( GL_FRONT , GL_FILL );
 
     // GPU start
     // Récuperation des matrices de projection / vue-modèle
@@ -358,7 +364,7 @@ void Texture::draw( const qglviewer::Camera * camera ){
     /***********************************************************************/
 
 
-   glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "xMax"), xMax);
+    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "xMax"), xMax);
    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "yMax"), yMax);
    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "zMax"), zMax);
 
@@ -375,12 +381,11 @@ void Texture::draw( const qglviewer::Camera * camera ){
    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "BBmin"),1,&BBmin[0]);
    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "BBmax"),1,&BBmax[0]);
 
-   qDebug() << "NuageEch: " <<NuageEch;
-
     glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[0].normale"),1, &plans[0].normale[0]);
     glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[0].point"),1, &plans[0].point[0]);
     glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[0].up_vect"),1, &plans[0].up_vect[0]);
     glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[0].right_vect"),1, &plans[0].right_vect[0]);
+
 
     glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[1].normale"),1, &plans[1].normale[0]);
     glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[1].point"),1, &plans[1].point[0]);
@@ -423,7 +428,6 @@ void Texture::draw( const qglviewer::Camera * camera ){
    glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "tex"), textureId);
 
     /***********************************************************************/
-
     drawBoundingBox(false);
 
 }
@@ -442,46 +446,59 @@ void Texture::drawCube(){
     float yMinCube = BBmin.y(), yMaxCube = BBmax.y();
     float zMinCube = BBmin.z(), zMaxCube = BBmax.z();
 
-
     glBegin(GL_QUADS);
 
-    // Face arrière
-    glVertex3f(xMinCube, yMinCube, zMinCube);	// Bottom Left
-    glVertex3f(xMaxCube, yMinCube, zMinCube);	// Bottom Right
-    glVertex3f(xMaxCube, yMaxCube, zMinCube);	// Top Right
-    glVertex3f(xMinCube, yMaxCube, zMinCube);	// Top Left
+        // Face arrière (normale vers -Z)
+        glNormal3f(0.0f, 0.0f, -1.0f);
+        glVertex3f(xMinCube, yMinCube, zMinCube); // Bottom Left
+        glVertex3f(xMaxCube, yMinCube, zMinCube); // Bottom Right
+        glVertex3f(xMaxCube, yMaxCube, zMinCube); // Top Right
+        glVertex3f(xMinCube, yMaxCube, zMinCube); // Top Left
 
-    // Face avant
-    glVertex3f(xMinCube, yMinCube, zMaxCube);	// Bottom Left
-    glVertex3f(xMinCube, yMaxCube, zMaxCube);	// Top Left
-    glVertex3f(xMaxCube, yMaxCube, zMaxCube);	// Top Right
-    glVertex3f(xMaxCube, yMinCube, zMaxCube);	// Bottom Right
+        // Face avant (normale vers +Z)
+        glNormal3f(0.0f, 0.0f, 1.0f);
+        glVertex3f(xMinCube, yMinCube, zMaxCube); // Bottom Left
+        glVertex3f(xMinCube, yMaxCube, zMaxCube); // Top Left
+        glVertex3f(xMaxCube, yMaxCube, zMaxCube); // Top Right
+        glVertex3f(xMaxCube, yMinCube, zMaxCube); // Bottom Right
 
-    // Face gauche
-    glVertex3f(xMinCube, yMinCube, zMinCube);	// Bottom Left
-    glVertex3f(xMinCube, yMinCube, zMaxCube);	// Bottom Right
-    glVertex3f(xMinCube, yMaxCube, zMaxCube);	// Top Right
-    glVertex3f(xMinCube, yMaxCube, zMinCube);	// Top Left
+        // Face gauche (normale vers -X)
+        glNormal3f(-1.0f, 0.0f, 0.0f);
+        glVertex3f(xMinCube, yMinCube, zMaxCube); // Bottom Right
+        glVertex3f(xMinCube, yMinCube, zMinCube); // Bottom Left
 
-    // Face droite
-    glVertex3f(xMaxCube, yMinCube, zMinCube);	// Bottom Left
-    glVertex3f(xMaxCube, yMaxCube, zMinCube);	// Top Left
-    glVertex3f(xMaxCube, yMaxCube, zMaxCube);	// Top Right
-    glVertex3f(xMaxCube, yMinCube, zMaxCube);	// Bottom Right
+        glVertex3f(xMinCube, yMaxCube, zMinCube); // Top Left
 
-    // Face du bas
-    glVertex3f(xMinCube, yMinCube, zMinCube);	// Top Right
-    glVertex3f(xMaxCube, yMinCube, zMinCube);	// Top Left
-    glVertex3f(xMaxCube, yMinCube, zMaxCube);	// Bottom Left
-    glVertex3f(xMinCube, yMinCube, zMaxCube);	// Bottom Right
+        glVertex3f(xMinCube, yMaxCube, zMaxCube); // Top Right
 
-    // Face du haut
-    glVertex3f(xMinCube, yMaxCube, zMinCube);	// Top Left
-    glVertex3f(xMinCube, yMaxCube, zMaxCube);	// Bottom Left
-    glVertex3f(xMaxCube, yMaxCube, zMaxCube);	// Bottom Right
-    glVertex3f(xMaxCube, yMaxCube, zMinCube);	// Top Right
+        // Face droite (normale vers +X)
+        glNormal3f(1.0f, 0.0f, 0.0f);
+         glVertex3f(xMaxCube, yMaxCube, zMinCube); // Top Left
+        glVertex3f(xMaxCube, yMinCube, zMinCube); // Bottom Left
 
-    glEnd();
+               glVertex3f(xMaxCube, yMinCube, zMaxCube); // Bottom Right
+        glVertex3f(xMaxCube, yMaxCube, zMaxCube); // Top Right
+
+
+        // Face du bas (normale vers -Y)
+        glNormal3f(0.0f, -1.0f, 0.0f);
+        glVertex3f(xMaxCube, yMinCube, zMinCube); // Bottom Right
+        glVertex3f(xMinCube, yMinCube, zMinCube); // Bottom Left
+
+            glVertex3f(xMinCube, yMinCube, zMaxCube); // Top Left
+        glVertex3f(xMaxCube, yMinCube, zMaxCube); // Top Right
+
+
+        // Face du haut (normale vers +Y)
+        glNormal3f(0.0f, 1.0f, 0.0f);
+        glVertex3f(xMinCube, yMaxCube, zMaxCube); // Bottom Right
+        glVertex3f(xMinCube, yMaxCube, zMinCube); // Bottom Left
+
+        glVertex3f(xMaxCube, yMaxCube, zMinCube); // Top Left
+        glVertex3f(xMaxCube, yMaxCube, zMaxCube); // Top Right
+
+
+        glEnd();
 }
 
 
@@ -524,12 +541,14 @@ void Texture::drawCube(){
 
 void Texture::drawBoundingBox(bool fill){
 
-    glPolygonMode (GL_FRONT_AND_BACK, fill ? GL_FILL : GL_FILL);
-    glColor3f(1.f,0.f,0.f);
+    //glPolygonMode (GL_FRONT_AND_BACK, fill ? GL_FILL : GL_FILL);
+    //glColor3f(1.f,0.f,0.f);
     drawCube();
-    glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
+    //glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
 
 }
+
+
 
 void Texture::setLightEch(int value)
 {
@@ -566,24 +585,9 @@ void Texture::setGlightcolDisplay(float _g){
 void Texture::setBlightcolDisplay(float _b){
     LightColor[2]=_b;
 }
-
 void Texture::setAbsorptionNuageDisplay(float _a){
     absorptionNuage=_a;
 }
-//void Texture::setXCut(int _xCut){
-//    xCut = 1.-double(_xCut)/n[0];
-//    xCutPosition = xMax*xCut;
-//}
-
-//void Texture::setYCut(int _yCut){
-//    yCut = 1.- double(_yCut)/n[1];
-//    yCutPosition = yMax*yCut;
-//}
-
-//void Texture::setZCut(int _zCut){
-//    zCut = 1.0-double(_zCut)/n[2];
-//    zCutPosition = zMax*zCut;
-//}
 
 void Texture::clear(){
 
