@@ -39,6 +39,7 @@ in mat4 view_mat;  // View matrix passed from the vertex shader
 in mat4 proj_mat;
 
 in vec3 fragPosition;  // Output vertex position to fragment shader
+in vec3 fragTexCoord;
 
 out vec4 fragColor;  // The output color of the fragment
 
@@ -50,7 +51,7 @@ out vec4 fragColor;  // The output color of the fragment
 // Functions
 // --------------------------------------------------
 float beersLaw(float distance, float absorption) {
-    return exp(-distance * absorption);
+    return exp(-distance * absorption );
 }
 
 vec3 IntersectionPlan(vec3 camPos , float epsilon , vec3 dir) {
@@ -112,17 +113,18 @@ void main() {
 
     vec3 exitPoint = IntersectionPlan(camPos , epsilon , dir);
 
-    vec4 intensite = vec4(0.0);
+    vec4 distance = vec4(0.0);
+    float dist = length(exitPoint - fragPosition) / float(NuageSample) ;
     for (int i = 1 ; i < NuageSample ; i++){
-       float dist = length(exitPoint - fragPosition) / float(NuageSample);
        vec3 point_i = point_i_in_tex3D(exitPoint , dir , i);
-       intensite = dist * texture(tex,  point_i);
-        if (length(point_i - fragPosition) > epsilon){
-            a += 1 - beersLaw(intensite.r , absorptionNuage );
-        }
+       distance += dist * texture(tex,  point_i);
 
     }
+    a =1.0-  beersLaw(distance.r , absorptionNuage);
 
-    fragColor = vec4(couleurNuage, a); // Visualisation distance
+    fragColor = vec4(couleurNuage*a, smoothstep(0.1,0.8,a)); // Visualisation distance
+
+//    vec4 colorb= texture(tex,  fragTexCoord);
+//    fragColor = vec4(vec3(colorb.r),1.0);
 
 }

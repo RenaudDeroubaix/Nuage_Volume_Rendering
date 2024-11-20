@@ -7,6 +7,7 @@
 #include <QColor>
 #include <QVector>
 #include <QVector3D>
+#include <QVector4D>
 #include <QGLViewer/vec.h>
 #include <QOpenGLContext>
 #include <QOpenGLExtraFunctions>
@@ -50,6 +51,7 @@ private :
 
     QVector3D sizeTexture3D; //longueur largeur profondeur
     QVector3D resolutionBruit;
+    QVector4D freqBruit;
 
     double xMax;
     double yMax;
@@ -130,6 +132,11 @@ public slots:
     void setResolutionBruitX(float _x);
     void setResolutionBruitY(float _y);
     void setResolutionBruitZ(float _z);
+    void setFreqBruitR(float _r);
+    void setFreqBruitG(float _g);
+    void setFreqBruitB(float _b);
+    void setFreqBruitA(float _a);
+
 
 };
 

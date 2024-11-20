@@ -38,7 +38,7 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     QHBoxLayout *bruitworleyLayout = new QHBoxLayout();
 
     // Create three QDoubleSpinBoxes for RGB values (0.0 to 1.0)
-    QLabel *bruitworleyLabel = new QLabel("Value X/Y/Z: ", bruitFrame);
+    QLabel *bruitworleyLabel = new QLabel("Resolution tex3D X/Y/Z: ", bruitFrame);
     xbruitworleySpinBox = new QDoubleSpinBox(bruitFrame);
     xbruitworleySpinBox->setRange(0.0, 512.0);
     xbruitworleySpinBox->setSingleStep(1.0);
@@ -62,8 +62,44 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     bruitworleyLayout->addWidget(xbruitworleySpinBox);
     bruitworleyLayout->addWidget(ybruitworleySpinBox);
     bruitworleyLayout->addWidget(zbruitworleySpinBox);
-    bruitLayout->addLayout(bruitworleyLayout);
 
+    // freq controls layout
+    QHBoxLayout *freqbruitworleyLayout = new QHBoxLayout();
+
+    QLabel *freqworleyLabel = new QLabel("Frequence R/G/B/A: ", bruitFrame);
+    rfreqWorleySpinBox = new QDoubleSpinBox(bruitFrame);
+    rfreqWorleySpinBox->setRange(1.0, 32.0);
+    rfreqWorleySpinBox->setSingleStep(0.5);
+    rfreqWorleySpinBox->setValue(4.0);
+    rfreqWorleySpinBox->setFixedWidth(50); // Reduce the width of the spinboxes
+
+    gfreqWorleySpinBox = new QDoubleSpinBox(bruitFrame);
+    gfreqWorleySpinBox->setRange(1.0, 32.0);
+    gfreqWorleySpinBox->setSingleStep(0.5);
+    gfreqWorleySpinBox->setValue(8.0);
+    gfreqWorleySpinBox->setFixedWidth(50);
+
+    bfreqWorleySpinBox = new QDoubleSpinBox(bruitFrame);
+    bfreqWorleySpinBox->setRange(1.0, 32.0);
+    bfreqWorleySpinBox->setSingleStep(0.5);
+    bfreqWorleySpinBox->setValue(16.0);
+    bfreqWorleySpinBox->setFixedWidth(50);
+
+    afreqWorleySpinBox = new QDoubleSpinBox(bruitFrame);
+    afreqWorleySpinBox->setRange(1.0, 32.0);
+    afreqWorleySpinBox->setSingleStep(0.5);
+    afreqWorleySpinBox->setValue(32.0);
+    afreqWorleySpinBox->setFixedWidth(50);
+
+    // Add the color controls to the color layout
+    freqbruitworleyLayout->addWidget(freqworleyLabel);
+    freqbruitworleyLayout->addWidget(rfreqWorleySpinBox);
+    freqbruitworleyLayout->addWidget(gfreqWorleySpinBox);
+    freqbruitworleyLayout->addWidget(bfreqWorleySpinBox);
+    freqbruitworleyLayout->addWidget(afreqWorleySpinBox);
+
+    bruitLayout->addLayout(bruitworleyLayout);
+    bruitLayout->addLayout(freqbruitworleyLayout);
     bruitFrame->adjustSize();
 
     // Add Nuage frame to layout
@@ -226,12 +262,12 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
       QLabel *SampleNuageLabel = new QLabel("Nuage :", otherGroupBox);
       QSlider *NuageSampleSlider = new QSlider(Qt::Horizontal, otherGroupBox);
       NuageSampleSlider->setRange(3, 50); // Plage entière
-      NuageSampleSlider->setValue(5);    // Valeur par défaut
+      NuageSampleSlider->setValue(10);    // Valeur par défaut
 
       QSpinBox *NuageSampleBox = new QSpinBox(otherGroupBox);
       NuageSampleBox->setRange(3, 50);   // Plage entière
       NuageSampleBox->setSingleStep(1);
-      NuageSampleBox->setValue(5);       // Valeur par défaut
+      NuageSampleBox->setValue(10);       // Valeur par défaut
 
       // Disposition horizontale pour les contrôles de nuage
       QHBoxLayout *nuageEchLayout = new QHBoxLayout();
@@ -279,68 +315,6 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
 
     this->setWidget(contents);
 
-    // QGroupBox * groupBox = new QGroupBox("Paramètres", parent);
-    // groupBox->setMaximumSize(QSize(16777215, 200));
-
-    // contentLayout->addWidget ( groupBox) ;
-
-//    QGridLayout * cuttingPlaneGridLayout = new QGridLayout(groupBox);
-//    xHSlider = new QSlider(groupBox);
-//    xHSlider->setOrientation(Qt::Horizontal);
-//    xHSlider->setMaximum(sliderMax);
-//    cuttingPlaneGridLayout->addWidget(xHSlider, 1, 0, 1, 1);
-
-
-//    yHSlider = new QSlider(groupBox);
-//    yHSlider->setOrientation(Qt::Horizontal);
-//    yHSlider->setMaximum(sliderMax);
-//    cuttingPlaneGridLayout->addWidget(yHSlider, 3, 0, 1, 1);
-
-
-//    zHSlider = new QSlider(groupBox);
-//    zHSlider->setOrientation(Qt::Horizontal);
-//    zHSlider->setMaximum(sliderMax);
-//    cuttingPlaneGridLayout->addWidget(zHSlider, 5, 0, 1, 1);
-
-
-//    QPushButton * invertXPushButton = new QPushButton("invert", groupBox);
-//    cuttingPlaneGridLayout->addWidget(invertXPushButton, 1, 1, 1, 1);
-
-//    QPushButton * invertYPushButton = new QPushButton("invert", groupBox);
-//    cuttingPlaneGridLayout->addWidget(invertYPushButton, 3, 1, 1, 1);
-
-//    QPushButton * invertZPushButton = new QPushButton("invert", groupBox);
-//    cuttingPlaneGridLayout->addWidget(invertZPushButton, 5, 1, 1, 1);
-
-//    QLabel * labelCutX = new QLabel("x cut position", groupBox);
-//    cuttingPlaneGridLayout->addWidget(labelCutX, 0, 0, 1, 1);
-
-//    QLabel * labelCutY = new QLabel("y cut position", groupBox);
-//    cuttingPlaneGridLayout->addWidget(labelCutY, 2, 0, 1, 1);
-
-//    QLabel * labelCutZ = new QLabel("z cut position", groupBox);
-//    cuttingPlaneGridLayout->addWidget(labelCutZ, 4, 0, 1, 1);
-
-//    QCheckBox * displayXCut = new QCheckBox("display", groupBox);
-//    cuttingPlaneGridLayout->addWidget(displayXCut, 0, 1, 1, 1);
-
-//    QCheckBox * displayYCut = new QCheckBox("display", groupBox);
-//    cuttingPlaneGridLayout->addWidget(displayYCut, 2, 1, 1, 1);
-
-//    QCheckBox * displayZCut = new QCheckBox("display", groupBox);
-//    cuttingPlaneGridLayout->addWidget(displayZCut, 4, 1, 1, 1);
-
-//    connect(xHSlider, &QSlider::valueChanged, this, &TextureDockWidget::xSliderChangedSlot);
-//    connect(yHSlider, &QSlider::valueChanged, this, &TextureDockWidget::ySliderChangedSlot);
-//    connect(zHSlider, &QSlider::valueChanged, this, &TextureDockWidget::zSliderChangedSlot);
-
-//    connect(invertXPushButton, &QPushButton::pressed, this, &TextureDockWidget::xInvertPlaneSlot);
-//    connect(invertYPushButton, &QPushButton::pressed, this, &TextureDockWidget::yInvertPlaneSlot);
-//    connect(invertZPushButton, &QPushButton::pressed, this, &TextureDockWidget::zInvertPlaneSlot);
-
-//    connect(displayXCut, &QCheckBox::stateChanged, this, &TextureDockWidget::xDisplaySlot);
-//    connect(displayYCut, &QCheckBox::stateChanged, this, &TextureDockWidget::yDisplaySlot);
-//    connect(displayZCut, &QCheckBox::stateChanged, this, &TextureDockWidget::zDisplaySlot);
     connect(redColorNuageSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::redNuageValueChanged);
     connect(greenColorNuageSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::greenNuageValueChanged);
     connect(blueColorNuageSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::blueNuageValueChanged);
@@ -374,6 +348,12 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     connect(xbruitworleySpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::xResolutionBruitValueChanged);
     connect(ybruitworleySpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::yResolutionBruitValueChanged);
     connect(zbruitworleySpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::zResolutionBruitValueChanged);
+
+    connect(rfreqWorleySpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::rFreqBruitValueChanged);
+    connect(gfreqWorleySpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::gFreqBruitValueChanged);
+    connect(bfreqWorleySpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::bFreqBruitValueChanged);
+    connect(afreqWorleySpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::aFreqBruitValueChanged);
+
 }
 void TextureDockWidget::onNuageSliderChangedSlot(int value) {emit onNuageSliderChanged(value);}
 void TextureDockWidget::onNuageSpinBoxChangedSlot(int value){emit onNuageSpinBoxChanged(value);}
@@ -393,6 +373,11 @@ void TextureDockWidget::absorptionSliderChangedSlot(int i){emit absorptionValueC
 void TextureDockWidget::xResolutionBruitSpinBoxChangedSlot(float value){emit xResolutionBruitValueChanged(value) ;}
 void TextureDockWidget::yResolutionBruitSpinBoxChangedSlot(float value){emit yResolutionBruitValueChanged(value) ;}
 void TextureDockWidget::zResolutionBruitSpinBoxChangedSlot(float value){emit zResolutionBruitValueChanged(value);}
+void TextureDockWidget::rFreqBruitSpinBoxChangedSlot(float value){emit rFreqBruitValueChanged(value) ;}
+void TextureDockWidget::gFreqBruitSpinBoxChangedSlot(float value){emit gFreqBruitValueChanged(value) ;}
+void TextureDockWidget::bFreqBruitSpinBoxChangedSlot(float value){emit bFreqBruitValueChanged(value);}
+void TextureDockWidget::aFreqBruitSpinBoxChangedSlot(float value){emit aFreqBruitValueChanged(value) ;}
+
 
 
 //void TextureDockWidget::xSliderChangedSlot(int i) {emit xValueChanged((float)i/(float) sliderMax);}

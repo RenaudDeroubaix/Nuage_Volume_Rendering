@@ -63,18 +63,11 @@ Window::Window()
     connect(madDockWidget, &TextureDockWidget::yResolutionBruitValueChanged, viewer, &TextureViewer::setResolutionBruitY);
     connect(madDockWidget, &TextureDockWidget::zResolutionBruitValueChanged, viewer, &TextureViewer::setResolutionBruitZ);
 
+    connect(madDockWidget, &TextureDockWidget::rFreqBruitValueChanged, viewer, &TextureViewer::setFreqBruitR);
+    connect(madDockWidget, &TextureDockWidget::gFreqBruitValueChanged, viewer, &TextureViewer::setFreqBruitG);
+    connect(madDockWidget, &TextureDockWidget::bFreqBruitValueChanged, viewer, &TextureViewer::setFreqBruitB);
+    connect(madDockWidget, &TextureDockWidget::aFreqBruitValueChanged, viewer, &TextureViewer::setFreqBruitA);
 
-//    connect(madDockWidget, &TextureDockWidget::xValueChanged, viewer, &TextureViewer::setXCut);
-//    connect(madDockWidget, &TextureDockWidget::yValueChanged, viewer, &TextureViewer::setYCut);
-//    connect(madDockWidget, &TextureDockWidget::zValueChanged, viewer, &TextureViewer::setZCut);
-
-//    connect(madDockWidget, &TextureDockWidget::xInvert, viewer, &TextureViewer::invertXCut);
-//    connect(madDockWidget, &TextureDockWidget::yInvert, viewer, &TextureViewer::invertYCut);
-//    connect(madDockWidget, &TextureDockWidget::zInvert, viewer, &TextureViewer::invertZCut);
-
-//    connect(madDockWidget, &TextureDockWidget::xDisplay, viewer, &TextureViewer::setXCutDisplay);
-//    connect(madDockWidget, &TextureDockWidget::yDisplay, viewer, &TextureViewer::setYCutDisplay);
-//    connect(madDockWidget, &TextureDockWidget::zDisplay, viewer, &TextureViewer::setZCutDisplay);
 
 
 

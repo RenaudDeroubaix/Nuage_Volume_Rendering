@@ -23,6 +23,11 @@ public:
     QDoubleSpinBox *absorptionSpinBox;
     QSlider *absorptionSlider;
 
+    QDoubleSpinBox *rfreqWorleySpinBox;
+    QDoubleSpinBox *gfreqWorleySpinBox;
+    QDoubleSpinBox *bfreqWorleySpinBox;
+    QDoubleSpinBox *afreqWorleySpinBox;
+
     QDoubleSpinBox *LightPosX;
     QDoubleSpinBox *LightPosY;
     QDoubleSpinBox *LightPosZ;
@@ -38,17 +43,6 @@ public:
     QDoubleSpinBox *xbruitworleySpinBox;
     QDoubleSpinBox *ybruitworleySpinBox;
     QDoubleSpinBox *zbruitworleySpinBox;
-
-
-    // QSlider *xHSlider;
-    // QSlider *yHSlider;
-    // QSlider *zHSlider;
-    // QPushButton *invertXPushButton;
-    // QPushButton *invertYPushButton;
-    // QPushButton *invertZPushButton;
-    // QCheckBox *displayXCut;
-    // QCheckBox *displayYCut;
-    // QCheckBox *displayZCut;
 
 private slots:
     void onNuageSliderChangedSlot(int value);
@@ -75,16 +69,10 @@ private slots:
     void yResolutionBruitSpinBoxChangedSlot(float value);
     void zResolutionBruitSpinBoxChangedSlot(float value);
 
-//    void xSliderChangedSlot(int i);
-//    void ySliderChangedSlot(int i);
-//    void zSliderChangedSlot(int i);
-//    void xInvertPlaneSlot();
-//    void yInvertPlaneSlot();
-//    void zInvertPlaneSlot();
-//    void xDisplaySlot(bool v);
-//    void yDisplaySlot(bool v);
-//    void zDisplaySlot(bool v);
-
+    void rFreqBruitSpinBoxChangedSlot(float value);
+    void gFreqBruitSpinBoxChangedSlot(float value);
+    void bFreqBruitSpinBoxChangedSlot(float value);
+    void aFreqBruitSpinBoxChangedSlot(float value);
 
 
 public slots:
@@ -115,17 +103,12 @@ signals:
     void xResolutionBruitValueChanged(float xValue);
     void yResolutionBruitValueChanged(float yValue);
     void zResolutionBruitValueChanged(float zValue);
-//    void xValueChanged(float i);
-//    void yValueChanged(float i);
-//    void zValueChanged(float i);
 
-//    void xInvert();
-//    void yInvert();
-//    void zInvert();
+    void rFreqBruitValueChanged(float rValue);
+    void gFreqBruitValueChanged(float gValue);
+    void bFreqBruitValueChanged(float bValue);
+    void aFreqBruitValueChanged(float aValue);
 
-//    void xDisplay(bool v);
-//    void yDisplay(bool v);
-//    void zDisplay(bool v);
 
 };
 

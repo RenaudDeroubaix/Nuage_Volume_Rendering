@@ -41,11 +41,11 @@ void TextureViewer::init()
     setManipulatedFrame(new ManipulatedFrame());
     // Enable plane clipping
     //glEnable(GL_CLIP_PLANE0);
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-    glPolygonMode( GL_FRONT , GL_FILL );
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_FRONT);
+//    glEnable(GL_DEPTH_TEST);
+//    glDepthFunc(GL_LESS);
+//    glPolygonMode( GL_FRONT , GL_FILL );
+//    glEnable(GL_CULL_FACE);
+//    glCullFace(GL_FRONT);
     glFrontFace(GL_CCW);
 
     glClearColor(0.2f, 0.3f, 0.8f, 1.f);
@@ -222,6 +222,23 @@ void TextureViewer::setResolutionBruitZ(float _z){
     texture->setResolutionBruitZ(_z);
     update();
 }
+void TextureViewer::setFreqBruitR(float _r){
+    texture->setFreqBruitR(_r);
+    update();
+}
+void TextureViewer::setFreqBruitG(float _g){
+    texture->setFreqBruitG(_g);
+    update();
+}
+void TextureViewer::setFreqBruitB(float _b){
+    texture->setFreqBruitB(_b);
+    update();
+}
+void TextureViewer::setFreqBruitA(float _a){
+    texture->setFreqBruitA(_a);
+    update();
+}
+
 
 void TextureViewer::keyPressEvent(QKeyEvent *e)
 {

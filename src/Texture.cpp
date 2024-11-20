@@ -30,11 +30,9 @@ void Texture::init(){
     timer.start();
 
     resolutionBruit = QVector3D(128.0,128.0,128.0);
+    freqBruit =QVector4D(4.0,8.0,16.0,32.0);
 
-    xMax = 128;
-    yMax = 128;
-    zMax = 128;
-    LightEch = 10;
+    LightEch = 3;
     NuageEch = 10;
     BBmin = QVector3D(-0.5,-0.5,-0.5);
 
@@ -312,7 +310,7 @@ void Texture::initTexture(){
     // glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     // Charger les données de la texture dans OpenGL
-    glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA32F, xMax, yMax, zMax, 0, GL_RGBA, GL_FLOAT, nullptr);
+    glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA32F, resolutionBruit[0], resolutionBruit[1], resolutionBruit[2], 0, GL_RGBA, GL_FLOAT, nullptr);
     textureCreated = true;
 
 }
@@ -326,12 +324,14 @@ void Texture::computePass() {
     glFunctions->glUseProgram(0);
     glFunctions->glUseProgram(computeID);
 
-    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(computeID, "u_time"), timer.elapsed()/1000.0);
+    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(computeID, "u_time"), timer.elapsed()/5000.0);
     glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(computeID, "resolution"),1, &resolutionBruit[0]);
+    glFunctions->glUniform4fv(glFunctions->glGetUniformLocation(computeID, "frequenceWorley"),1, &freqBruit[0]);
 
     glFunctions->glBindTexture(GL_TEXTURE_3D, textureId);
     glFunctions->glBindImageTexture (0, textureId, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
-    glFunctions->glDispatchCompute(16,16,16);
+    QVector3D reso=QVector3D(ceil(resolutionBruit[0]/8),ceil(resolutionBruit[1]/8),ceil(resolutionBruit[2]/8));
+    glFunctions->glDispatchCompute(reso[0],reso[1],reso[2]);
     glFunctions->glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
     glFunctions->glBindImageTexture (0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
     glFunctions->glBindTexture(GL_TEXTURE_3D, 0);
@@ -367,9 +367,9 @@ void Texture::draw( const qglviewer::Camera * camera ){
     /***********************************************************************/
 
 
-    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "xMax"), xMax);
-   glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "yMax"), yMax);
-   glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "zMax"), zMax);
+    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "xMax"), resolutionBruit[0]);
+   glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "yMax"), resolutionBruit[1]);
+   glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "zMax"), resolutionBruit[2]);
 
    glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "LightSample"), LightEch);
    glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "NuageSample"), NuageEch);
@@ -582,12 +582,27 @@ void Texture::setAbsorptionNuageDisplay(float _a){
 }
 void Texture::setResolutionBruitX(float _x){
     resolutionBruit[0]=_x;
+    initTexture();
 }
 void Texture::setResolutionBruitY(float _y){
     resolutionBruit[1]=_y;
+    initTexture();
 }
 void Texture::setResolutionBruitZ(float _z){
     resolutionBruit[2]=_z;
+    initTexture();
+}
+void Texture::setFreqBruitR(float _r){
+    freqBruit[0]=_r;
+}
+void Texture::setFreqBruitG(float _g){
+    freqBruit[1]=_g;
+}
+void Texture::setFreqBruitB(float _b){
+    freqBruit[2]=_b;
+}
+void Texture::setFreqBruitA(float _a){
+    freqBruit[3]=_a;
 }
 
 void Texture::clear(){
