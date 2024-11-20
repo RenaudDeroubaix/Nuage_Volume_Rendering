@@ -326,7 +326,7 @@ void Texture::computePass() {
     glFunctions->glUseProgram(0);
     glFunctions->glUseProgram(computeID);
 
-    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(computeID, "u_time"), timer.elapsed()/1000.0);
+    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(computeID, "u_time"), timer.elapsed()/5000.0);
     glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(computeID, "resolution"),1, &resolutionBruit[0]);
 
     glFunctions->glBindTexture(GL_TEXTURE_3D, textureId);
@@ -367,7 +367,7 @@ void Texture::draw( const qglviewer::Camera * camera ){
     /***********************************************************************/
 
 
-    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "xMax"), xMax);
+   glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "xMax"), xMax);
    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "yMax"), yMax);
    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "zMax"), zMax);
 

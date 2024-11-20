@@ -16,8 +16,10 @@ void TextureViewer::draw(){
     //drawClippingPlane();
 
 
+
     camera()->setSceneRadius(10);
     texture->draw(camera());
+
 
     update();
 }
@@ -48,10 +50,10 @@ void TextureViewer::init()
     glCullFace(GL_FRONT);
     glFrontFace(GL_CCW);
 
-    glClearColor(0.2f, 0.3f, 0.8f, 1.f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glClearColor(0.2f, 0.3f, 0.8f, 1.f);
 
 }
 
