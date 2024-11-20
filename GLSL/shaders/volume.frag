@@ -64,7 +64,7 @@ vec3 IntersectionPlan(vec3 camPos , float epsilon , vec3 dir) {
         float denom = dot(planNormal, dir);
         if (abs(denom) < epsilon) continue; // Rayon parallèle au plan
 
-        float t = dot(planPoint - (fragPosition ) , planNormal) / denom;
+        float t = dot(planPoint - fragPosition, planNormal) / denom;
 
         // Vérification si le point est dans les limites du plan
         vec3 intersection = fragPosition + t * dir;
@@ -90,13 +90,12 @@ vec3 IntersectionPlan(vec3 camPos , float epsilon , vec3 dir) {
 vec3 point_i_in_tex3D(vec3 exitPoint , vec3 dir ,int i)
 {
     float dist = length(exitPoint - fragPosition) / float(NuageSample);
-    vec3 point_i_coordtex;
+    vec3 point_i_texcoord;
     vec3 point_i = fragPosition + i * dist * dir;
-    point_i_coordtex.x = (point_i.x -BBmin.x) / (BBmax.x - BBmin.x) ;
-    point_i_coordtex.y = (point_i.y -BBmin.y) / (BBmax.y - BBmin.y) ;
-    point_i_coordtex.z = (point_i.z -BBmin.z)  / (BBmax.z - BBmin.z);
-
-    return point_i_coordtex;
+    point_i_texcoord.x = (point_i.x -BBmin.x) / (BBmax.x - BBmin.x) ;
+    point_i_texcoord.y = (point_i.y -BBmin.y) / (BBmax.y - BBmin.y) ;
+    point_i_texcoord.z = (point_i.z -BBmin.z)  / (BBmax.z - BBmin.z);
+    return point_i_texcoord;
 
 
 }
@@ -115,11 +114,11 @@ void main() {
 
     vec4 intensite = vec4(0.0);
     for (int i = 1 ; i < NuageSample ; i++){
-
+       float dist = length(exitPoint - fragPosition) / float(NuageSample);
        vec3 point_i = point_i_in_tex3D(exitPoint , dir , i);
-       intensite = texture(tex,  point_i);
+       intensite = dist * texture(tex,  point_i);
         if (length(point_i - fragPosition) > epsilon){
-            a += 1 - beersLaw(intensite.r / NuageSample , absorptionNuage );
+            a += 1 - beersLaw(intensite.r , absorptionNuage );
         }
 
     }

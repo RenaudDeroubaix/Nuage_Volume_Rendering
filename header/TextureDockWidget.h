@@ -31,6 +31,14 @@ public:
     QDoubleSpinBox *LightColorG;
     QDoubleSpinBox *LightColorB;
 
+    QDoubleSpinBox *xResolutionBruitSpinBox;
+    QDoubleSpinBox *yResolutionBruitSpinBox;
+    QDoubleSpinBox *zResolutionBruitSpinBox;
+
+    QDoubleSpinBox *xbruitworleySpinBox;
+    QDoubleSpinBox *ybruitworleySpinBox;
+    QDoubleSpinBox *zbruitworleySpinBox;
+
 
     // QSlider *xHSlider;
     // QSlider *yHSlider;
@@ -62,6 +70,10 @@ private slots:
 
     void absorptionSpinBoxChangedSlot(float value);
     void absorptionSliderChangedSlot(int i);
+
+    void xResolutionBruitSpinBoxChangedSlot(float value);
+    void yResolutionBruitSpinBoxChangedSlot(float value);
+    void zResolutionBruitSpinBoxChangedSlot(float value);
 
 //    void xSliderChangedSlot(int i);
 //    void ySliderChangedSlot(int i);
@@ -99,6 +111,10 @@ signals:
 
 
     void absorptionValueChanged(float absorptionValue);
+
+    void xResolutionBruitValueChanged(float xValue);
+    void yResolutionBruitValueChanged(float yValue);
+    void zResolutionBruitValueChanged(float zValue);
 //    void xValueChanged(float i);
 //    void yValueChanged(float i);
 //    void zValueChanged(float i);

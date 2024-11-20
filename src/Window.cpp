@@ -59,6 +59,10 @@ Window::Window()
     connect(madDockWidget, &TextureDockWidget::onLightSliderChanged, viewer, &TextureViewer::onLightSliderChanged);
     connect(madDockWidget, &TextureDockWidget::onLightSpinBoxChanged, viewer, &TextureViewer::onLightSpinBoxChanged);
 
+    connect(madDockWidget, &TextureDockWidget::xResolutionBruitValueChanged, viewer, &TextureViewer::setResolutionBruitX);
+    connect(madDockWidget, &TextureDockWidget::yResolutionBruitValueChanged, viewer, &TextureViewer::setResolutionBruitY);
+    connect(madDockWidget, &TextureDockWidget::zResolutionBruitValueChanged, viewer, &TextureViewer::setResolutionBruitZ);
+
 
 //    connect(madDockWidget, &TextureDockWidget::xValueChanged, viewer, &TextureViewer::setXCut);
 //    connect(madDockWidget, &TextureDockWidget::yValueChanged, viewer, &TextureViewer::setYCut);

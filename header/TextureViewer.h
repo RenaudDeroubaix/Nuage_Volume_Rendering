@@ -56,6 +56,9 @@ public slots:
     void setBlightcol(float _b);
     void setAbsorptionNuage(float _q);
     void recompileShaders();
+    void setResolutionBruitX(float _x);
+    void setResolutionBruitY(float _y);
+    void setResolutionBruitZ(float _z);
 
 signals:
 
