@@ -382,6 +382,7 @@ void Texture::computePass() {
 
 void Texture::draw( const qglviewer::Camera * camera ){
     computePass();
+    drawLight(camera);
 
 
     if(!textureCreated)
@@ -474,7 +475,7 @@ void Texture::draw( const qglviewer::Camera * camera ){
 
     /***********************************************************************/
     drawBoundingBox(false);
-    drawLight(camera);
+
 
 }
 

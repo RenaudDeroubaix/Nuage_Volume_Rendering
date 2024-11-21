@@ -94,6 +94,7 @@ vec3 translate_in_tex_coord(vec3 point_i){
     vec3 point_i_tex_coord;
 
     point_i_tex_coord = (point_i - BBmin) / (BBmax - BBmin);
+    point_i_tex_coord.z*=-1;
 
     return point_i_tex_coord;
 }
