@@ -148,7 +148,46 @@ void Texture::recompileShaders() {
      computePass();
 
 
+
 }
+
+void Texture::initLightShader() {
+    std::string path = "GLSL/shaders/";
+    std::string vShaderPath = path + "light.vert";
+    std::string fShaderPath = path + "light.frag";
+
+    // Créer un programme spécifique pour la lumière
+    this->lightID = glFunctions->glCreateProgram();
+
+    // Charger et compiler le Vertex Shader
+    std::string content = readShaderSource(vShaderPath);
+    if (!content.empty()) {
+        GLuint vShader = glFunctions->glCreateShader(GL_VERTEX_SHADER);
+        const char* src = content.c_str();
+        glFunctions->glShaderSource(vShader, 1, &src, NULL);
+        glFunctions->glCompileShader(vShader);
+        glFunctions->glAttachShader(this->lightID, vShader);
+        printShaderErrors(vShader);
+        glFunctions->glDeleteShader(vShader); // Shader inutile après l'attachement
+    }
+
+    // Charger et compiler le Fragment Shader
+    content = readShaderSource(fShaderPath);
+    if (!content.empty()) {
+        GLuint fShader = glFunctions->glCreateShader(GL_FRAGMENT_SHADER);
+        const char* src = content.c_str();
+        glFunctions->glShaderSource(fShader, 1, &src, NULL);
+        glFunctions->glCompileShader(fShader);
+        glFunctions->glAttachShader(this->lightID, fShader);
+        printShaderErrors(fShader);
+        glFunctions->glDeleteShader(fShader); // Shader inutile après l'attachement
+    }
+
+    // Lier le programme de shaders
+    glFunctions->glLinkProgram(this->lightID);
+    printProgramErrors(this->lightID);
+}
+
 
 void Texture::initGLSL(){
     std::string path = "GLSL/shaders/";
@@ -199,7 +238,10 @@ void Texture::initGLSL(){
     glFunctions->glLinkProgram(this->computeID);
     printProgramErrors(programID);
     checkOpenGLError();
+    initLightShader();
 }
+
+
 
 void /*GLAPIENTRY */Texture::MessageCallback( GLenum source, GLenum type,
                                               GLuint id, GLenum severity,
@@ -432,6 +474,7 @@ void Texture::draw( const qglviewer::Camera * camera ){
 
     /***********************************************************************/
     drawBoundingBox(false);
+    drawLight(camera);
 
 }
 
@@ -494,42 +537,60 @@ void Texture::drawCube(){
 }
 
 
-//void Texture::drawCutPlanes(){
+void Texture::drawLight(const qglviewer::Camera *camera) {
+    glFunctions->glUseProgram(0);
+    glFunctions->glUseProgram(lightID);
 
-//    double x = xCutPosition + xCutDirection*.001;
-//    double y = yCutPosition + yCutDirection*.001;
-//    double z = zCutPosition + zCutDirection*.001;
+    // Matrices pour la caméra
+    float pMatrix[16];
+    float mvMatrix[16];
+    camera->getProjectionMatrix(pMatrix);
+    camera->getModelViewMatrix(mvMatrix);
+    glFunctions->glUniformMatrix4fv(glFunctions->glGetUniformLocation(lightID, "proj_matrix"),
+                                    1, GL_FALSE, pMatrix);
+    glFunctions->glUniformMatrix4fv(glFunctions->glGetUniformLocation(lightID, "mv_matrix"),
+                                    1, GL_FALSE, mvMatrix);
 
-//    glColor4f(1.0,0.,0.,0.25);
-//    glBegin(GL_QUADS);
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(lightID, "lightColor"), 1, &LightColor[0]);
 
-//    if(xCutDisplay){
-//        // Right face
-//        glVertex3f( x, 0.0f, 0.0f);	// Bottom Right Of The Texture and Quad
-//        glVertex3f( x, yMax, 0.0f);	// Top Right Of The Texture and Quad
-//        glVertex3f( x, yMax, zMax);	// Top Left Of The Texture and Quad
-//        glVertex3f( x, 0.0f, zMax);	// Bottom Left Of The Texture and Quad
-//    }
+    // Rayon et subdivisions
+    float radius = 0.1f;
+    int latSegments = 20; // Segments de latitude
+    int lonSegments = 20; // Segments de longitude
 
-//    if(zCutDisplay){
-//        // Front Face
-//        glVertex3f(0.0f, 0.0f, z);	// Bottom Left Of The Texture and Quad
-//        glVertex3f(xMax, 0.0f, z);	// Bottom Right Of The Texture and Quad
-//        glVertex3f(xMax, yMax, z);	// Top Right Of The Texture and Quad
-//        glVertex3f(0.0f, yMax, z);	// Top Left Of The Texture and Quad
-//    }
+    // Dessiner la sphère
+    for (int i = 0; i < latSegments; ++i) {
+        float lat0 = M_PI * (-0.5f + (float)(i) / latSegments);       // Angle latitude début
+        float lat1 = M_PI * (-0.5f + (float)(i + 1) / latSegments);   // Angle latitude fin
+        float sinLat0 = sin(lat0), cosLat0 = cos(lat0);
+        float sinLat1 = sin(lat1), cosLat1 = cos(lat1);
 
-//    if(yCutDisplay){
-//        // Top Face
-//        glVertex3f(0.0f, y, 0.0f);	// Top Left Of The Texture and Quad
-//        glVertex3f(0.0f, y, zMax);	// Bottom Left Of The Texture and Quad
-//        glVertex3f(xMax, y, zMax);	// Bottom Right Of The Texture and Quad
-//        glVertex3f(xMax, y, 0.0f);	// Top Right Of The Texture and Quad
-//    }
-//    glEnd();
+        glBegin(GL_TRIANGLE_STRIP);
+        for (int j = 0; j <= lonSegments; ++j) {
+            float lon = 2 * M_PI * (float)(j) / lonSegments; // Angle longitude
+            float sinLon = sin(lon), cosLon = cos(lon);
+
+            // Point 1
+            float x1 = cosLon * cosLat0;
+            float y1 = sinLon * cosLat0;
+            float z1 = sinLat0;
+            glVertex3f(LightPos.x() + radius * x1, LightPos.y() + radius * y1, LightPos.z() + radius * z1);
+
+            // Point 2
+            float x2 = cosLon * cosLat1;
+            float y2 = sinLon * cosLat1;
+            float z2 = sinLat1;
+            glVertex3f(LightPos.x() + radius * x2, LightPos.y() + radius * y2, LightPos.z() + radius * z2);
+        }
+        glEnd();
+    }
+
+    glFunctions->glUseProgram(0);
+    glFunctions->glUseProgram(programID);
+}
 
 
-//}
+
 
 void Texture::drawBoundingBox(bool fill){
 
