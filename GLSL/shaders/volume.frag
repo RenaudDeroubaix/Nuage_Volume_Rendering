@@ -1,4 +1,4 @@
-#version 330 core
+#version 430 core
 #define PI 3.14159265358979
 struct Plan{
     vec3 point;
