@@ -1,4 +1,4 @@
-#version 430
+#version 460 core
 
 layout(local_size_x = 8,local_size_y = 8, local_size_z = 8) in;
 
@@ -262,7 +262,7 @@ vec2 worley3(vec3 p) {
 
 // Génère un bruit de Worley basé sur la première distance
 float worley(vec3 p) {
-    return smoothstep(0.1,0.9,1.0 - worley3(p).x);
+    return 1.0 - worley3(p).x;
 }
 float perlin(vec3 p) {
     return cnoise(p);
@@ -270,7 +270,11 @@ float perlin(vec3 p) {
 float perlin_worley(vec3 p){
     float perlinNoise=perlin(p);
     float worleyNoise=worley(p);
-    return 0.5 + 0.5*perlinNoise * worleyNoise;
+    return mix(perlinNoise, worleyNoise, 0.5);
+
+
+
+
 }
 
 #endif
@@ -287,7 +291,7 @@ void main() {
     vec3 st = vec3(coords) / u_resolution;
 
     // Calcul du bruit de Worley en 3D
-    float r = 0.5 + 0.5*worley(st * frequenceWorley[0]+ vec3(u_time));
+    float r = perlin_worley(st * frequenceWorley[0]+ vec3(u_time));
     float g = worley(st * frequenceWorley[1]+ vec3(u_time));
     float b = worley(st * frequenceWorley[2]+ vec3(u_time));
     float a = worley(st * frequenceWorley[3]+ vec3(u_time));

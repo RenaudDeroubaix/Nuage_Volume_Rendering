@@ -292,25 +292,25 @@ void Texture::initTexture(){
     }
 
     glGenTextures(1, &textureId);
-    glBindTexture(GL_TEXTURE_3D, textureId);
+    glFunctions->glBindTexture(GL_TEXTURE_3D, textureId);
 
 
 
 	//TODO complete texture options
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    glFunctions->glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glFunctions->glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glFunctions->glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
     // Interpolation : linéaire à l'échantillonnage et filtrage
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // Minification : interpolation linéaire
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // Magnification : interpolation linéaire
+    glFunctions->glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // Minification : interpolation linéaire
+    glFunctions->glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // Magnification : interpolation linéaire
 
     // Filtrage par plus proche voisin si besoin :
     // glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     // glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     // Charger les données de la texture dans OpenGL
-    glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA32F, resolutionBruit[0], resolutionBruit[1], resolutionBruit[2], 0, GL_RGBA, GL_FLOAT, nullptr);
+    glFunctions->glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA32F, resolutionBruit[0], resolutionBruit[1], resolutionBruit[2], 0, GL_RGBA, GL_FLOAT, nullptr);
     textureCreated = true;
 
 }
@@ -333,6 +333,7 @@ void Texture::computePass() {
     QVector3D reso=QVector3D(ceil(resolutionBruit[0]/8),ceil(resolutionBruit[1]/8),ceil(resolutionBruit[2]/8));
     glFunctions->glDispatchCompute(reso[0],reso[1],reso[2]);
     glFunctions->glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+    glFunctions->glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
     glFunctions->glBindImageTexture (0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
     glFunctions->glBindTexture(GL_TEXTURE_3D, 0);
     glFunctions->glUseProgram(programID);
@@ -451,46 +452,46 @@ void Texture::drawCube(){
 
     glBegin(GL_QUADS);
 
-        // Face arrière (normale vers -Z)
-        glVertex3f(xMinCube, yMinCube, zMinCube); // Bottom Left
-        glVertex3f(xMaxCube, yMinCube, zMinCube); // Bottom Right
-        glVertex3f(xMaxCube, yMaxCube, zMinCube); // Top Right
-        glVertex3f(xMinCube, yMaxCube, zMinCube); // Top Left
+           // Face arrière (normale vers -Z)
+           glVertex3f(xMinCube, yMinCube, zMinCube); // Bottom Left
+           glVertex3f(xMaxCube, yMinCube, zMinCube); // Bottom Right
+           glVertex3f(xMaxCube, yMaxCube, zMinCube); // Top Right
+           glVertex3f(xMinCube, yMaxCube, zMinCube); // Top Left
 
-        // Face avant (normale vers +Z)
-        glVertex3f(xMinCube, yMinCube, zMaxCube); // Bottom Left
-        glVertex3f(xMinCube, yMaxCube, zMaxCube); // Top Left
-        glVertex3f(xMaxCube, yMaxCube, zMaxCube); // Top Right
-        glVertex3f(xMaxCube, yMinCube, zMaxCube); // Bottom Right
+           // Face avant (normale vers +Z)
+           glVertex3f(xMinCube, yMinCube, zMaxCube); // Bottom Left
+           glVertex3f(xMinCube, yMaxCube, zMaxCube); // Top Left
+           glVertex3f(xMaxCube, yMaxCube, zMaxCube); // Top Right
+           glVertex3f(xMaxCube, yMinCube, zMaxCube); // Bottom Right
 
-        // Face gauche (normale vers -X)
-        glVertex3f(xMinCube, yMinCube, zMaxCube); // Bottom Right
-        glVertex3f(xMinCube, yMinCube, zMinCube); // Bottom Left
-        glVertex3f(xMinCube, yMaxCube, zMinCube); // Top Left
-        glVertex3f(xMinCube, yMaxCube, zMaxCube); // Top Right
+           // Face gauche (normale vers -X)
+           glVertex3f(xMinCube, yMinCube, zMaxCube); // Bottom Right
+           glVertex3f(xMinCube, yMinCube, zMinCube); // Bottom Left
+           glVertex3f(xMinCube, yMaxCube, zMinCube); // Top Left
+           glVertex3f(xMinCube, yMaxCube, zMaxCube); // Top Right
 
-        // Face droite (normale vers +X)
-        glVertex3f(xMaxCube, yMaxCube, zMinCube); // Top Left
-        glVertex3f(xMaxCube, yMinCube, zMinCube); // Bottom Left
-        glVertex3f(xMaxCube, yMinCube, zMaxCube); // Bottom Right
-        glVertex3f(xMaxCube, yMaxCube, zMaxCube); // Top Right
-
-
-        // Face du bas (normale vers -Y
-        glVertex3f(xMaxCube, yMinCube, zMinCube); // Bottom Right
-        glVertex3f(xMinCube, yMinCube, zMinCube); // Bottom Left
-        glVertex3f(xMinCube, yMinCube, zMaxCube); // Top Left
-        glVertex3f(xMaxCube, yMinCube, zMaxCube); // Top Right
+           // Face droite (normale vers +X)
+           glVertex3f(xMaxCube, yMaxCube, zMinCube); // Top Left
+           glVertex3f(xMaxCube, yMinCube, zMinCube); // Bottom Left
+           glVertex3f(xMaxCube, yMinCube, zMaxCube); // Bottom Right
+           glVertex3f(xMaxCube, yMaxCube, zMaxCube); // Top Right
 
 
-        // Face du haut (normale vers +Y)
-        glVertex3f(xMinCube, yMaxCube, zMaxCube); // Bottom Right
-        glVertex3f(xMinCube, yMaxCube, zMinCube); // Bottom Left
-        glVertex3f(xMaxCube, yMaxCube, zMinCube); // Top Left
-        glVertex3f(xMaxCube, yMaxCube, zMaxCube); // Top Right
+           // Face du bas (normale vers -Y)
+           glVertex3f(xMaxCube, yMinCube, zMinCube); // Bottom Right
+           glVertex3f(xMinCube, yMinCube, zMinCube); // Bottom Left
+           glVertex3f(xMinCube, yMinCube, zMaxCube); // Top Left
+           glVertex3f(xMaxCube, yMinCube, zMaxCube); // Top Right
 
 
-        glEnd();
+           // Face du haut (normale vers +Y)
+           glVertex3f(xMinCube, yMaxCube, zMaxCube); // Bottom Right
+           glVertex3f(xMinCube, yMaxCube, zMinCube); // Bottom Left
+           glVertex3f(xMaxCube, yMaxCube, zMinCube); // Top Left
+           glVertex3f(xMaxCube, yMaxCube, zMaxCube); // Top Right
+
+
+           glEnd();
 }
 
 

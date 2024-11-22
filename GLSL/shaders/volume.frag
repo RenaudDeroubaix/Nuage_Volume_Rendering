@@ -1,4 +1,4 @@
-#version 330 core
+#version 460 core
 
 struct Plan{
     vec3 point;
@@ -105,7 +105,7 @@ vec3 point_i_in_tex3D(vec3 exitPoint , vec3 dir ,int i)
 // Main Shader Logic
 // --------------------------------------------------
 void main() {
-    float epsilon = 0.01;
+    float epsilon = 0.001;
     float a = 0.0;
 
     vec3 camPos = -vec3(view_mat[3][0], view_mat[3][1], view_mat[3][2]) * mat3(view_mat);
@@ -117,14 +117,16 @@ void main() {
     float dist = length(exitPoint - fragPosition) / float(NuageSample) ;
     for (int i = 1 ; i < NuageSample ; i++){
        vec3 point_i = point_i_in_tex3D(exitPoint , dir , i);
-       distance += dist * texture(tex,  point_i);
+       distance +=  dist * texture(tex,  point_i);
 
     }
-    a =1.0-  beersLaw(distance.r , absorptionNuage);
 
-    fragColor = vec4(couleurNuage*a, smoothstep(0.1,0.8,a)); // Visualisation distance
+    vec4 amplitude= vec4(0.6,0.25,0.125,0.05);
+    a =1.0-  beersLaw(distance.r *amplitude.r + distance.g * amplitude.g + distance.b*amplitude.b + distance.a*amplitude.a , absorptionNuage);
 
-//    vec4 colorb= texture(tex,  fragTexCoord);
-//    fragColor = vec4(vec3(colorb.r),1.0);
+    fragColor = vec4(couleurNuage, a); // Visualisation distance
+
+    vec4 colorb= texture(tex,  fragTexCoord);
+    //fragColor = vec4(vec3(colorb.r),1.0);
 
 }
