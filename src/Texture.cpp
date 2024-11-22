@@ -13,6 +13,29 @@
 Texture::Texture(QOpenGLContext* context)
 {
     glContext = context;
+    // Récupérer les informations sous forme de chaînes
+    const char* version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
+    const char* renderer = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
+
+    // Afficher les informations correctement
+    qDebug() << "OpenGL Version:" << version;
+    qDebug() << "Renderer:" << renderer;
+
+    int workGroupCount[3], workGroupSize[3], sharedMemorySize;
+    glFunctions = glContext->extraFunctions();
+    glFunctions->glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 0, &workGroupCount[0]);
+    glFunctions->glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 1, &workGroupCount[1]);
+    glFunctions->glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 2, &workGroupCount[2]);
+
+    glFunctions->glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 0, &workGroupSize[0]);
+    glFunctions->glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 1, &workGroupSize[1]);
+    glFunctions->glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 2, &workGroupSize[2]);
+
+    glGetIntegerv(GL_MAX_COMPUTE_SHARED_MEMORY_SIZE, &sharedMemorySize);
+
+    std::cout << "Max work group counts: (" << workGroupCount[0] << ", " << workGroupCount[1] << ", " << workGroupCount[2] << ")\n";
+    std::cout << "Max work group sizes: (" << workGroupSize[0] << ", " << workGroupSize[1] << ", " << workGroupSize[2] << ")\n";
+    std::cout << "Max shared memory size: " << sharedMemorySize << " bytes\n";
     init();
     initGLSL();
     initTexture();
@@ -196,6 +219,7 @@ void Texture::initGLSL(){
     glFunctions->glLinkProgram(this->programID);
     glFunctions->glLinkProgram(this->computeID);
     printProgramErrors(programID);
+    printProgramErrors(computeID);
     checkOpenGLError();
 }
 
@@ -347,7 +371,6 @@ void Texture::draw( const qglviewer::Camera * camera ){
         return;
 
     glDisable(GL_LIGHTING);
-    glEnable(GL_TEXTURE_3D);
     //glPolygonMode( GL_FRONT , GL_FILL );
 
     // GPU start
@@ -427,8 +450,8 @@ void Texture::draw( const qglviewer::Camera * camera ){
 //   glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "zCutDirection"), zCutDirection);
 
 
-   glActiveTexture(GL_TEXTURE0 + textureId);
-   glBindTexture(GL_TEXTURE_3D, textureId); // Bind the 3D texture
+   glFunctions->glActiveTexture(GL_TEXTURE0 + textureId);
+   glFunctions->glBindTexture(GL_TEXTURE_3D, textureId); // Bind the 3D texture
    glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "tex"), textureId);
 
     /***********************************************************************/
