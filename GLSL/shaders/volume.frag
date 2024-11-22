@@ -127,6 +127,6 @@ void main() {
     fragColor = vec4(couleurNuage, a); // Visualisation distance
 
     vec4 colorb= texture(tex,  fragTexCoord);
-    fragColor = vec4(colorb);
+   // fragColor = vec4(colorb);
 
 }
