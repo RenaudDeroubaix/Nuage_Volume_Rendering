@@ -22,8 +22,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_TextureDockWidget_t {
-    QByteArrayData data[43];
-    char stringdata0[755];
+    QByteArrayData data[52];
+    char stringdata0[968];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -59,22 +59,31 @@ QT_MOC_LITERAL(23, 342, 24), // "setlightcolBValueChanged"
 QT_MOC_LITERAL(24, 367, 1), // "b"
 QT_MOC_LITERAL(25, 369, 22), // "absorptionValueChanged"
 QT_MOC_LITERAL(26, 392, 15), // "absorptionValue"
-QT_MOC_LITERAL(27, 408, 24), // "onNuageSliderChangedSlot"
-QT_MOC_LITERAL(28, 433, 25), // "onNuageSpinBoxChangedSlot"
-QT_MOC_LITERAL(29, 459, 24), // "onLightSliderChangedSlot"
-QT_MOC_LITERAL(30, 484, 25), // "onLightSpinBoxChangedSlot"
-QT_MOC_LITERAL(31, 510, 26), // "redNuageSpinBoxChangedSlot"
-QT_MOC_LITERAL(32, 537, 28), // "greenNuageSpinBoxChangedSlot"
-QT_MOC_LITERAL(33, 566, 27), // "blueNuageSpinBoxChangedSlot"
-QT_MOC_LITERAL(34, 594, 16), // "setlightposXSlot"
-QT_MOC_LITERAL(35, 611, 16), // "setlightposYSlot"
-QT_MOC_LITERAL(36, 628, 16), // "setlightposZSlot"
-QT_MOC_LITERAL(37, 645, 16), // "setlightcolRSlot"
-QT_MOC_LITERAL(38, 662, 16), // "setlightcolGSlot"
-QT_MOC_LITERAL(39, 679, 16), // "setlightcolBSlot"
-QT_MOC_LITERAL(40, 696, 28), // "absorptionSpinBoxChangedSlot"
-QT_MOC_LITERAL(41, 725, 27), // "absorptionSliderChangedSlot"
-QT_MOC_LITERAL(42, 753, 1) // "i"
+QT_MOC_LITERAL(27, 408, 28), // "xResolutionBruitValueChanged"
+QT_MOC_LITERAL(28, 437, 6), // "xValue"
+QT_MOC_LITERAL(29, 444, 28), // "yResolutionBruitValueChanged"
+QT_MOC_LITERAL(30, 473, 6), // "yValue"
+QT_MOC_LITERAL(31, 480, 28), // "zResolutionBruitValueChanged"
+QT_MOC_LITERAL(32, 509, 6), // "zValue"
+QT_MOC_LITERAL(33, 516, 24), // "onNuageSliderChangedSlot"
+QT_MOC_LITERAL(34, 541, 25), // "onNuageSpinBoxChangedSlot"
+QT_MOC_LITERAL(35, 567, 24), // "onLightSliderChangedSlot"
+QT_MOC_LITERAL(36, 592, 25), // "onLightSpinBoxChangedSlot"
+QT_MOC_LITERAL(37, 618, 26), // "redNuageSpinBoxChangedSlot"
+QT_MOC_LITERAL(38, 645, 28), // "greenNuageSpinBoxChangedSlot"
+QT_MOC_LITERAL(39, 674, 27), // "blueNuageSpinBoxChangedSlot"
+QT_MOC_LITERAL(40, 702, 16), // "setlightposXSlot"
+QT_MOC_LITERAL(41, 719, 16), // "setlightposYSlot"
+QT_MOC_LITERAL(42, 736, 16), // "setlightposZSlot"
+QT_MOC_LITERAL(43, 753, 16), // "setlightcolRSlot"
+QT_MOC_LITERAL(44, 770, 16), // "setlightcolGSlot"
+QT_MOC_LITERAL(45, 787, 16), // "setlightcolBSlot"
+QT_MOC_LITERAL(46, 804, 28), // "absorptionSpinBoxChangedSlot"
+QT_MOC_LITERAL(47, 833, 27), // "absorptionSliderChangedSlot"
+QT_MOC_LITERAL(48, 861, 1), // "i"
+QT_MOC_LITERAL(49, 863, 34), // "xResolutionBruitSpinBoxChange..."
+QT_MOC_LITERAL(50, 898, 34), // "yResolutionBruitSpinBoxChange..."
+QT_MOC_LITERAL(51, 933, 34) // "zResolutionBruitSpinBoxChange..."
 
     },
     "TextureDockWidget\0onNuageSliderChanged\0"
@@ -90,6 +99,9 @@ QT_MOC_LITERAL(42, 753, 1) // "i"
     "setlightcolGValueChanged\0g\0"
     "setlightcolBValueChanged\0b\0"
     "absorptionValueChanged\0absorptionValue\0"
+    "xResolutionBruitValueChanged\0xValue\0"
+    "yResolutionBruitValueChanged\0yValue\0"
+    "zResolutionBruitValueChanged\0zValue\0"
     "onNuageSliderChangedSlot\0"
     "onNuageSpinBoxChangedSlot\0"
     "onLightSliderChangedSlot\0"
@@ -101,7 +113,10 @@ QT_MOC_LITERAL(42, 753, 1) // "i"
     "setlightposZSlot\0setlightcolRSlot\0"
     "setlightcolGSlot\0setlightcolBSlot\0"
     "absorptionSpinBoxChangedSlot\0"
-    "absorptionSliderChangedSlot\0i"
+    "absorptionSliderChangedSlot\0i\0"
+    "xResolutionBruitSpinBoxChangedSlot\0"
+    "yResolutionBruitSpinBoxChangedSlot\0"
+    "zResolutionBruitSpinBoxChangedSlot"
 };
 #undef QT_MOC_LITERAL
 
@@ -111,45 +126,51 @@ static const uint qt_meta_data_TextureDockWidget[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-      29,   14, // methods
+      35,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
        0,       // flags
-      14,       // signalCount
+      17,       // signalCount
 
  // signals: name, argc, parameters, tag, flags
-       1,    1,  159,    2, 0x06 /* Public */,
-       4,    1,  162,    2, 0x06 /* Public */,
-       5,    1,  165,    2, 0x06 /* Public */,
-       6,    1,  168,    2, 0x06 /* Public */,
-       7,    1,  171,    2, 0x06 /* Public */,
-       9,    1,  174,    2, 0x06 /* Public */,
-      11,    1,  177,    2, 0x06 /* Public */,
-      13,    1,  180,    2, 0x06 /* Public */,
-      15,    1,  183,    2, 0x06 /* Public */,
-      17,    1,  186,    2, 0x06 /* Public */,
-      19,    1,  189,    2, 0x06 /* Public */,
-      21,    1,  192,    2, 0x06 /* Public */,
-      23,    1,  195,    2, 0x06 /* Public */,
-      25,    1,  198,    2, 0x06 /* Public */,
+       1,    1,  189,    2, 0x06 /* Public */,
+       4,    1,  192,    2, 0x06 /* Public */,
+       5,    1,  195,    2, 0x06 /* Public */,
+       6,    1,  198,    2, 0x06 /* Public */,
+       7,    1,  201,    2, 0x06 /* Public */,
+       9,    1,  204,    2, 0x06 /* Public */,
+      11,    1,  207,    2, 0x06 /* Public */,
+      13,    1,  210,    2, 0x06 /* Public */,
+      15,    1,  213,    2, 0x06 /* Public */,
+      17,    1,  216,    2, 0x06 /* Public */,
+      19,    1,  219,    2, 0x06 /* Public */,
+      21,    1,  222,    2, 0x06 /* Public */,
+      23,    1,  225,    2, 0x06 /* Public */,
+      25,    1,  228,    2, 0x06 /* Public */,
+      27,    1,  231,    2, 0x06 /* Public */,
+      29,    1,  234,    2, 0x06 /* Public */,
+      31,    1,  237,    2, 0x06 /* Public */,
 
  // slots: name, argc, parameters, tag, flags
-      27,    1,  201,    2, 0x08 /* Private */,
-      28,    1,  204,    2, 0x08 /* Private */,
-      29,    1,  207,    2, 0x08 /* Private */,
-      30,    1,  210,    2, 0x08 /* Private */,
-      31,    1,  213,    2, 0x08 /* Private */,
-      32,    1,  216,    2, 0x08 /* Private */,
-      33,    1,  219,    2, 0x08 /* Private */,
-      34,    1,  222,    2, 0x08 /* Private */,
-      35,    1,  225,    2, 0x08 /* Private */,
-      36,    1,  228,    2, 0x08 /* Private */,
-      37,    1,  231,    2, 0x08 /* Private */,
-      38,    1,  234,    2, 0x08 /* Private */,
-      39,    1,  237,    2, 0x08 /* Private */,
-      40,    1,  240,    2, 0x08 /* Private */,
-      41,    1,  243,    2, 0x08 /* Private */,
+      33,    1,  240,    2, 0x08 /* Private */,
+      34,    1,  243,    2, 0x08 /* Private */,
+      35,    1,  246,    2, 0x08 /* Private */,
+      36,    1,  249,    2, 0x08 /* Private */,
+      37,    1,  252,    2, 0x08 /* Private */,
+      38,    1,  255,    2, 0x08 /* Private */,
+      39,    1,  258,    2, 0x08 /* Private */,
+      40,    1,  261,    2, 0x08 /* Private */,
+      41,    1,  264,    2, 0x08 /* Private */,
+      42,    1,  267,    2, 0x08 /* Private */,
+      43,    1,  270,    2, 0x08 /* Private */,
+      44,    1,  273,    2, 0x08 /* Private */,
+      45,    1,  276,    2, 0x08 /* Private */,
+      46,    1,  279,    2, 0x08 /* Private */,
+      47,    1,  282,    2, 0x08 /* Private */,
+      49,    1,  285,    2, 0x08 /* Private */,
+      50,    1,  288,    2, 0x08 /* Private */,
+      51,    1,  291,    2, 0x08 /* Private */,
 
  // signals: parameters
     QMetaType::Void, QMetaType::Int,    3,
@@ -166,6 +187,9 @@ static const uint qt_meta_data_TextureDockWidget[] = {
     QMetaType::Void, QMetaType::Float,   22,
     QMetaType::Void, QMetaType::Float,   24,
     QMetaType::Void, QMetaType::Float,   26,
+    QMetaType::Void, QMetaType::Float,   28,
+    QMetaType::Void, QMetaType::Float,   30,
+    QMetaType::Void, QMetaType::Float,   32,
 
  // slots: parameters
     QMetaType::Void, QMetaType::Int,    3,
@@ -182,7 +206,10 @@ static const uint qt_meta_data_TextureDockWidget[] = {
     QMetaType::Void, QMetaType::Float,    3,
     QMetaType::Void, QMetaType::Float,    3,
     QMetaType::Void, QMetaType::Float,    3,
-    QMetaType::Void, QMetaType::Int,   42,
+    QMetaType::Void, QMetaType::Int,   48,
+    QMetaType::Void, QMetaType::Float,    3,
+    QMetaType::Void, QMetaType::Float,    3,
+    QMetaType::Void, QMetaType::Float,    3,
 
        0        // eod
 };
@@ -207,21 +234,27 @@ void TextureDockWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, in
         case 11: _t->setlightcolGValueChanged((*reinterpret_cast< float(*)>(_a[1]))); break;
         case 12: _t->setlightcolBValueChanged((*reinterpret_cast< float(*)>(_a[1]))); break;
         case 13: _t->absorptionValueChanged((*reinterpret_cast< float(*)>(_a[1]))); break;
-        case 14: _t->onNuageSliderChangedSlot((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 15: _t->onNuageSpinBoxChangedSlot((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 16: _t->onLightSliderChangedSlot((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 17: _t->onLightSpinBoxChangedSlot((*reinterpret_cast< int(*)>(_a[1]))); break;
-        case 18: _t->redNuageSpinBoxChangedSlot((*reinterpret_cast< float(*)>(_a[1]))); break;
-        case 19: _t->greenNuageSpinBoxChangedSlot((*reinterpret_cast< float(*)>(_a[1]))); break;
-        case 20: _t->blueNuageSpinBoxChangedSlot((*reinterpret_cast< float(*)>(_a[1]))); break;
-        case 21: _t->setlightposXSlot((*reinterpret_cast< float(*)>(_a[1]))); break;
-        case 22: _t->setlightposYSlot((*reinterpret_cast< float(*)>(_a[1]))); break;
-        case 23: _t->setlightposZSlot((*reinterpret_cast< float(*)>(_a[1]))); break;
-        case 24: _t->setlightcolRSlot((*reinterpret_cast< float(*)>(_a[1]))); break;
-        case 25: _t->setlightcolGSlot((*reinterpret_cast< float(*)>(_a[1]))); break;
-        case 26: _t->setlightcolBSlot((*reinterpret_cast< float(*)>(_a[1]))); break;
-        case 27: _t->absorptionSpinBoxChangedSlot((*reinterpret_cast< float(*)>(_a[1]))); break;
-        case 28: _t->absorptionSliderChangedSlot((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 14: _t->xResolutionBruitValueChanged((*reinterpret_cast< float(*)>(_a[1]))); break;
+        case 15: _t->yResolutionBruitValueChanged((*reinterpret_cast< float(*)>(_a[1]))); break;
+        case 16: _t->zResolutionBruitValueChanged((*reinterpret_cast< float(*)>(_a[1]))); break;
+        case 17: _t->onNuageSliderChangedSlot((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 18: _t->onNuageSpinBoxChangedSlot((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 19: _t->onLightSliderChangedSlot((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 20: _t->onLightSpinBoxChangedSlot((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 21: _t->redNuageSpinBoxChangedSlot((*reinterpret_cast< float(*)>(_a[1]))); break;
+        case 22: _t->greenNuageSpinBoxChangedSlot((*reinterpret_cast< float(*)>(_a[1]))); break;
+        case 23: _t->blueNuageSpinBoxChangedSlot((*reinterpret_cast< float(*)>(_a[1]))); break;
+        case 24: _t->setlightposXSlot((*reinterpret_cast< float(*)>(_a[1]))); break;
+        case 25: _t->setlightposYSlot((*reinterpret_cast< float(*)>(_a[1]))); break;
+        case 26: _t->setlightposZSlot((*reinterpret_cast< float(*)>(_a[1]))); break;
+        case 27: _t->setlightcolRSlot((*reinterpret_cast< float(*)>(_a[1]))); break;
+        case 28: _t->setlightcolGSlot((*reinterpret_cast< float(*)>(_a[1]))); break;
+        case 29: _t->setlightcolBSlot((*reinterpret_cast< float(*)>(_a[1]))); break;
+        case 30: _t->absorptionSpinBoxChangedSlot((*reinterpret_cast< float(*)>(_a[1]))); break;
+        case 31: _t->absorptionSliderChangedSlot((*reinterpret_cast< int(*)>(_a[1]))); break;
+        case 32: _t->xResolutionBruitSpinBoxChangedSlot((*reinterpret_cast< float(*)>(_a[1]))); break;
+        case 33: _t->yResolutionBruitSpinBoxChangedSlot((*reinterpret_cast< float(*)>(_a[1]))); break;
+        case 34: _t->zResolutionBruitSpinBoxChangedSlot((*reinterpret_cast< float(*)>(_a[1]))); break;
         default: ;
         }
     } else if (_c == QMetaObject::IndexOfMethod) {
@@ -324,6 +357,27 @@ void TextureDockWidget::qt_static_metacall(QObject *_o, QMetaObject::Call _c, in
                 return;
             }
         }
+        {
+            using _t = void (TextureDockWidget::*)(float );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&TextureDockWidget::xResolutionBruitValueChanged)) {
+                *result = 14;
+                return;
+            }
+        }
+        {
+            using _t = void (TextureDockWidget::*)(float );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&TextureDockWidget::yResolutionBruitValueChanged)) {
+                *result = 15;
+                return;
+            }
+        }
+        {
+            using _t = void (TextureDockWidget::*)(float );
+            if (*reinterpret_cast<_t *>(_a[1]) == static_cast<_t>(&TextureDockWidget::zResolutionBruitValueChanged)) {
+                *result = 16;
+                return;
+            }
+        }
     }
 }
 
@@ -356,13 +410,13 @@ int TextureDockWidget::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 29)
+        if (_id < 35)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 29;
+        _id -= 35;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 29)
+        if (_id < 35)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 29;
+        _id -= 35;
     }
     return _id;
 }
@@ -463,6 +517,27 @@ void TextureDockWidget::absorptionValueChanged(float _t1)
 {
     void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
     QMetaObject::activate(this, &staticMetaObject, 13, _a);
+}
+
+// SIGNAL 14
+void TextureDockWidget::xResolutionBruitValueChanged(float _t1)
+{
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
+    QMetaObject::activate(this, &staticMetaObject, 14, _a);
+}
+
+// SIGNAL 15
+void TextureDockWidget::yResolutionBruitValueChanged(float _t1)
+{
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
+    QMetaObject::activate(this, &staticMetaObject, 15, _a);
+}
+
+// SIGNAL 16
+void TextureDockWidget::zResolutionBruitValueChanged(float _t1)
+{
+    void *_a[] = { nullptr, const_cast<void*>(reinterpret_cast<const void*>(std::addressof(_t1))) };
+    QMetaObject::activate(this, &staticMetaObject, 16, _a);
 }
 QT_WARNING_POP
 QT_END_MOC_NAMESPACE

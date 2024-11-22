@@ -22,8 +22,8 @@ QT_BEGIN_MOC_NAMESPACE
 QT_WARNING_PUSH
 QT_WARNING_DISABLE_DEPRECATED
 struct qt_meta_stringdata_TextureViewer_t {
-    QByteArrayData data[25];
-    char stringdata0[281];
+    QByteArrayData data[28];
+    char stringdata0[341];
 };
 #define QT_MOC_LITERAL(idx, ofs, len) \
     Q_STATIC_BYTE_ARRAY_DATA_HEADER_INITIALIZER_WITH_OFFSET(len, \
@@ -56,7 +56,10 @@ QT_MOC_LITERAL(20, 216, 12), // "setGlightcol"
 QT_MOC_LITERAL(21, 229, 12), // "setBlightcol"
 QT_MOC_LITERAL(22, 242, 18), // "setAbsorptionNuage"
 QT_MOC_LITERAL(23, 261, 2), // "_q"
-QT_MOC_LITERAL(24, 264, 16) // "recompileShaders"
+QT_MOC_LITERAL(24, 264, 16), // "recompileShaders"
+QT_MOC_LITERAL(25, 281, 19), // "setResolutionBruitX"
+QT_MOC_LITERAL(26, 301, 19), // "setResolutionBruitY"
+QT_MOC_LITERAL(27, 321, 19) // "setResolutionBruitZ"
 
     },
     "TextureViewer\0onNuageSliderChanged\0\0"
@@ -66,7 +69,9 @@ QT_MOC_LITERAL(24, 264, 16) // "recompileShaders"
     "setBlueNuage\0_b\0setXlightpos\0_x\0"
     "setYlightpos\0_y\0setZlightpos\0_z\0"
     "setRlightcol\0setGlightcol\0setBlightcol\0"
-    "setAbsorptionNuage\0_q\0recompileShaders"
+    "setAbsorptionNuage\0_q\0recompileShaders\0"
+    "setResolutionBruitX\0setResolutionBruitY\0"
+    "setResolutionBruitZ"
 };
 #undef QT_MOC_LITERAL
 
@@ -76,7 +81,7 @@ static const uint qt_meta_data_TextureViewer[] = {
        8,       // revision
        0,       // classname
        0,    0, // classinfo
-      15,   14, // methods
+      18,   14, // methods
        0,    0, // properties
        0,    0, // enums/sets
        0,    0, // constructors
@@ -84,21 +89,24 @@ static const uint qt_meta_data_TextureViewer[] = {
        0,       // signalCount
 
  // slots: name, argc, parameters, tag, flags
-       1,    1,   89,    2, 0x0a /* Public */,
-       4,    1,   92,    2, 0x0a /* Public */,
-       5,    1,   95,    2, 0x0a /* Public */,
-       6,    1,   98,    2, 0x0a /* Public */,
-       7,    1,  101,    2, 0x0a /* Public */,
-       9,    1,  104,    2, 0x0a /* Public */,
-      11,    1,  107,    2, 0x0a /* Public */,
-      13,    1,  110,    2, 0x0a /* Public */,
-      15,    1,  113,    2, 0x0a /* Public */,
-      17,    1,  116,    2, 0x0a /* Public */,
-      19,    1,  119,    2, 0x0a /* Public */,
-      20,    1,  122,    2, 0x0a /* Public */,
-      21,    1,  125,    2, 0x0a /* Public */,
-      22,    1,  128,    2, 0x0a /* Public */,
-      24,    0,  131,    2, 0x0a /* Public */,
+       1,    1,  104,    2, 0x0a /* Public */,
+       4,    1,  107,    2, 0x0a /* Public */,
+       5,    1,  110,    2, 0x0a /* Public */,
+       6,    1,  113,    2, 0x0a /* Public */,
+       7,    1,  116,    2, 0x0a /* Public */,
+       9,    1,  119,    2, 0x0a /* Public */,
+      11,    1,  122,    2, 0x0a /* Public */,
+      13,    1,  125,    2, 0x0a /* Public */,
+      15,    1,  128,    2, 0x0a /* Public */,
+      17,    1,  131,    2, 0x0a /* Public */,
+      19,    1,  134,    2, 0x0a /* Public */,
+      20,    1,  137,    2, 0x0a /* Public */,
+      21,    1,  140,    2, 0x0a /* Public */,
+      22,    1,  143,    2, 0x0a /* Public */,
+      24,    0,  146,    2, 0x0a /* Public */,
+      25,    1,  147,    2, 0x0a /* Public */,
+      26,    1,  150,    2, 0x0a /* Public */,
+      27,    1,  153,    2, 0x0a /* Public */,
 
  // slots: parameters
     QMetaType::Void, QMetaType::Int,    3,
@@ -116,6 +124,9 @@ static const uint qt_meta_data_TextureViewer[] = {
     QMetaType::Void, QMetaType::Float,   12,
     QMetaType::Void, QMetaType::Float,   23,
     QMetaType::Void,
+    QMetaType::Void, QMetaType::Float,   14,
+    QMetaType::Void, QMetaType::Float,   16,
+    QMetaType::Void, QMetaType::Float,   18,
 
        0        // eod
 };
@@ -141,6 +152,9 @@ void TextureViewer::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _i
         case 12: _t->setBlightcol((*reinterpret_cast< float(*)>(_a[1]))); break;
         case 13: _t->setAbsorptionNuage((*reinterpret_cast< float(*)>(_a[1]))); break;
         case 14: _t->recompileShaders(); break;
+        case 15: _t->setResolutionBruitX((*reinterpret_cast< float(*)>(_a[1]))); break;
+        case 16: _t->setResolutionBruitY((*reinterpret_cast< float(*)>(_a[1]))); break;
+        case 17: _t->setResolutionBruitZ((*reinterpret_cast< float(*)>(_a[1]))); break;
         default: ;
         }
     }
@@ -175,13 +189,13 @@ int TextureViewer::qt_metacall(QMetaObject::Call _c, int _id, void **_a)
     if (_id < 0)
         return _id;
     if (_c == QMetaObject::InvokeMetaMethod) {
-        if (_id < 15)
+        if (_id < 18)
             qt_static_metacall(this, _c, _id, _a);
-        _id -= 15;
+        _id -= 18;
     } else if (_c == QMetaObject::RegisterMethodArgumentMetaType) {
-        if (_id < 15)
+        if (_id < 18)
             *reinterpret_cast<int*>(_a[0]) = -1;
-        _id -= 15;
+        _id -= 18;
     }
     return _id;
 }

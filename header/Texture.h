@@ -87,6 +87,7 @@ public:
 
     void draw( const qglviewer::Camera * camera );
     void drawCube();
+    void drawLight( const qglviewer::Camera * camera);
     void drawBoundingBox(bool fill = false);
 
 
@@ -101,7 +102,7 @@ public:
     bool checkOpenGLError();
     std::string readShaderSource(std::string filename);
 
-    GLuint cShader, vShader, gShader, fShader, programID , computeID;
+    GLuint cShader, vShader, gShader, fShader, programID , computeID, lightID;
     QOpenGLContext* glContext;
     QOpenGLExtraFunctions* glFunctions;
 
@@ -111,6 +112,7 @@ public:
                                                 const void* userParam );
 
     void initGLSL();
+    void initLightShader();
 
 public slots:
     void setNuageEch(int value);
