@@ -153,7 +153,7 @@ void Texture::recompileShaders() {
 
 void Texture::initLightShader() {
     std::string path = "GLSL/shaders/";
-    std::string vShaderPath = path + "light.vert";
+    std::string vShaderPath = path + "light.vsh";
     std::string fShaderPath = path + "light.frag";
 
     // Créer un programme spécifique pour la lumière
@@ -162,30 +162,31 @@ void Texture::initLightShader() {
     // Charger et compiler le Vertex Shader
     std::string content = readShaderSource(vShaderPath);
     if (!content.empty()) {
-        GLuint vShader = glFunctions->glCreateShader(GL_VERTEX_SHADER);
+        this->vLightShader = glFunctions->glCreateShader(GL_VERTEX_SHADER);
         const char* src = content.c_str();
-        glFunctions->glShaderSource(vShader, 1, &src, NULL);
-        glFunctions->glCompileShader(vShader);
-        glFunctions->glAttachShader(this->lightID, vShader);
-        printShaderErrors(vShader);
-        glFunctions->glDeleteShader(vShader); // Shader inutile après l'attachement
+        glFunctions->glShaderSource(this->vLightShader, 1, &src, NULL);
+        glFunctions->glCompileShader(this->vLightShader);
+        glFunctions->glAttachShader(this->lightID, this->vLightShader);
+        printShaderErrors(this->vLightShader);
+        glFunctions->glDeleteShader(this->vLightShader); // Shader inutile après l'attachement
     }
 
     // Charger et compiler le Fragment Shader
     content = readShaderSource(fShaderPath);
     if (!content.empty()) {
-        GLuint fShader = glFunctions->glCreateShader(GL_FRAGMENT_SHADER);
+        this->fLightShader = glFunctions->glCreateShader(GL_FRAGMENT_SHADER);
         const char* src = content.c_str();
-        glFunctions->glShaderSource(fShader, 1, &src, NULL);
-        glFunctions->glCompileShader(fShader);
-        glFunctions->glAttachShader(this->lightID, fShader);
-        printShaderErrors(fShader);
-        glFunctions->glDeleteShader(fShader); // Shader inutile après l'attachement
+        glFunctions->glShaderSource(this->fLightShader, 1, &src, NULL);
+        glFunctions->glCompileShader(this->fLightShader);
+        glFunctions->glAttachShader(this->lightID, this->fLightShader);
+        printShaderErrors(this->fLightShader);
+        glFunctions->glDeleteShader(this->fLightShader); // Shader inutile après l'attachement
     }
 
     // Lier le programme de shaders
     glFunctions->glLinkProgram(this->lightID);
     printProgramErrors(this->lightID);
+    checkOpenGLError();
 }
 
 
@@ -237,6 +238,7 @@ void Texture::initGLSL(){
     glFunctions->glLinkProgram(this->programID);
     glFunctions->glLinkProgram(this->computeID);
     printProgramErrors(programID);
+    printProgramErrors(computeID);
     checkOpenGLError();
     initLightShader();
 }

@@ -102,7 +102,7 @@ public:
     bool checkOpenGLError();
     std::string readShaderSource(std::string filename);
 
-    GLuint cShader, vShader, gShader, fShader, programID , computeID, lightID;
+    GLuint cShader, vShader, gShader, fShader,fLightShader,vLightShader, programID , computeID, lightID;
     QOpenGLContext* glContext;
     QOpenGLExtraFunctions* glFunctions;
 
