@@ -53,10 +53,10 @@ void Texture::init(){
     timer.start();
 
     resolutionBruit = QVector3D(128.0,128.0,128.0);
-    freqBruit =QVector4D(4.0,8.0,16.0,32.0);
+    freqBruit =QVector4D(2.0,6.0,12.0,24.0);
 
-    LightEch = 3;
-    NuageEch = 10;
+    LightEch = 20;
+    NuageEch = 50;
     BBmin = QVector3D(-0.5,-0.5,-0.5) ;
 
     BBmax = QVector3D(0.5,0.5,0.5) ;
@@ -102,7 +102,7 @@ void Texture::init(){
         ));
 
 
-    absorptionNuage = 0.9;
+    absorptionNuage = 9.0;
     couleurNuage =QVector3D(1.0,1.0,1.0);
 
     textureCreated = false;

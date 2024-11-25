@@ -153,7 +153,7 @@ void main() {
 
         textureValue =  dist * texture(tex,  point_i_tex_coord);
         densite = ((textureValue.g + textureValue.b + textureValue.a)/3. - textureValue.r*3.0);
-        if (densite > 0.000)
+        if (densite > epsilon)
         {
             vec3 Ipos = point_i;
             float dist_light = 0;
@@ -193,7 +193,7 @@ void main() {
 
     }
     float a =  1.0 - transparence;
-    if ( a < 0.1) a = 0;
+    //if ( a < 0.4) a = 0;
 
 
     fragColor = vec4(couleurNuage * LightColor * LightEnergy   ,  a  ); // Visualisation distance
