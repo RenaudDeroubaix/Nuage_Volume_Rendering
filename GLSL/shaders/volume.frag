@@ -107,25 +107,6 @@ vec3 point_i_in_tex3D(float dist , vec3 dir ,int i)
     return point_i;
 }
 
-//float mult_octav_scatering(float density , float mu )
-//{
-
-
-
-//    for (float i = 0.0 ; i < ScateringOctaves ; i++)
-//    {
-//        float phase_func = PhaseFunction(0.3 * c , mu);
-//        float beers = beersLaw(density * absorptionNuage * a);
-
-//        luminance += b * phase_func * beers;
-
-//        a *= attenuation;
-//        b *= contribution;
-//        c *= (1.0 - phase_attenuation);
-
-//    }
-//    return luminance;
-//}
 
 float anisotropic_scatering(float g , vec3 point_j,  vec3 dir){
     float costh = max(dot(normalize(point_j - LightPos) , dir) , 0 );
@@ -170,8 +151,8 @@ void main() {
 //        if (length(point_i - centresphere) > radius )
 //            continue;
 
-        textureValue = texture(tex,  point_i_tex_coord);
-        densite = dist *  -((textureValue.g - textureValue.b - textureValue.a) - textureValue.r);
+        textureValue =  dist * texture(tex,  point_i_tex_coord);
+        densite = ((textureValue.g + textureValue.b + textureValue.a) - textureValue.r);
         if (densite > 0.000)
         {
             vec3 Ipos = point_i;
@@ -181,7 +162,8 @@ void main() {
             vec3 exitPointForLight = IntersectionPlan(point_i , epsilon , dir_light);
             float dist_light_point = length (LightPos - point_i);
             float dist_J = length (exitPointForLight - point_i);
-
+            float c = 1.0;
+            float phase_attenuation = 0.1;
             for (int j = 0 ; j < LightSample; j++)
             {
 
@@ -193,9 +175,12 @@ void main() {
 
                 textureValueLight =  dist_J  * texture(tex,  point_light_j_tex_coord);
 
-                float luminance = -((textureValueLight.g - textureValueLight.b - textureValueLight.a) - textureValueLight.r);
+                float luminance = ((textureValueLight.g + textureValueLight.b + textureValueLight.a) - textureValueLight.r);
 
-                dist_light += luminance;
+                dist_light += luminance * anisotropic_scatering(0.3 * c , Ipos , dir_light);
+
+                c *= (1.0 - phase_attenuation);
+
             }
             float cur_density= densite * NuageDensity;
             float shadowterm = beersLaw(dist_light, LightDensity);
@@ -206,6 +191,6 @@ void main() {
 
     }
 
-    fragColor = vec4(couleurNuage * LightColor * LightEnergy  , 1.0 - transparence    ); // Visualisation distance
+    fragColor = vec4(couleurNuage * LightColor * LightEnergy   , 1.0 - transparence    ); // Visualisation distance
 }
 
