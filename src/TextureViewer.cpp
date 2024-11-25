@@ -211,15 +211,15 @@ void TextureViewer::recompileShaders() {
     update();
 }
 void TextureViewer::setResolutionBruitX(float _x){
-    texture->setResolutionBruitX(_x);
+    texture->setResolutionBruitX(pow(2,_x));
     update();
 }
 void TextureViewer::setResolutionBruitY(float _y){
-    texture->setResolutionBruitY(_y);
+    texture->setResolutionBruitY(pow(2,_y));
     update();
 }
 void TextureViewer::setResolutionBruitZ(float _z){
-    texture->setResolutionBruitZ(_z);
+    texture->setResolutionBruitZ(pow(2,_z));
     update();
 }
 void TextureViewer::setFreqBruitR(float _r){

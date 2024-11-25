@@ -39,22 +39,22 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
 
     // Create three QDoubleSpinBoxes for RGB values (0.0 to 1.0)
     QLabel *bruitworleyLabel = new QLabel("Resolution tex3D X/Y/Z: ", bruitFrame);
-    xbruitworleySpinBox = new QDoubleSpinBox(bruitFrame);
-    xbruitworleySpinBox->setRange(0.0, 512.0);
-    xbruitworleySpinBox->setSingleStep(1.0);
-    xbruitworleySpinBox->setValue(128.0);
+    xbruitworleySpinBox = new PowerOfTwoSpinBox(bruitFrame);
+//    xbruitworleySpinBox->setRange(0.0, 512.0);
+//    xbruitworleySpinBox->setSingleStep(1.0);
+//    xbruitworleySpinBox->setValue(128.0);
     xbruitworleySpinBox->setFixedWidth(50); // Reduce the width of the spinboxes
 
-    ybruitworleySpinBox = new QDoubleSpinBox(bruitFrame);
-    ybruitworleySpinBox->setRange(0.0, 512.0);
-    ybruitworleySpinBox->setSingleStep(1.0);
-    ybruitworleySpinBox->setValue(128.0);
+    ybruitworleySpinBox = new PowerOfTwoSpinBox(bruitFrame);
+//    ybruitworleySpinBox->setRange(0.0, 512.0);
+//    ybruitworleySpinBox->setSingleStep(1.0);
+//    ybruitworleySpinBox->setValue(128.0);
     ybruitworleySpinBox->setFixedWidth(50);
 
-    zbruitworleySpinBox = new QDoubleSpinBox(bruitFrame);
-    zbruitworleySpinBox->setRange(0.0, 512.0);
-    zbruitworleySpinBox->setSingleStep(1.0);
-    zbruitworleySpinBox->setValue(128.0);
+    zbruitworleySpinBox = new PowerOfTwoSpinBox(bruitFrame);
+//    zbruitworleySpinBox->setRange(0.0, 512.0);
+//    zbruitworleySpinBox->setSingleStep(1.0);
+//    zbruitworleySpinBox->setValue(128.0);
     zbruitworleySpinBox->setFixedWidth(50);
 
     // Add the color controls to the color layout
@@ -345,9 +345,9 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     connect(absorptionSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, [this](double value) {
         absorptionSlider->setValue(static_cast<int>(value * 100));  // Assuming max slider value is 300
     });
-    connect(xbruitworleySpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::xResolutionBruitValueChanged);
-    connect(ybruitworleySpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::yResolutionBruitValueChanged);
-    connect(zbruitworleySpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::zResolutionBruitValueChanged);
+    connect(xbruitworleySpinBox, QOverload<double>::of(&PowerOfTwoSpinBox::valueChanged), this, &TextureDockWidget::xResolutionBruitValueChanged);
+    connect(ybruitworleySpinBox, QOverload<double>::of(&PowerOfTwoSpinBox::valueChanged), this, &TextureDockWidget::yResolutionBruitValueChanged);
+    connect(zbruitworleySpinBox, QOverload<double>::of(&PowerOfTwoSpinBox::valueChanged), this, &TextureDockWidget::zResolutionBruitValueChanged);
 
     connect(rfreqWorleySpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::rFreqBruitValueChanged);
     connect(gfreqWorleySpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::gFreqBruitValueChanged);

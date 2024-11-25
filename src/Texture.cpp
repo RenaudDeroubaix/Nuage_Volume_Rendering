@@ -606,14 +606,17 @@ void Texture::setAbsorptionNuageDisplay(float _a){
 }
 void Texture::setResolutionBruitX(float _x){
     resolutionBruit[0]=_x;
+//    std::cout << resolutionBruit[0] <<std::endl;
     initTexture();
 }
 void Texture::setResolutionBruitY(float _y){
     resolutionBruit[1]=_y;
+//    std::cout << resolutionBruit[1] <<std::endl;
     initTexture();
 }
 void Texture::setResolutionBruitZ(float _z){
     resolutionBruit[2]=_z;
+//    std::cout << resolutionBruit[2] <<std::endl;
     initTexture();
 }
 void Texture::setFreqBruitR(float _r){
