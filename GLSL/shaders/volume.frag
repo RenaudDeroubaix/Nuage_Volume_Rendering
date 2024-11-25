@@ -152,7 +152,7 @@ void main() {
 //            continue;
 
         textureValue =  dist * texture(tex,  point_i_tex_coord);
-        densite = ((textureValue.g + textureValue.b + textureValue.a) - textureValue.r);
+        densite = ((textureValue.g + textureValue.b + textureValue.a)/3. - textureValue.r*3.0);
         if (densite > 0.000)
         {
             vec3 Ipos = point_i;
@@ -175,7 +175,7 @@ void main() {
 
                 textureValueLight =  dist_J  * texture(tex,  point_light_j_tex_coord);
 
-                float luminance = ((textureValueLight.g + textureValueLight.b + textureValueLight.a) - textureValueLight.r);
+                float luminance = ((textureValueLight.g + textureValueLight.b + textureValueLight.a)/3.0 - textureValueLight.r*3);
 
                 dist_light += luminance * anisotropic_scatering(0.3 * c , Ipos , dir_light);
 
@@ -187,10 +187,15 @@ void main() {
             vec3 absorbed_light = vec3(cur_density * shadowterm );
             LightEnergy += absorbed_light * transparence;
             transparence *= 1-cur_density;
+
+
         }
 
     }
+    float a =  1.0 - transparence;
+    if ( a < 0.1) a = 0;
 
-    fragColor = vec4(couleurNuage * LightColor * LightEnergy   , 1.0 - transparence    ); // Visualisation distance
+
+    fragColor = vec4(couleurNuage * LightColor * LightEnergy   ,  a  ); // Visualisation distance
 }
 
