@@ -195,19 +195,19 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
 
     QLabel *positionLight = new QLabel("Position de la lumière:", lightFrame);
     LightPosX = new QDoubleSpinBox(lightFrame);
-    LightPosX->setRange(-5.0, 5.0);
+    LightPosX->setRange(-25.0, 25.0);
     LightPosX->setSingleStep(0.1);
     LightPosX->setValue(0.0);
     LightPosX->setFixedWidth(50); // Reduce the width of the spinboxes
 
     LightPosY = new QDoubleSpinBox(lightFrame);
-    LightPosY->setRange(-5.0, 5.0);
+    LightPosY->setRange(-25.0, 25.0);
     LightPosY->setSingleStep(0.1);
     LightPosY->setValue(1.0);
     LightPosY->setFixedWidth(50); // Reduce the width of the spinboxes
 
     LightPosZ = new QDoubleSpinBox(lightFrame);
-    LightPosZ->setRange(-5.0, 5.0);
+    LightPosZ->setRange(-25.0, 25.0);
     LightPosZ->setSingleStep(0.1);
     LightPosZ->setValue(0.0);
     LightPosZ->setFixedWidth(50); // Reduce the width of the spinboxes
@@ -261,11 +261,11 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
       // Widgets pour le nuage
       QLabel *SampleNuageLabel = new QLabel("Nuage :", otherGroupBox);
       QSlider *NuageSampleSlider = new QSlider(Qt::Horizontal, otherGroupBox);
-      NuageSampleSlider->setRange(3, 50); // Plage entière
+      NuageSampleSlider->setRange(3, 1000); // Plage entière
       NuageSampleSlider->setValue(10);    // Valeur par défaut
 
       QSpinBox *NuageSampleBox = new QSpinBox(otherGroupBox);
-      NuageSampleBox->setRange(3, 50);   // Plage entière
+      NuageSampleBox->setRange(3, 1000);   // Plage entière
       NuageSampleBox->setSingleStep(1);
       NuageSampleBox->setValue(10);       // Valeur par défaut
 
@@ -282,11 +282,11 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
       // Widgets pour la lumière
       QLabel *SampleLightLabel = new QLabel("Lumière :", otherGroupBox);
       QSlider *LightSampleSlider = new QSlider(Qt::Horizontal, otherGroupBox);
-      LightSampleSlider->setRange(3, 50); // Plage entière
+      LightSampleSlider->setRange(3, 1000); // Plage entière
       LightSampleSlider->setValue(5);    // Valeur par défaut
 
       QSpinBox *LightSampleBox = new QSpinBox(otherGroupBox);
-      LightSampleBox->setRange(3,  50);   // Plage entière
+      LightSampleBox->setRange(3,  1000);   // Plage entière
       LightSampleBox->setSingleStep(1);
       LightSampleBox->setValue(5);       // Valeur par défaut
 
