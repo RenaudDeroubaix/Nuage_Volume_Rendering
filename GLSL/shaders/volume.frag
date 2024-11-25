@@ -43,6 +43,9 @@ in vec3 fragPosition;  // Output vertex position to fragment shader
 out vec4 fragColor;  // The output color of the fragment
 
 
+vec3 centresphere = vec3(0.0);
+float radius = 0.42;
+
 
 float HenyeyGreenstein(float g , float costh) {
     return (1.0 / (4.0 * PI)) * ((1.0 - g * g ) / pow(1.0 + g - 2.0 * g * costh , 1.5));
@@ -52,7 +55,7 @@ float HenyeyGreenstein(float g , float costh) {
 // Functions
 // --------------------------------------------------
 float beersLaw(float distance ) {
-    return exp(-distance );
+    return exp(-distance * absorptionNuage );
 }
 
 vec3 IntersectionPlan(vec3 camPos , float epsilon , vec3 dir) {
@@ -134,7 +137,7 @@ vec3 point_i_in_tex3D(float dist , vec3 dir ,int i)
 
 float anisotropic_scatering(float g , vec3 point_j,  vec3 dir){
     float costh = max(dot(normalize(point_j - LightPos) , dir) , 0 );
-    return mix(HenyeyGreenstein(g , costh) , HenyeyGreenstein(-g , costh) , 0.7);
+    return mix(HenyeyGreenstein(g , costh) , HenyeyGreenstein(-g , costh) , 0.3);
 }
 
 
@@ -154,25 +157,27 @@ void main() {
 
     vec3 exitPoint = IntersectionPlan(camPos , epsilon , dir);
 
-    vec4 distance = vec4(0.0);
-    vec4 obscuration_lumiere_au_point_j = vec4(0.0);
+    vec4 textureValue = vec4(0.0);
+    float densite = 0.0;
 
 
 
     float luminancefinal = 0.0;
 
-    float dist = length(exitPoint - fragPosition) / NuageSample ;
+    float dist = length(exitPoint - fragPosition)  / float(NuageSample)  ;
 
     for (int i = 1 ; i < NuageSample; i++){
 
         vec3 point_i = point_i_in_tex3D(dist , dir , i );
         vec3 point_i_tex_coord = translate_in_tex_coord(point_i);
+        if (length(point_i - centresphere) > radius )
+            continue;
 
-        distance += dist * texture(tex,  point_i_tex_coord);
+        textureValue = texture(tex,  point_i_tex_coord);
 
-        vec3 dir_light = normalize(LightPos - point_i);
-        vec3 exitPointForLight = IntersectionPlan(point_i , epsilon , dir_light);
-        float dist_light = length(LightPos - point_i) / LightSample ;
+        densite += dist * ((textureValue.g + textureValue.b + textureValue.a)/3.0 - textureValue.r);
+
+
 
 
         float attenuation = 0.2;
@@ -185,22 +190,25 @@ void main() {
         float g = 0.85;
 
         float luminance = 0.0;
-        float lumierecumuleFragpos=0.0;
+        vec4 obscuration_lumiere_au_point_j = vec4(0.0);
+        vec3 dir_light = normalize(LightPos - point_i);
+        vec3 exitPointForLight = IntersectionPlan(point_i , epsilon , dir_light);
+        float dist_light = length(LightPos - point_i) / (float(LightSample));
 
-        transparence += 1 - beersLaw(distance.r * absorptionNuage);
+
 
         for (int j = 0 ; j < LightSample; j++){
 
             vec3 point_light_j = point_sample_light_j(dist_light, dir_light , j , exitPointForLight , point_i );
             vec3 point_light_j_tex_coord = translate_in_tex_coord(point_light_j);
 
-            obscuration_lumiere_au_point_j = dist_light * texture(tex,  point_light_j_tex_coord);
+            obscuration_lumiere_au_point_j += dist_light * texture(tex,  point_light_j_tex_coord);
 
             float phase_func = anisotropic_scatering(0.3 * c , point_light_j , dir);
 
-            float beers = 1 - beersLaw(obscuration_lumiere_au_point_j.r * absorptionNuage * a) ;
+            float bears = 1 - beersLaw((obscuration_lumiere_au_point_j.g + obscuration_lumiere_au_point_j.b + obscuration_lumiere_au_point_j.a)/3.0  - obscuration_lumiere_au_point_j.r  * absorptionNuage * a) ;
 
-            luminance += b * phase_func * beers;
+            luminance += b * phase_func * bears;
 
             a *= attenuation;
             b *= contribution;
@@ -211,10 +219,7 @@ void main() {
         luminancefinal += luminance;
 
     }
-
-
-
-
-    fragColor = vec4(couleurNuage * LightColor * luminancefinal ,  transparence    ); // Visualisation distance
+    transparence = 1 - beersLaw(densite);
+    fragColor = vec4(couleurNuage * LightColor /** luminancefinal*/ ,  transparence    ); // Visualisation distance
 }
 

@@ -34,9 +34,9 @@ void Texture::init(){
 
     LightEch = 3;
     NuageEch = 10;
-    BBmin = QVector3D(-0.5,-0.5,-0.5);
+    BBmin = QVector3D(-0.5,-0.5,-0.5) ;
 
-    BBmax = QVector3D(0.5,0.5,0.5);
+    BBmax = QVector3D(0.5,0.5,0.5) ;
 
     LightPos =  QVector3D(0.0,1.0,0.0);
     LightColor =  QVector3D(1.0,1.0,1.0);
