@@ -12,6 +12,7 @@ SOURCES += src/Main.cpp \
     src/Texture.cpp \
     src/TextureDockWidget.cpp
 HEADERS += header/Window.h \
+    header/PowerOfTwoSpinBox.h \
     header/TextureViewer.h \
     header/Texture.h \
     header/TextureDockWidget.h \

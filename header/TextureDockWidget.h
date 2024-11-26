@@ -9,6 +9,7 @@
 #include <QWidget>
 #include <QListWidget>
 #include <QDoubleSpinBox>
+#include "PowerOfTwoSpinBox.h"
 
 class TextureDockWidget : public QDockWidget
 {
@@ -36,13 +37,9 @@ public:
     QDoubleSpinBox *LightColorG;
     QDoubleSpinBox *LightColorB;
 
-    QDoubleSpinBox *xResolutionBruitSpinBox;
-    QDoubleSpinBox *yResolutionBruitSpinBox;
-    QDoubleSpinBox *zResolutionBruitSpinBox;
-
-    QDoubleSpinBox *xbruitworleySpinBox;
-    QDoubleSpinBox *ybruitworleySpinBox;
-    QDoubleSpinBox *zbruitworleySpinBox;
+    PowerOfTwoSpinBox *xbruitworleySpinBox;
+    PowerOfTwoSpinBox *ybruitworleySpinBox;
+    PowerOfTwoSpinBox *zbruitworleySpinBox;
 
 private slots:
     void onNuageSliderChangedSlot(int value);
