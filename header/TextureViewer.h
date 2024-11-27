@@ -54,7 +54,7 @@ public slots:
     void setRlightcol(float _r);
     void setGlightcol(float _g);
     void setBlightcol(float _b);
-    void setAbsorptionNuage(float _q);
+    void setAbsorptionNuage(float _a);
     void recompileShaders();
     void setResolutionBruitX(float _x);
     void setResolutionBruitY(float _y);
@@ -63,7 +63,17 @@ public slots:
     void setFreqBruitG(float _g);
     void setFreqBruitB(float _b);
     void setFreqBruitA(float _a);
-
+    void setRayonSoleil(float _rayonValue);
+    void setAbsorptionLight(float _a);
+    void setResolutionBruitCurlX(float _x);
+    void setResolutionBruitCurlY(float _y);
+    void setFreqBruitCurlR(float _r);
+    void setFreqBruitCurlG(float _g);
+    void setFreqBruitCurlB(float _b);
+    void setFacteurBruitR(float _r);
+    void setFacteurBruitG(float _g);
+    void setFacteurBruitB(float _b);
+    void setFacteurBruitA(float _a);
 
 signals:
 

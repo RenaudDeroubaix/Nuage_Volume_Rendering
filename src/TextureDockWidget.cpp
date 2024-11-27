@@ -26,7 +26,7 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     bruitFrame->setFrameShape(QFrame::StyledPanel);
     bruitFrame->setFrameShadow(QFrame::Sunken);
 
-    QLabel *bruitLabel = new QLabel("Paramètre du Bruit Worley:", bruitFrame);
+    QLabel *bruitLabel = new QLabel("Paramètre du Bruit de forme du nuage:");
     // Create three QDoubleSpinBoxes for RGB values (0.0 to 1.0)
     QLabel *bruitworleyLabel = new QLabel("Resolution tex3D X/Y/Z: ", bruitFrame);
     xbruitworleySpinBox = new PowerOfTwoSpinBox(bruitFrame);
@@ -45,12 +45,43 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     afreqWorleySpinBox = new QDoubleSpinBox(bruitFrame);
     setSpinBox(afreqWorleySpinBox,1.0,32.0,0.5,24.0,50);
 
-    // Add the color controls to the color layout
-    QBoxLayout *freqbruitworleyLayout = createLayout(NULL,false,{freqworleyLabel,rfreqWorleySpinBox,gfreqWorleySpinBox,bfreqWorleySpinBox,afreqWorleySpinBox},{});
-    QBoxLayout *bruitLayout = createLayout(bruitFrame,true,{},{bruitworleyLayout,freqbruitworleyLayout});
-    bruitFrame->adjustSize();
+    QLabel *facteurworleyLabel = new QLabel("Facteur de R/G/B/A: ", bruitFrame);
+    rfacteurWorleySpinBox = new QDoubleSpinBox(bruitFrame);
+    setSpinBox(rfacteurWorleySpinBox,-10.0,10.0,0.01,-3.0,50);
+    gfacteurWorleySpinBox = new QDoubleSpinBox(bruitFrame);
+    setSpinBox(gfacteurWorleySpinBox,-10.0,10.0,0.01,0.33,50);
+    bfacteurWorleySpinBox = new QDoubleSpinBox(bruitFrame);
+    setSpinBox(bfacteurWorleySpinBox,-10.0,10.0,0.01,0.33,50);
+    afacteurWorleySpinBox = new QDoubleSpinBox(bruitFrame);
+    setSpinBox(afacteurWorleySpinBox,-10.0,10.0,0.01,0.33,50);
 
-    QBoxLayout *noiseLayout = createLayout(noiseTab,true,{bruitLabel,bruitFrame},{});
+    // Add the color controls to the color layout
+    QBoxLayout * facteurbruitworleyLayout = createLayout(NULL,false,{facteurworleyLabel,rfacteurWorleySpinBox,gfacteurWorleySpinBox,bfacteurWorleySpinBox,afacteurWorleySpinBox},{});
+    QBoxLayout *freqbruitworleyLayout = createLayout(NULL,false,{freqworleyLabel,rfreqWorleySpinBox,gfreqWorleySpinBox,bfreqWorleySpinBox,afreqWorleySpinBox},{});
+    QBoxLayout *bruitLayout = createLayout(bruitFrame,true,{},{bruitworleyLayout,freqbruitworleyLayout,facteurbruitworleyLayout});
+
+    QFrame *bruitCurlFrame = new QFrame();
+    bruitCurlFrame->setFrameShape(QFrame::StyledPanel);
+    bruitCurlFrame->setFrameShadow(QFrame::Sunken);
+    QLabel *bruitCurlParamLabel = new QLabel("Paramètre du Bruit de turbulance du nuage:");
+    QLabel *bruitCurlLabel = new QLabel("Resolution tex2D X/Y: ", bruitCurlFrame);
+    xbruitCurlSpinBox = new PowerOfTwoSpinBox(bruitCurlFrame);
+    ybruitCurlSpinBox = new PowerOfTwoSpinBox(bruitCurlFrame);
+    QBoxLayout *bruitCurlLayout = createLayout(NULL,false,{bruitCurlLabel,xbruitCurlSpinBox,ybruitCurlSpinBox},{});
+
+    QLabel *freqCurlLabel = new QLabel("Frequence R/G/B: ", bruitCurlFrame);
+    rfreqCurlSpinBox = new QDoubleSpinBox(bruitCurlFrame);
+    setSpinBox(rfreqCurlSpinBox,1.0,32.0,0.5,2.0,50);
+    gfreqCurlSpinBox = new QDoubleSpinBox(bruitCurlFrame);
+    setSpinBox(gfreqCurlSpinBox,1.0,32.0,0.5,6.0,50);
+    bfreqCurlSpinBox = new QDoubleSpinBox(bruitCurlFrame);
+    setSpinBox(bfreqCurlSpinBox,1.0,32.0,0.5,12.0,50);
+
+    // Add the color controls to the color layout
+    QBoxLayout *freqbruitCurlLayout = createLayout(NULL,false,{freqCurlLabel,rfreqCurlSpinBox,gfreqCurlSpinBox,bfreqCurlSpinBox},{});
+    QBoxLayout *bruitCurlParamLayout = createLayout(bruitCurlFrame,true,{},{bruitCurlLayout,freqbruitCurlLayout});
+
+    QBoxLayout *noiseLayout = createLayout(noiseTab,true,{bruitLabel,bruitFrame,bruitCurlParamLabel,bruitCurlFrame},{});
     noiseLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
     // Add the noise tab to the tab widget
     tabWidget->addTab(noiseTab, "Bruit");
@@ -65,7 +96,7 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     nuageFrame->setFrameShape(QFrame::StyledPanel);
     nuageFrame->setFrameShadow(QFrame::Sunken);
 
-    QLabel *nuageLabel = new QLabel("Paramètre du Nuage:", nuageFrame);
+    QLabel *nuageLabel = new QLabel("Paramètre du Nuage:");
 
     // Create three QDoubleSpinBoxes for RGB values (0.0 to 1.0)
     QLabel *colorNuageLabel = new QLabel("Couleur du nuage (R, G, B):", nuageFrame);
@@ -90,9 +121,9 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     lightFrame->setFrameShape(QFrame::StyledPanel);
     lightFrame->setFrameShadow(QFrame::Sunken);
 
-    QLabel *lightLabel = new QLabel("Paramètres de la lumière:", nuageFrame);
+    QLabel *lightLabel = new QLabel("Paramètres de la lumière:" );
 
-    QLabel *positionLight = new QLabel("Position de la lumière:", lightFrame);
+    QLabel *positionLight = new QLabel("Position du solei :", lightFrame);
     LightPosX = new QDoubleSpinBox(lightFrame);
     setSpinBox(LightPosX,-25.0,25.0,0.1,0.0,50);
     LightPosY = new QDoubleSpinBox(lightFrame);
@@ -100,7 +131,7 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     LightPosZ = new QDoubleSpinBox(lightFrame);
     setSpinBox(LightPosZ,-25.0,25.0,0.1,0.0,50);
 
-    QLabel *colorLight = new QLabel("Couleur de la lumière (R, G, B):", lightFrame);
+    QLabel *colorLight = new QLabel("Couleur du soleil (R, G, B):", lightFrame);
     LightColorR = new QDoubleSpinBox(lightFrame);
     setSpinBox(LightColorR,0.0,1.0,0.01,1.0,50);
     LightColorG = new QDoubleSpinBox(lightFrame);
@@ -108,10 +139,22 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     LightColorB = new QDoubleSpinBox(lightFrame);
     setSpinBox(LightColorB,0.0,1.0,0.01,1.0,50);
 
+    QLabel *rayonSoleilVisuelLabel = new QLabel("Rayon du soleil:", lightFrame);
+    QSlider * rayonSoleilSlider = new QSlider(Qt::Horizontal,lightFrame);
+    setSlider(rayonSoleilSlider,0,200,10,150);
+
+    QLabel *absorptionLightLabel = new QLabel("Coeff d'absorption:", lightFrame);
+    absorptionLightSlider = new QSlider(Qt::Horizontal, lightFrame);
+    setSlider(absorptionLightSlider,0,2500,100,100);
+    absorptionLightSpinBox = new QDoubleSpinBox(lightFrame);
+    setSpinBox(absorptionLightSpinBox,0.0,25.0,0.1,1.0,50);
+
     // Add the light/color tab to the tab widget
+    QBoxLayout *absorptionLightLayout = createLayout(NULL,false,{absorptionLightLabel, absorptionLightSlider,absorptionLightSpinBox},{});
+    QBoxLayout *rayonSoleilVisuelLayout = createLayout(NULL,false,{rayonSoleilVisuelLabel, rayonSoleilSlider},{});
     QBoxLayout *lightposLayout = createLayout(NULL,false,{positionLight,LightPosX,LightPosY,LightPosZ},{});
     QBoxLayout *lightcolLayout = createLayout(NULL, false, {colorLight,LightColorR,LightColorG,LightColorB},{});
-    QBoxLayout *lightInfoLayout = createLayout(lightFrame,true,{},{lightposLayout,lightcolLayout});
+    QBoxLayout *lightInfoLayout = createLayout(lightFrame,true,{},{lightposLayout,lightcolLayout,rayonSoleilVisuelLayout,absorptionLightLayout});
     QBoxLayout *absorptionLayout = createLayout(NULL,false,{absorptionLabel,absorptionSlider,absorptionSpinBox},{});
     QBoxLayout *colorNuageLayout = createLayout(NULL,false,{colorNuageLabel,redColorNuageSpinBox,greenColorNuageSpinBox,blueColorNuageSpinBox},{});
     QBoxLayout *nuageLayout = createLayout(nuageFrame,true,{},{colorNuageLayout,absorptionLayout});
@@ -128,7 +171,7 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     echantillonFrame->setFrameShape(QFrame::StyledPanel);
     echantillonFrame->setFrameShadow(QFrame::Sunken);
 
-    QLabel *echantillonLabel = new QLabel("Echantillons:", echantillonFrame);
+    QLabel *echantillonLabel = new QLabel("Echantillons:");
 
     // Widgets pour le nb rayon nuage
     QLabel *SampleNuageLabel = new QLabel("Nuage :", echantillonFrame);
@@ -167,10 +210,31 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     connect(bfreqWorleySpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::bFreqBruitValueChanged);
     connect(afreqWorleySpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::aFreqBruitValueChanged);
 
+    connect(rfacteurWorleySpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::rFacteurBruitValueChanged);
+    connect(gfacteurWorleySpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::gFacteurBruitValueChanged);
+    connect(bfacteurWorleySpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::bFacteurBruitValueChanged);
+    connect(afacteurWorleySpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::aFacteurBruitValueChanged);
+
+    connect(xbruitCurlSpinBox, QOverload<double>::of(&PowerOfTwoSpinBox::valueChanged), this, &TextureDockWidget::xResolutionBruitCurlValueChanged);
+    connect(ybruitCurlSpinBox, QOverload<double>::of(&PowerOfTwoSpinBox::valueChanged), this, &TextureDockWidget::yResolutionBruitCurlValueChanged);
+    connect(rfreqCurlSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::rFreqBruitCurlValueChanged);
+    connect(gfreqCurlSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::gFreqBruitCurlValueChanged);
+    connect(bfreqCurlSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::bFreqBruitCurlValueChanged);
+
     //light tab
     connect(redColorNuageSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::redNuageValueChanged);
     connect(greenColorNuageSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::greenNuageValueChanged);
     connect(blueColorNuageSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::blueNuageValueChanged);
+
+    connect(absorptionSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::absorptionValueChanged);
+    connect(absorptionSlider, &QSlider::valueChanged, this, &TextureDockWidget::absorptionSliderChangedSlot);
+    // Make the two-way connections
+    connect(absorptionSlider, &QSlider::valueChanged, this, [this](int value) {
+        absorptionSpinBox->setValue(value / 100.0);
+    });
+    connect(absorptionSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, [this](double value) {
+        absorptionSlider->setValue(static_cast<int>(value * 100));
+    });
 
     connect(LightPosX, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::setlightposXValueChanged);
     connect(LightPosY, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::setlightposYValueChanged);
@@ -180,71 +244,83 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     connect(LightColorG, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::setlightcolGValueChanged);
     connect(LightColorB, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::setlightcolBValueChanged);
 
-    connect(NuageSampleSlider, &QSlider::valueChanged, this, &TextureDockWidget::onNuageSliderChanged);
-    connect(NuageSampleBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &TextureDockWidget::onNuageSpinBoxChanged);
+    connect(rayonSoleilSlider, &QSlider::valueChanged, this, &TextureDockWidget::rayonSoleilSliderChangedSlot);
 
-    connect(LightSampleSlider, &QSlider::valueChanged, this, &TextureDockWidget::onLightSliderChanged);
-    connect(LightSampleBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &TextureDockWidget::onLightSpinBoxChanged);
-
-    connect(absorptionSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::absorptionValueChanged);
-    connect(absorptionSlider, &QSlider::valueChanged, this, &TextureDockWidget::absorptionSliderChangedSlot);
-
+    connect(absorptionLightSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::absorptionLightValueChanged);
+    connect(absorptionLightSlider, &QSlider::valueChanged, this, &TextureDockWidget::absorptionLightSliderChangedSlot);
     // Make the two-way connections
-    connect(absorptionSlider, &QSlider::valueChanged, this, [this](int value) {
-        absorptionSpinBox->setValue(value / 100.0);
+    connect(absorptionLightSlider, &QSlider::valueChanged, this, [this](int value) {
+        absorptionLightSpinBox->setValue(value / 100.0);
     });
-    connect(absorptionSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, [this](double value) {
-        absorptionSlider->setValue(static_cast<int>(value * 100));
+    connect(absorptionLightSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, [this](double value) {
+        absorptionLightSlider->setValue(static_cast<int>(value * 100));
     });
 
     //other tab
-    QObject::connect(LightSampleSlider, &QSlider::valueChanged, LightSampleBox, &QSpinBox::setValue);
-    QObject::connect(LightSampleBox, QOverload<int>::of(&QSpinBox::valueChanged), LightSampleSlider, &QSlider::setValue);
-    QObject::connect(NuageSampleSlider, &QSlider::valueChanged, NuageSampleBox, &QSpinBox::setValue);
-    QObject::connect(NuageSampleBox, QOverload<int>::of(&QSpinBox::valueChanged), NuageSampleSlider, &QSlider::setValue);
+    connect(LightSampleSlider, &QSlider::valueChanged, LightSampleBox, &QSpinBox::setValue);
+    connect(LightSampleBox, QOverload<int>::of(&QSpinBox::valueChanged), LightSampleSlider, &QSlider::setValue);
+    connect(NuageSampleSlider, &QSlider::valueChanged, NuageSampleBox, &QSpinBox::setValue);
+    connect(NuageSampleBox, QOverload<int>::of(&QSpinBox::valueChanged), NuageSampleSlider, &QSlider::setValue);
+    connect(NuageSampleSlider, &QSlider::valueChanged, this, &TextureDockWidget::onNuageSliderChanged);
+    connect(NuageSampleBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &TextureDockWidget::onNuageSpinBoxChanged);
+    connect(LightSampleSlider, &QSlider::valueChanged, this, &TextureDockWidget::onLightSliderChanged);
+    connect(LightSampleBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &TextureDockWidget::onLightSpinBoxChanged);
+
 
 }
-void TextureDockWidget::onNuageSliderChangedSlot(int value) {emit onNuageSliderChanged(value);}
-void TextureDockWidget::onNuageSpinBoxChangedSlot(int value){emit onNuageSpinBoxChanged(value);}
-void TextureDockWidget::onLightSliderChangedSlot(int value){emit onLightSliderChanged(value);}
-void TextureDockWidget::onLightSpinBoxChangedSlot(int value){emit onLightSpinBoxChanged(value);}
+
+///bruit
+void TextureDockWidget::xResolutionBruitSpinBoxChangedSlot(float value){emit xResolutionBruitValueChanged(value) ;}
+void TextureDockWidget::yResolutionBruitSpinBoxChangedSlot(float value){emit yResolutionBruitValueChanged(value) ;}
+void TextureDockWidget::zResolutionBruitSpinBoxChangedSlot(float value){emit zResolutionBruitValueChanged(value);}
+
+void TextureDockWidget::rFreqBruitSpinBoxChangedSlot(float value){emit rFreqBruitValueChanged(value) ;}
+void TextureDockWidget::gFreqBruitSpinBoxChangedSlot(float value){emit gFreqBruitValueChanged(value) ;}
+void TextureDockWidget::bFreqBruitSpinBoxChangedSlot(float value){emit bFreqBruitValueChanged(value);}
+void TextureDockWidget::aFreqBruitSpinBoxChangedSlot(float value){emit aFreqBruitValueChanged(value) ;}
+
+void TextureDockWidget::rFacteurBruitSpinBoxChangedSlot(float value){emit rFacteurBruitValueChanged(value) ;}
+void TextureDockWidget::gFacteurBruitSpinBoxChangedSlot(float value){emit gFacteurBruitValueChanged(value) ;}
+void TextureDockWidget::bFacteurBruitSpinBoxChangedSlot(float value){emit bFacteurBruitValueChanged(value);}
+void TextureDockWidget::aFacteurBruitSpinBoxChangedSlot(float value){emit aFacteurBruitValueChanged(value) ;}
+
+void TextureDockWidget::xResolutionBruitCurlSpinBoxChangedSlot(float value){emit xResolutionBruitCurlValueChanged(value) ;}
+void TextureDockWidget::yResolutionBruitCurlSpinBoxChangedSlot(float value){emit yResolutionBruitCurlValueChanged(value) ;}
+void TextureDockWidget::rFreqBruitCurlSpinBoxChangedSlot(float value){emit rFreqBruitCurlValueChanged(value) ;}
+void TextureDockWidget::gFreqBruitCurlSpinBoxChangedSlot(float value){emit gFreqBruitCurlValueChanged(value) ;}
+void TextureDockWidget::bFreqBruitCurlSpinBoxChangedSlot(float value){emit bFreqBruitCurlValueChanged(value);}
+
+///Light
 void TextureDockWidget::redNuageSpinBoxChangedSlot(float value){emit redNuageValueChanged(value) ;}
 void TextureDockWidget::greenNuageSpinBoxChangedSlot(float value){emit greenNuageValueChanged(value) ;}
 void TextureDockWidget::blueNuageSpinBoxChangedSlot(float value){emit blueNuageValueChanged(value);}
+
+void TextureDockWidget::absorptionSpinBoxChangedSlot(float value){emit absorptionValueChanged(value) ;}
+void TextureDockWidget::absorptionSliderChangedSlot(int i){emit absorptionValueChanged((float) i/(float)sliderAbsorptionMax);}
+
 void TextureDockWidget::setlightposXSlot(float value){emit setlightposXValueChanged(value) ;}
 void TextureDockWidget::setlightposYSlot(float value){emit setlightposYValueChanged(value) ;}
 void TextureDockWidget::setlightposZSlot(float value){emit setlightposZValueChanged(value);}
 void TextureDockWidget::setlightcolRSlot(float value){emit setlightcolRValueChanged(value) ;}
 void TextureDockWidget::setlightcolGSlot(float value){emit setlightcolGValueChanged(value) ;}
 void TextureDockWidget::setlightcolBSlot(float value){emit setlightcolBValueChanged(value);}
-void TextureDockWidget::absorptionSpinBoxChangedSlot(float value){emit absorptionValueChanged(value) ;}
-void TextureDockWidget::absorptionSliderChangedSlot(int i){emit absorptionValueChanged((float) i/(float)sliderAbsorptionMax);}
-void TextureDockWidget::xResolutionBruitSpinBoxChangedSlot(float value){emit xResolutionBruitValueChanged(value) ;}
-void TextureDockWidget::yResolutionBruitSpinBoxChangedSlot(float value){emit yResolutionBruitValueChanged(value) ;}
-void TextureDockWidget::zResolutionBruitSpinBoxChangedSlot(float value){emit zResolutionBruitValueChanged(value);}
-void TextureDockWidget::rFreqBruitSpinBoxChangedSlot(float value){emit rFreqBruitValueChanged(value) ;}
-void TextureDockWidget::gFreqBruitSpinBoxChangedSlot(float value){emit gFreqBruitValueChanged(value) ;}
-void TextureDockWidget::bFreqBruitSpinBoxChangedSlot(float value){emit bFreqBruitValueChanged(value);}
-void TextureDockWidget::aFreqBruitSpinBoxChangedSlot(float value){emit aFreqBruitValueChanged(value) ;}
+
+void TextureDockWidget::rayonSoleilSliderChangedSlot(int value) {emit rayonSoleilSliderChanged(value/10.0);}
+
+void TextureDockWidget::absorptionLightSpinBoxChangedSlot(float value){emit absorptionLightValueChanged(value) ;}
+void TextureDockWidget::absorptionLightSliderChangedSlot(int i){emit absorptionLightValueChanged((float) i/(float)sliderAbsorptionMax);}
+
+/// Ohter
+void TextureDockWidget::onNuageSliderChangedSlot(int value) {emit onNuageSliderChanged(value);}
+void TextureDockWidget::onNuageSpinBoxChangedSlot(int value){emit onNuageSpinBoxChanged(value);}
+
+void TextureDockWidget::onLightSliderChangedSlot(int value){emit onLightSliderChanged(value);}
+void TextureDockWidget::onLightSpinBoxChangedSlot(int value){emit onLightSpinBoxChanged(value);}
 
 
-//void TextureDockWidget::xSliderChangedSlot(int i) {emit xValueChanged((float)i/(float) sliderMax);}
-//void TextureDockWidget::ySliderChangedSlot(int i) {emit yValueChanged((float)i/(float) sliderMax);}
-//void TextureDockWidget::zSliderChangedSlot(int i) {emit zValueChanged((float)i/(float) sliderMax);}
-
-//void TextureDockWidget::xInvertPlaneSlot() {emit xInvert();}
-//void TextureDockWidget::yInvertPlaneSlot() {emit yInvert();}
-//void TextureDockWidget::zInvertPlaneSlot() {emit zInvert();}
-
-//void TextureDockWidget::xDisplaySlot(bool v) {emit xDisplay(v);}
-//void TextureDockWidget::yDisplaySlot(bool v) {emit yDisplay(v);}
-//void TextureDockWidget::zDisplaySlot(bool v) {emit zDisplay(v);}
 
 
-//void TextureDockWidget::setMaxCutPlanes( int x, int y , int z ){
-//        xHSlider->setRange(0,x);
-//        yHSlider->setRange(0,y);
-//        zHSlider->setRange(0,z);
-//}
+
+
 
 

@@ -24,6 +24,9 @@ public:
     QDoubleSpinBox *absorptionSpinBox;
     QSlider *absorptionSlider;
 
+    QDoubleSpinBox *absorptionLightSpinBox;
+    QSlider *absorptionLightSlider;
+
     QDoubleSpinBox *rfreqWorleySpinBox;
     QDoubleSpinBox *gfreqWorleySpinBox;
     QDoubleSpinBox *bfreqWorleySpinBox;
@@ -41,27 +44,19 @@ public:
     PowerOfTwoSpinBox *ybruitworleySpinBox;
     PowerOfTwoSpinBox *zbruitworleySpinBox;
 
+    PowerOfTwoSpinBox *xbruitCurlSpinBox;
+    PowerOfTwoSpinBox *ybruitCurlSpinBox;
+    QDoubleSpinBox *rfreqCurlSpinBox;
+    QDoubleSpinBox *gfreqCurlSpinBox;
+    QDoubleSpinBox *bfreqCurlSpinBox;
+
+    QDoubleSpinBox *rfacteurWorleySpinBox;
+    QDoubleSpinBox *gfacteurWorleySpinBox;
+    QDoubleSpinBox *bfacteurWorleySpinBox;
+    QDoubleSpinBox *afacteurWorleySpinBox;
+
 private slots:
-    void onNuageSliderChangedSlot(int value);
-    void onNuageSpinBoxChangedSlot(int value);
-    void onLightSliderChangedSlot(int value);
-    void onLightSpinBoxChangedSlot(int value);
-
-    void redNuageSpinBoxChangedSlot(float value);
-    void greenNuageSpinBoxChangedSlot(float value);
-    void blueNuageSpinBoxChangedSlot(float value);
-
-    void setlightposXSlot(float value);
-    void setlightposYSlot(float value);
-    void setlightposZSlot(float value);
-
-    void setlightcolRSlot(float value);
-    void setlightcolGSlot(float value);
-    void setlightcolBSlot(float value);
-
-    void absorptionSpinBoxChangedSlot(float value);
-    void absorptionSliderChangedSlot(int i);
-
+///bruit
     void xResolutionBruitSpinBoxChangedSlot(float value);
     void yResolutionBruitSpinBoxChangedSlot(float value);
     void zResolutionBruitSpinBoxChangedSlot(float value);
@@ -71,32 +66,49 @@ private slots:
     void bFreqBruitSpinBoxChangedSlot(float value);
     void aFreqBruitSpinBoxChangedSlot(float value);
 
+    void rFacteurBruitSpinBoxChangedSlot(float value);
+    void gFacteurBruitSpinBoxChangedSlot(float value);
+    void bFacteurBruitSpinBoxChangedSlot(float value);
+    void aFacteurBruitSpinBoxChangedSlot(float value);
+
+    void xResolutionBruitCurlSpinBoxChangedSlot(float value);
+    void yResolutionBruitCurlSpinBoxChangedSlot(float value);
+    void rFreqBruitCurlSpinBoxChangedSlot(float value);
+    void gFreqBruitCurlSpinBoxChangedSlot(float value);
+    void bFreqBruitCurlSpinBoxChangedSlot(float value);
+
+///Light
+    void redNuageSpinBoxChangedSlot(float value);
+    void greenNuageSpinBoxChangedSlot(float value);
+    void blueNuageSpinBoxChangedSlot(float value);
+
+    void absorptionSpinBoxChangedSlot(float value);
+    void absorptionSliderChangedSlot(int i);
+
+    void setlightposXSlot(float value);
+    void setlightposYSlot(float value);
+    void setlightposZSlot(float value);
+
+    void setlightcolRSlot(float value);
+    void setlightcolGSlot(float value);
+    void setlightcolBSlot(float value);
+
+    void rayonSoleilSliderChangedSlot(int value);
+
+    void absorptionLightSpinBoxChangedSlot(float value);
+    void absorptionLightSliderChangedSlot(int i);
+
+///other
+    void onNuageSliderChangedSlot(int value);
+    void onNuageSpinBoxChangedSlot(int value);
+    void onLightSliderChangedSlot(int value);
+    void onLightSpinBoxChangedSlot(int value);
+
 
 public slots:
-//    void setMaxCutPlanes(int _xMax,int _yMax,int _zMax);
 
 signals:
-
-    void onNuageSliderChanged(int value);
-    void onNuageSpinBoxChanged(int value);
-    void onLightSliderChanged(int value);
-    void onLightSpinBoxChanged(int value);
-
-    void redNuageValueChanged(float redValue);
-    void greenNuageValueChanged(float greenValue);
-    void blueNuageValueChanged(float blueValue);
-
-    void setlightposXValueChanged(float x);
-    void setlightposYValueChanged(float y);
-    void setlightposZValueChanged(float z);
-
-    void setlightcolRValueChanged(float r);
-    void setlightcolGValueChanged(float g);
-    void setlightcolBValueChanged(float b);
-
-
-    void absorptionValueChanged(float absorptionValue);
-
+///Bruit
     void xResolutionBruitValueChanged(float xValue);
     void yResolutionBruitValueChanged(float yValue);
     void zResolutionBruitValueChanged(float zValue);
@@ -106,6 +118,41 @@ signals:
     void bFreqBruitValueChanged(float bValue);
     void aFreqBruitValueChanged(float aValue);
 
+    void rFacteurBruitValueChanged(float rValue);
+    void gFacteurBruitValueChanged(float gValue);
+    void bFacteurBruitValueChanged(float bValue);
+    void aFacteurBruitValueChanged(float aValue);
+
+    void xResolutionBruitCurlValueChanged(float xValue);
+    void yResolutionBruitCurlValueChanged(float yValue);
+    void rFreqBruitCurlValueChanged(float rValue);
+    void gFreqBruitCurlValueChanged(float gValue);
+    void bFreqBruitCurlValueChanged(float bValue);
+
+///Light
+    void redNuageValueChanged(float redValue);
+    void greenNuageValueChanged(float greenValue);
+    void blueNuageValueChanged(float blueValue);
+
+    void absorptionValueChanged(float absorptionValue);
+
+    void setlightposXValueChanged(float x);
+    void setlightposYValueChanged(float y);
+    void setlightposZValueChanged(float z);
+
+    void setlightcolRValueChanged(float r);
+    void setlightcolGValueChanged(float g);
+    void setlightcolBValueChanged(float b);
+
+    void rayonSoleilSliderChanged(int rayonValue);
+
+    void absorptionLightValueChanged(float absorptionValue);
+
+/// other
+    void onNuageSliderChanged(int value);
+    void onNuageSpinBoxChanged(int value);
+    void onLightSliderChanged(int value);
+    void onLightSpinBoxChanged(int value);
 
 };
 

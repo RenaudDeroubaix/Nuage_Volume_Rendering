@@ -54,6 +54,10 @@ void Texture::init(){
 
     resolutionBruit = QVector3D(128.0,128.0,128.0);
     freqBruit =QVector4D(2.0,6.0,12.0,24.0);
+    facteurBruit =QVector4D(-3.0,0.33,0.33,0.33);
+
+    resolutionBruitCurl = QVector2D(128.0,128.0);
+    freqBruitCurl =QVector3D(2.0,6.0,12.0);
 
     LightEch = 20;
     NuageEch = 50;
@@ -103,6 +107,7 @@ void Texture::init(){
 
 
     absorptionNuage = 9.0;
+    absorptionLight = 1.0;
     couleurNuage =QVector3D(1.0,1.0,1.0);
 
     textureCreated = false;
@@ -399,10 +404,12 @@ void Texture::draw( const qglviewer::Camera * camera ){
    glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "NuageSample"), NuageEch);
 
    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "absorptionNuage"), absorptionNuage);
+   glFunctions->glUniform4fv(glFunctions->glGetUniformLocation(programID, "facteurWorley"),1, &facteurBruit[0]);
    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "couleurNuage"),1, &couleurNuage[0]);
 
    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "LightPos"),1, &LightPos[0]);
    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "LightColor"),1, &LightColor[0]);
+   glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "absorptionLight"), absorptionLight);
 
 
    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "BBmin"),1,&BBmin[0]);
@@ -517,44 +524,6 @@ void Texture::drawCube(){
            glEnd();
 }
 
-
-//void Texture::drawCutPlanes(){
-
-//    double x = xCutPosition + xCutDirection*.001;
-//    double y = yCutPosition + yCutDirection*.001;
-//    double z = zCutPosition + zCutDirection*.001;
-
-//    glColor4f(1.0,0.,0.,0.25);
-//    glBegin(GL_QUADS);
-
-//    if(xCutDisplay){
-//        // Right face
-//        glVertex3f( x, 0.0f, 0.0f);	// Bottom Right Of The Texture and Quad
-//        glVertex3f( x, yMax, 0.0f);	// Top Right Of The Texture and Quad
-//        glVertex3f( x, yMax, zMax);	// Top Left Of The Texture and Quad
-//        glVertex3f( x, 0.0f, zMax);	// Bottom Left Of The Texture and Quad
-//    }
-
-//    if(zCutDisplay){
-//        // Front Face
-//        glVertex3f(0.0f, 0.0f, z);	// Bottom Left Of The Texture and Quad
-//        glVertex3f(xMax, 0.0f, z);	// Bottom Right Of The Texture and Quad
-//        glVertex3f(xMax, yMax, z);	// Top Right Of The Texture and Quad
-//        glVertex3f(0.0f, yMax, z);	// Top Left Of The Texture and Quad
-//    }
-
-//    if(yCutDisplay){
-//        // Top Face
-//        glVertex3f(0.0f, y, 0.0f);	// Top Left Of The Texture and Quad
-//        glVertex3f(0.0f, y, zMax);	// Bottom Left Of The Texture and Quad
-//        glVertex3f(xMax, y, zMax);	// Bottom Right Of The Texture and Quad
-//        glVertex3f(xMax, y, 0.0f);	// Top Right Of The Texture and Quad
-//    }
-//    glEnd();
-
-
-//}
-
 void Texture::drawBoundingBox(bool fill){
 
     //glPolygonMode (GL_FRONT_AND_BACK, fill ? GL_FILL : GL_FILL);
@@ -630,6 +599,40 @@ void Texture::setFreqBruitB(float _b){
 }
 void Texture::setFreqBruitA(float _a){
     freqBruit[3]=_a;
+}
+void Texture::setAbsorptionLightDisplay(float _a){
+    absorptionLight=_a;
+}
+void Texture::setResolutionBruitCurlX(float _x){
+    resolutionBruitCurl[0]=_x;
+//    std::cout << resolutionBruit[0] <<std::endl;
+    initTexture();
+}
+void Texture::setResolutionBruitCurlY(float _y){
+    resolutionBruitCurl[1]=_y;
+//    std::cout << resolutionBruit[1] <<std::endl;
+    initTexture();
+}
+void Texture::setFreqBruitCurlR(float _r){
+    freqBruitCurl[0]=_r;
+}
+void Texture::setFreqBruitCurlG(float _g){
+    freqBruitCurl[1]=_g;
+}
+void Texture::setFreqBruitCurlB(float _b){
+    freqBruitCurl[2]=_b;
+}
+void Texture::setFacteurBruitR(float _r){
+    facteurBruit[0]=_r;
+}
+void Texture::setFacteurBruitG(float _g){
+    facteurBruit[1]=_g;
+}
+void Texture::setFacteurBruitB(float _b){
+    facteurBruit[2]=_b;
+}
+void Texture::setFacteurBruitA(float _a){
+    facteurBruit[3]=_a;
 }
 
 void Texture::clear(){

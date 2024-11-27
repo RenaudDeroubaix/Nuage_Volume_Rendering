@@ -20,12 +20,13 @@ uniform int LightSample;
 
 uniform vec3 couleurNuage;
 uniform float absorptionNuage;
+uniform vec4 facteurWorley;
 
 uniform Plan plans[6];
 
 uniform vec3 LightPos;
 uniform vec3 LightColor;
-
+uniform float absorptionLight;
 
 uniform vec3 BBmin;
 uniform vec3 BBmax;
@@ -125,7 +126,7 @@ float anisotropic_scatering(float g , vec3 point_j,  vec3 dir){
 void main() {
     float epsilon = 0.0001;
     float transparence = 1.0;
-    float LightDensity = 1.0; // uniform ?
+    float LightDensity = absorptionLight;
     float LightStepSize = 1.0 / float (LightSample);
     float NuageStepSize = 1.0 / float (NuageSample);
     LightDensity *= float(LightStepSize);
@@ -152,7 +153,8 @@ void main() {
 //            continue;
 
         textureValue =  dist * texture(tex,  point_i_tex_coord);
-        densite = ((textureValue.g + textureValue.b + textureValue.a)/3. - textureValue.r*3.0);
+        //densite = ((textureValue.g + textureValue.b + textureValue.a)/3. - textureValue.r*3.0);
+        densite = (textureValue.r * facteurWorley[0] + textureValue.g * facteurWorley[1] + textureValue.b * facteurWorley[2] + textureValue.a * facteurWorley[3]);
         if (densite > epsilon)
         {
             vec3 Ipos = point_i;
@@ -175,7 +177,8 @@ void main() {
 
                 textureValueLight =  dist_J  * texture(tex,  point_light_j_tex_coord);
 
-                float luminance = ((textureValueLight.g + textureValueLight.b + textureValueLight.a)/3.0 - textureValueLight.r*3);
+                //float luminance = ((textureValueLight.g + textureValueLight.b + textureValueLight.a)/3.0 - textureValueLight.r*3);
+                float luminance = (textureValue.r * facteurWorley[0] + textureValue.g * facteurWorley[1] + textureValue.b * facteurWorley[2] + textureValue.a * facteurWorley[3]);
 
                 dist_light += luminance * anisotropic_scatering(0.3 * c , Ipos , dir_light);
 

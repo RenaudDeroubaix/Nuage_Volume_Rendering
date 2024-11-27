@@ -238,6 +238,51 @@ void TextureViewer::setFreqBruitA(float _a){
     texture->setFreqBruitA(_a);
     update();
 }
+void TextureViewer::setRayonSoleil(float _rayonValue){
+    //a faire lien sur light
+    update();
+}
+void TextureViewer::setAbsorptionLight(float _a){
+    texture->setAbsorptionLightDisplay(_a);
+    update();
+}
+void TextureViewer::setResolutionBruitCurlX(float _x){
+    texture->setResolutionBruitCurlX(pow(2,_x));
+    update();
+}
+void TextureViewer::setResolutionBruitCurlY(float _y){
+    texture->setResolutionBruitCurlY(pow(2,_y));
+    update();
+}
+void TextureViewer::setFreqBruitCurlR(float _r){
+    texture->setFreqBruitCurlR(_r);
+    update();
+}
+void TextureViewer::setFreqBruitCurlG(float _g){
+    texture->setFreqBruitCurlG(_g);
+    update();
+}
+void TextureViewer::setFreqBruitCurlB(float _b){
+    texture->setFreqBruitCurlB(_b);
+    update();
+}
+void TextureViewer::setFacteurBruitR(float _r){
+    texture->setFacteurBruitR(_r);
+    update();
+}
+void TextureViewer::setFacteurBruitG(float _g){
+    texture->setFacteurBruitG(_g);
+    update();
+}
+void TextureViewer::setFacteurBruitB(float _b){
+    texture->setFacteurBruitB(_b);
+    update();
+}
+void TextureViewer::setFacteurBruitA(float _a){
+    texture->setFacteurBruitA(_a);
+    update();
+}
+
 
 
 void TextureViewer::keyPressEvent(QKeyEvent *e)
