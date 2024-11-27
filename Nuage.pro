@@ -16,7 +16,8 @@ HEADERS += header/Window.h \
     header/TextureViewer.h \
     header/Texture.h \
     header/TextureDockWidget.h \
-    header/Vec3D.h
+    header/Vec3D.h \
+    header/WidgetSetup.h
 
 RESOURCES += \
     GLSL/shaders/volume.frag \

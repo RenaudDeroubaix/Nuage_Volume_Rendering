@@ -12,6 +12,7 @@ public:
         setDecimals(0); // Pas de décimales
         setSingleStep(1); // Incrément/décrément de 1
         setValue(7); // Valeur initiale (2^7 = 128)
+        setFixedWidth(50);
     }
 
 protected:
