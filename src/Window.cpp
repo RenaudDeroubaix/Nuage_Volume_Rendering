@@ -27,10 +27,6 @@ Window::Window()
 
     //menuFile->addAction(actionLoad3Dimage);
 
-
-
-    //connect(actionLoad3Dimage, SIGNAL(triggered()), this, SLOT(open3DImage()));
-
     connect(recompileShaders, &QAction::triggered, viewer, &TextureViewer::recompileShaders);
 
     QGroupBox * viewerGroupBox = new QGroupBox ("Clouds: Volume Rendering", this);
@@ -59,19 +55,29 @@ Window::Window()
     connect(madDockWidget, &TextureDockWidget::onLightSliderChanged, viewer, &TextureViewer::onLightSliderChanged);
     connect(madDockWidget, &TextureDockWidget::onLightSpinBoxChanged, viewer, &TextureViewer::onLightSpinBoxChanged);
 
+    connect(madDockWidget, &TextureDockWidget::xResolutionBruitValueChanged, viewer, &TextureViewer::setResolutionBruitX);
+    connect(madDockWidget, &TextureDockWidget::yResolutionBruitValueChanged, viewer, &TextureViewer::setResolutionBruitY);
+    connect(madDockWidget, &TextureDockWidget::zResolutionBruitValueChanged, viewer, &TextureViewer::setResolutionBruitZ);
 
-//    connect(madDockWidget, &TextureDockWidget::xValueChanged, viewer, &TextureViewer::setXCut);
-//    connect(madDockWidget, &TextureDockWidget::yValueChanged, viewer, &TextureViewer::setYCut);
-//    connect(madDockWidget, &TextureDockWidget::zValueChanged, viewer, &TextureViewer::setZCut);
+    connect(madDockWidget, &TextureDockWidget::rFreqBruitValueChanged, viewer, &TextureViewer::setFreqBruitR);
+    connect(madDockWidget, &TextureDockWidget::gFreqBruitValueChanged, viewer, &TextureViewer::setFreqBruitG);
+    connect(madDockWidget, &TextureDockWidget::bFreqBruitValueChanged, viewer, &TextureViewer::setFreqBruitB);
+    connect(madDockWidget, &TextureDockWidget::aFreqBruitValueChanged, viewer, &TextureViewer::setFreqBruitA);
 
-//    connect(madDockWidget, &TextureDockWidget::xInvert, viewer, &TextureViewer::invertXCut);
-//    connect(madDockWidget, &TextureDockWidget::yInvert, viewer, &TextureViewer::invertYCut);
-//    connect(madDockWidget, &TextureDockWidget::zInvert, viewer, &TextureViewer::invertZCut);
+    connect(madDockWidget, &TextureDockWidget::rFacteurBruitValueChanged, viewer, &TextureViewer::setFacteurBruitR);
+    connect(madDockWidget, &TextureDockWidget::gFacteurBruitValueChanged, viewer, &TextureViewer::setFacteurBruitG);
+    connect(madDockWidget, &TextureDockWidget::bFacteurBruitValueChanged, viewer, &TextureViewer::setFacteurBruitB);
+    connect(madDockWidget, &TextureDockWidget::aFacteurBruitValueChanged, viewer, &TextureViewer::setFacteurBruitA);
 
-//    connect(madDockWidget, &TextureDockWidget::xDisplay, viewer, &TextureViewer::setXCutDisplay);
-//    connect(madDockWidget, &TextureDockWidget::yDisplay, viewer, &TextureViewer::setYCutDisplay);
-//    connect(madDockWidget, &TextureDockWidget::zDisplay, viewer, &TextureViewer::setZCutDisplay);
+    connect(madDockWidget, &TextureDockWidget::rayonSoleilSliderChanged, viewer, &TextureViewer::setRayonSoleil);
 
+    connect(madDockWidget, &TextureDockWidget::absorptionLightValueChanged, viewer, &TextureViewer::setAbsorptionLight);
+
+    connect(madDockWidget, &TextureDockWidget::xResolutionBruitValueChanged, viewer, &TextureViewer::setResolutionBruitX);
+    connect(madDockWidget, &TextureDockWidget::yResolutionBruitValueChanged, viewer, &TextureViewer::setResolutionBruitY);
+    connect(madDockWidget, &TextureDockWidget::rFreqBruitCurlValueChanged, viewer, &TextureViewer::setFreqBruitCurlR);
+    connect(madDockWidget, &TextureDockWidget::gFreqBruitCurlValueChanged, viewer, &TextureViewer::setFreqBruitCurlG);
+    connect(madDockWidget, &TextureDockWidget::bFreqBruitCurlValueChanged, viewer, &TextureViewer::setFreqBruitCurlB);
 
 
     this->setCentralWidget(viewerGroupBox);
@@ -92,27 +98,3 @@ Window::Window()
 
 }
 
-//void Window::open3DImage(){
-
-//    QString selectedFilter, openFileNameLabel;
-//    QString fileFilter = "Known Filetypes (*.dim *.nii);;IMA (*.dim);;NIFTI (*.nii)";
-
-//    QString fileName = QFileDialog::getOpenFileName(this,
-//                                                    tr("Select an input 3D image"),
-//                                                    openFileNameLabel,
-//                                                    fileFilter,
-//                                                    &selectedFilter);
-
-//    // In case of Cancel
-//    if ( fileName.isEmpty() ) {
-//        return;
-//    }
-
-//    statusBar()->showMessage("Opening 3D image...");
-//    if(fileName.endsWith(".dim") || fileName.endsWith(".nii") ){
-//        viewer->open3DImage(fileName);
-//        statusBar()->showMessage("3D image opened");
-
-//    }
-
-//}

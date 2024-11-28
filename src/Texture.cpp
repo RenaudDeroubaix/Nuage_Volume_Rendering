@@ -13,6 +13,29 @@
 Texture::Texture(QOpenGLContext* context)
 {
     glContext = context;
+    // Récupérer les informations sous forme de chaînes
+    const char* version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
+    const char* renderer = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
+
+    // Afficher les informations correctement
+    qDebug() << "OpenGL Version:" << version;
+    qDebug() << "Renderer:" << renderer;
+
+    int workGroupCount[3], workGroupSize[3], sharedMemorySize;
+    glFunctions = glContext->extraFunctions();
+    glFunctions->glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 0, &workGroupCount[0]);
+    glFunctions->glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 1, &workGroupCount[1]);
+    glFunctions->glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 2, &workGroupCount[2]);
+
+    glFunctions->glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 0, &workGroupSize[0]);
+    glFunctions->glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 1, &workGroupSize[1]);
+    glFunctions->glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 2, &workGroupSize[2]);
+
+    glGetIntegerv(GL_MAX_COMPUTE_SHARED_MEMORY_SIZE, &sharedMemorySize);
+
+    std::cout << "Max work group counts: (" << workGroupCount[0] << ", " << workGroupCount[1] << ", " << workGroupCount[2] << ")\n";
+    std::cout << "Max work group sizes: (" << workGroupSize[0] << ", " << workGroupSize[1] << ", " << workGroupSize[2] << ")\n";
+    std::cout << "Max shared memory size: " << sharedMemorySize << " bytes\n";
     init();
     initGLSL();
     initTexture();
@@ -29,14 +52,18 @@ void Texture::init(){
     //Set texture to cube of size 1.
     timer.start();
 
-    xMax = 128;
-    yMax = 128;
-    zMax = 128;
-    LightEch = 10;
-    NuageEch = 10;
-    BBmin = QVector3D(-0.5,-0.5,-0.5);
+    resolutionBruit = QVector3D(128.0,128.0,128.0);
+    freqBruit =QVector4D(2.0,6.0,12.0,24.0);
+    facteurBruit =QVector4D(-3.0,0.33,0.33,0.33);
 
-    BBmax = QVector3D(0.5,0.5,0.5);
+    resolutionBruitCurl = QVector2D(128.0,128.0);
+    freqBruitCurl =QVector3D(2.0,6.0,12.0);
+
+    LightEch = 20;
+    NuageEch = 50;
+    BBmin = QVector3D(-0.5,-0.5,-0.5) ;
+
+    BBmax = QVector3D(0.5,0.5,0.5) ;
 
     LightPos =  QVector3D(0.0,1.0,0.0);
     LightColor =  QVector3D(1.0,1.0,1.0);
@@ -79,7 +106,8 @@ void Texture::init(){
         ));
 
 
-    absorptionNuage = 0.9;
+    absorptionNuage = 9.0;
+    absorptionLight = 1.0;
     couleurNuage =QVector3D(1.0,1.0,1.0);
 
     textureCreated = false;
@@ -196,6 +224,7 @@ void Texture::initGLSL(){
     glFunctions->glLinkProgram(this->programID);
     glFunctions->glLinkProgram(this->computeID);
     printProgramErrors(programID);
+    printProgramErrors(computeID);
     checkOpenGLError();
 }
 
@@ -292,25 +321,25 @@ void Texture::initTexture(){
     }
 
     glGenTextures(1, &textureId);
-    glBindTexture(GL_TEXTURE_3D, textureId);
+    glFunctions->glBindTexture(GL_TEXTURE_3D, textureId);
 
 
 
 	//TODO complete texture options
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+    glFunctions->glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+    glFunctions->glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+    glFunctions->glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
     // Interpolation : linéaire à l'échantillonnage et filtrage
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // Minification : interpolation linéaire
-    glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // Magnification : interpolation linéaire
+    glFunctions->glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR); // Minification : interpolation linéaire
+    glFunctions->glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR); // Magnification : interpolation linéaire
 
     // Filtrage par plus proche voisin si besoin :
     // glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     // glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
     // Charger les données de la texture dans OpenGL
-    glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA32F, xMax, yMax, zMax, 0, GL_RGBA, GL_FLOAT, nullptr);
+    glFunctions->glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA32F, resolutionBruit[0], resolutionBruit[1], resolutionBruit[2], 0, GL_RGBA, GL_FLOAT, nullptr);
     textureCreated = true;
 
 }
@@ -324,12 +353,16 @@ void Texture::computePass() {
     glFunctions->glUseProgram(0);
     glFunctions->glUseProgram(computeID);
 
-    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(computeID, "u_time"), timer.elapsed()/1000.0);
+    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(computeID, "u_time"), timer.elapsed()/5000.0);
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(computeID, "resolution"),1, &resolutionBruit[0]);
+    glFunctions->glUniform4fv(glFunctions->glGetUniformLocation(computeID, "frequenceWorley"),1, &freqBruit[0]);
 
     glFunctions->glBindTexture(GL_TEXTURE_3D, textureId);
-    glFunctions->glBindImageTexture (0, textureId, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
-    glFunctions->glDispatchCompute(16,16,16);
+    glFunctions->glBindImageTexture (0, textureId, 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+    QVector3D reso=QVector3D(ceil(resolutionBruit[0]/8),ceil(resolutionBruit[1]/8),ceil(resolutionBruit[2]/8));
+    glFunctions->glDispatchCompute(reso[0],reso[1],reso[2]);
     glFunctions->glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+    glFunctions->glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
     glFunctions->glBindImageTexture (0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
     glFunctions->glBindTexture(GL_TEXTURE_3D, 0);
     glFunctions->glUseProgram(programID);
@@ -343,7 +376,6 @@ void Texture::draw( const qglviewer::Camera * camera ){
         return;
 
     glDisable(GL_LIGHTING);
-    glEnable(GL_TEXTURE_3D);
     //glPolygonMode( GL_FRONT , GL_FILL );
 
     // GPU start
@@ -364,18 +396,20 @@ void Texture::draw( const qglviewer::Camera * camera ){
     /***********************************************************************/
 
 
-    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "xMax"), xMax);
-   glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "yMax"), yMax);
-   glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "zMax"), zMax);
+    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "xMax"), resolutionBruit[0]);
+   glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "yMax"), resolutionBruit[1]);
+   glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "zMax"), resolutionBruit[2]);
 
    glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "LightSample"), LightEch);
    glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "NuageSample"), NuageEch);
 
    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "absorptionNuage"), absorptionNuage);
+   glFunctions->glUniform4fv(glFunctions->glGetUniformLocation(programID, "facteurWorley"),1, &facteurBruit[0]);
    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "couleurNuage"),1, &couleurNuage[0]);
 
    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "LightPos"),1, &LightPos[0]);
    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "LightColor"),1, &LightColor[0]);
+   glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "absorptionLight"), absorptionLight);
 
 
    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "BBmin"),1,&BBmin[0]);
@@ -423,8 +457,8 @@ void Texture::draw( const qglviewer::Camera * camera ){
 //   glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "zCutDirection"), zCutDirection);
 
 
-   glActiveTexture(GL_TEXTURE0 + textureId);
-   glBindTexture(GL_TEXTURE_3D, textureId); // Bind the 3D texture
+   glFunctions->glActiveTexture(GL_TEXTURE0 + textureId);
+   glFunctions->glBindTexture(GL_TEXTURE_3D, textureId); // Bind the 3D texture
    glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "tex"), textureId);
 
     /***********************************************************************/
@@ -448,96 +482,47 @@ void Texture::drawCube(){
 
     glBegin(GL_QUADS);
 
-        // Face arrière (normale vers -Z)
-        glNormal3f(0.0f, 0.0f, -1.0f);
-        glVertex3f(xMinCube, yMinCube, zMinCube); // Bottom Left
-        glVertex3f(xMaxCube, yMinCube, zMinCube); // Bottom Right
-        glVertex3f(xMaxCube, yMaxCube, zMinCube); // Top Right
-        glVertex3f(xMinCube, yMaxCube, zMinCube); // Top Left
+           // Face arrière (normale vers -Z)
+           glVertex3f(xMinCube, yMinCube, zMinCube); // Bottom Left
+           glVertex3f(xMaxCube, yMinCube, zMinCube); // Bottom Right
+           glVertex3f(xMaxCube, yMaxCube, zMinCube); // Top Right
+           glVertex3f(xMinCube, yMaxCube, zMinCube); // Top Left
 
-        // Face avant (normale vers +Z)
-        glNormal3f(0.0f, 0.0f, 1.0f);
-        glVertex3f(xMinCube, yMinCube, zMaxCube); // Bottom Left
-        glVertex3f(xMinCube, yMaxCube, zMaxCube); // Top Left
-        glVertex3f(xMaxCube, yMaxCube, zMaxCube); // Top Right
-        glVertex3f(xMaxCube, yMinCube, zMaxCube); // Bottom Right
+           // Face avant (normale vers +Z)
+           glVertex3f(xMinCube, yMinCube, zMaxCube); // Bottom Left
+           glVertex3f(xMinCube, yMaxCube, zMaxCube); // Top Left
+           glVertex3f(xMaxCube, yMaxCube, zMaxCube); // Top Right
+           glVertex3f(xMaxCube, yMinCube, zMaxCube); // Bottom Right
 
-        // Face gauche (normale vers -X)
-        glNormal3f(-1.0f, 0.0f, 0.0f);
-        glVertex3f(xMinCube, yMinCube, zMaxCube); // Bottom Right
-        glVertex3f(xMinCube, yMinCube, zMinCube); // Bottom Left
+           // Face gauche (normale vers -X)
+           glVertex3f(xMinCube, yMinCube, zMaxCube); // Bottom Right
+           glVertex3f(xMinCube, yMinCube, zMinCube); // Bottom Left
+           glVertex3f(xMinCube, yMaxCube, zMinCube); // Top Left
+           glVertex3f(xMinCube, yMaxCube, zMaxCube); // Top Right
 
-        glVertex3f(xMinCube, yMaxCube, zMinCube); // Top Left
-
-        glVertex3f(xMinCube, yMaxCube, zMaxCube); // Top Right
-
-        // Face droite (normale vers +X)
-        glNormal3f(1.0f, 0.0f, 0.0f);
-         glVertex3f(xMaxCube, yMaxCube, zMinCube); // Top Left
-        glVertex3f(xMaxCube, yMinCube, zMinCube); // Bottom Left
-
-               glVertex3f(xMaxCube, yMinCube, zMaxCube); // Bottom Right
-        glVertex3f(xMaxCube, yMaxCube, zMaxCube); // Top Right
+           // Face droite (normale vers +X)
+           glVertex3f(xMaxCube, yMaxCube, zMinCube); // Top Left
+           glVertex3f(xMaxCube, yMinCube, zMinCube); // Bottom Left
+           glVertex3f(xMaxCube, yMinCube, zMaxCube); // Bottom Right
+           glVertex3f(xMaxCube, yMaxCube, zMaxCube); // Top Right
 
 
-        // Face du bas (normale vers -Y)
-        glNormal3f(0.0f, -1.0f, 0.0f);
-        glVertex3f(xMaxCube, yMinCube, zMinCube); // Bottom Right
-        glVertex3f(xMinCube, yMinCube, zMinCube); // Bottom Left
-
-            glVertex3f(xMinCube, yMinCube, zMaxCube); // Top Left
-        glVertex3f(xMaxCube, yMinCube, zMaxCube); // Top Right
+           // Face du bas (normale vers -Y)
+           glVertex3f(xMaxCube, yMinCube, zMinCube); // Bottom Right
+           glVertex3f(xMinCube, yMinCube, zMinCube); // Bottom Left
+           glVertex3f(xMinCube, yMinCube, zMaxCube); // Top Left
+           glVertex3f(xMaxCube, yMinCube, zMaxCube); // Top Right
 
 
-        // Face du haut (normale vers +Y)
-        glNormal3f(0.0f, 1.0f, 0.0f);
-        glVertex3f(xMinCube, yMaxCube, zMaxCube); // Bottom Right
-        glVertex3f(xMinCube, yMaxCube, zMinCube); // Bottom Left
-
-        glVertex3f(xMaxCube, yMaxCube, zMinCube); // Top Left
-        glVertex3f(xMaxCube, yMaxCube, zMaxCube); // Top Right
+           // Face du haut (normale vers +Y)
+           glVertex3f(xMinCube, yMaxCube, zMaxCube); // Bottom Right
+           glVertex3f(xMinCube, yMaxCube, zMinCube); // Bottom Left
+           glVertex3f(xMaxCube, yMaxCube, zMinCube); // Top Left
+           glVertex3f(xMaxCube, yMaxCube, zMaxCube); // Top Right
 
 
-        glEnd();
+           glEnd();
 }
-
-
-//void Texture::drawCutPlanes(){
-
-//    double x = xCutPosition + xCutDirection*.001;
-//    double y = yCutPosition + yCutDirection*.001;
-//    double z = zCutPosition + zCutDirection*.001;
-
-//    glColor4f(1.0,0.,0.,0.25);
-//    glBegin(GL_QUADS);
-
-//    if(xCutDisplay){
-//        // Right face
-//        glVertex3f( x, 0.0f, 0.0f);	// Bottom Right Of The Texture and Quad
-//        glVertex3f( x, yMax, 0.0f);	// Top Right Of The Texture and Quad
-//        glVertex3f( x, yMax, zMax);	// Top Left Of The Texture and Quad
-//        glVertex3f( x, 0.0f, zMax);	// Bottom Left Of The Texture and Quad
-//    }
-
-//    if(zCutDisplay){
-//        // Front Face
-//        glVertex3f(0.0f, 0.0f, z);	// Bottom Left Of The Texture and Quad
-//        glVertex3f(xMax, 0.0f, z);	// Bottom Right Of The Texture and Quad
-//        glVertex3f(xMax, yMax, z);	// Top Right Of The Texture and Quad
-//        glVertex3f(0.0f, yMax, z);	// Top Left Of The Texture and Quad
-//    }
-
-//    if(yCutDisplay){
-//        // Top Face
-//        glVertex3f(0.0f, y, 0.0f);	// Top Left Of The Texture and Quad
-//        glVertex3f(0.0f, y, zMax);	// Bottom Left Of The Texture and Quad
-//        glVertex3f(xMax, y, zMax);	// Bottom Right Of The Texture and Quad
-//        glVertex3f(xMax, y, 0.0f);	// Top Right Of The Texture and Quad
-//    }
-//    glEnd();
-
-
-//}
 
 void Texture::drawBoundingBox(bool fill){
 
@@ -587,6 +572,67 @@ void Texture::setBlightcolDisplay(float _b){
 }
 void Texture::setAbsorptionNuageDisplay(float _a){
     absorptionNuage=_a;
+}
+void Texture::setResolutionBruitX(float _x){
+    resolutionBruit[0]=_x;
+//    std::cout << resolutionBruit[0] <<std::endl;
+    initTexture();
+}
+void Texture::setResolutionBruitY(float _y){
+    resolutionBruit[1]=_y;
+//    std::cout << resolutionBruit[1] <<std::endl;
+    initTexture();
+}
+void Texture::setResolutionBruitZ(float _z){
+    resolutionBruit[2]=_z;
+//    std::cout << resolutionBruit[2] <<std::endl;
+    initTexture();
+}
+void Texture::setFreqBruitR(float _r){
+    freqBruit[0]=_r;
+}
+void Texture::setFreqBruitG(float _g){
+    freqBruit[1]=_g;
+}
+void Texture::setFreqBruitB(float _b){
+    freqBruit[2]=_b;
+}
+void Texture::setFreqBruitA(float _a){
+    freqBruit[3]=_a;
+}
+void Texture::setAbsorptionLightDisplay(float _a){
+    absorptionLight=_a;
+}
+void Texture::setResolutionBruitCurlX(float _x){
+    resolutionBruitCurl[0]=_x;
+//    std::cout << resolutionBruit[0] <<std::endl;
+    initTexture();
+}
+void Texture::setResolutionBruitCurlY(float _y){
+    resolutionBruitCurl[1]=_y;
+//    std::cout << resolutionBruit[1] <<std::endl;
+    initTexture();
+}
+void Texture::setFreqBruitCurlR(float _r){
+    freqBruitCurl[0]=_r;
+}
+void Texture::setFreqBruitCurlG(float _g){
+    freqBruitCurl[1]=_g;
+}
+void Texture::setFreqBruitCurlB(float _b){
+    freqBruitCurl[2]=_b;
+}
+void Texture::setFacteurBruitR(float _r){
+    facteurBruit[0]=_r;
+}
+void Texture::setFacteurBruitG(float _g){
+    facteurBruit[1]=_g;
+}
+void Texture::setFacteurBruitB(float _b){
+    facteurBruit[2]=_b;
+}
+void Texture::setFacteurBruitA(float _a){
+    facteurBruit[3]=_a;
 }
 
 void Texture::clear(){

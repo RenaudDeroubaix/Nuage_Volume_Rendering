@@ -6,7 +6,9 @@
 #include <QString>
 #include <QColor>
 #include <QVector>
+#include <QVector2D>
 #include <QVector3D>
+#include <QVector4D>
 #include <QGLViewer/vec.h>
 #include <QOpenGLContext>
 #include <QOpenGLExtraFunctions>
@@ -49,6 +51,12 @@ private :
     float minD;
 
     QVector3D sizeTexture3D; //longueur largeur profondeur
+    QVector3D resolutionBruit;
+    QVector4D freqBruit;
+    QVector4D facteurBruit;
+
+    QVector2D resolutionBruitCurl;
+    QVector3D freqBruitCurl;
 
     double xMax;
     double yMax;
@@ -60,6 +68,7 @@ private :
     QVector3D BBmax;
 
     double absorptionNuage;
+    double absorptionLight;
     QVector3D couleurNuage;
 
     int LightEch;
@@ -126,6 +135,23 @@ public slots:
     void setBlightcolDisplay(float _b);
     void setAbsorptionNuageDisplay(float _a);
     void recompileShaders();
+    void setResolutionBruitX(float _x);
+    void setResolutionBruitY(float _y);
+    void setResolutionBruitZ(float _z);
+    void setFreqBruitR(float _r);
+    void setFreqBruitG(float _g);
+    void setFreqBruitB(float _b);
+    void setFreqBruitA(float _a);
+    void setAbsorptionLightDisplay(float _a);
+    void setResolutionBruitCurlX(float _x);
+    void setResolutionBruitCurlY(float _y);
+    void setFreqBruitCurlR(float _r);
+    void setFreqBruitCurlG(float _g);
+    void setFreqBruitCurlB(float _b);
+    void setFacteurBruitR(float _r);
+    void setFacteurBruitG(float _g);
+    void setFacteurBruitB(float _b);
+    void setFacteurBruitA(float _a);
 
 };
 
