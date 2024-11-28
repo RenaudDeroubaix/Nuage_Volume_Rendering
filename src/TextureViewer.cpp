@@ -282,7 +282,10 @@ void TextureViewer::setFacteurBruitA(float _a){
     texture->setFacteurBruitA(_a);
     update();
 }
-
+void TextureViewer::setVitesse(float _v){
+    texture->setVitesse(_v);
+    update();
+}
 
 
 void TextureViewer::keyPressEvent(QKeyEvent *e)

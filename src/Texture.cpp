@@ -51,6 +51,7 @@ void Texture::init(){
 
     //Set texture to cube of size 1.
     timer.start();
+    vitesse =5000.0;
 
     resolutionBruit = QVector3D(128.0,128.0,128.0);
     freqBruit =QVector4D(2.0,6.0,12.0,24.0);
@@ -344,6 +345,10 @@ void Texture::initTexture(){
 
 }
 
+void Texture::updateTextureData(){
+    glFunctions->glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA32F, resolutionBruit[0], resolutionBruit[1], resolutionBruit[2], 0, GL_RGBA, GL_FLOAT, nullptr);
+}
+
 
 void Texture::deleteTexture(){
     glDeleteTextures( 1, &textureId);
@@ -353,7 +358,7 @@ void Texture::computePass() {
     glFunctions->glUseProgram(0);
     glFunctions->glUseProgram(computeID);
 
-    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(computeID, "u_time"), timer.elapsed()/5000.0);
+    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(computeID, "u_time"), timer.elapsed()/vitesse);
     glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(computeID, "resolution"),1, &resolutionBruit[0]);
     glFunctions->glUniform4fv(glFunctions->glGetUniformLocation(computeID, "frequenceWorley"),1, &freqBruit[0]);
 
@@ -576,17 +581,17 @@ void Texture::setAbsorptionNuageDisplay(float _a){
 void Texture::setResolutionBruitX(float _x){
     resolutionBruit[0]=_x;
 //    std::cout << resolutionBruit[0] <<std::endl;
-    initTexture();
+    updateTextureData();
 }
 void Texture::setResolutionBruitY(float _y){
     resolutionBruit[1]=_y;
 //    std::cout << resolutionBruit[1] <<std::endl;
-    initTexture();
+    updateTextureData();
 }
 void Texture::setResolutionBruitZ(float _z){
     resolutionBruit[2]=_z;
 //    std::cout << resolutionBruit[2] <<std::endl;
-    initTexture();
+    updateTextureData();
 }
 void Texture::setFreqBruitR(float _r){
     freqBruit[0]=_r;
@@ -606,12 +611,12 @@ void Texture::setAbsorptionLightDisplay(float _a){
 void Texture::setResolutionBruitCurlX(float _x){
     resolutionBruitCurl[0]=_x;
 //    std::cout << resolutionBruit[0] <<std::endl;
-    initTexture();
+    updateTextureData();
 }
 void Texture::setResolutionBruitCurlY(float _y){
     resolutionBruitCurl[1]=_y;
 //    std::cout << resolutionBruit[1] <<std::endl;
-    initTexture();
+    updateTextureData();
 }
 void Texture::setFreqBruitCurlR(float _r){
     freqBruitCurl[0]=_r;
@@ -633,6 +638,9 @@ void Texture::setFacteurBruitB(float _b){
 }
 void Texture::setFacteurBruitA(float _a){
     facteurBruit[3]=_a;
+}
+void Texture::setVitesse(float _v){
+    vitesse=_v;
 }
 
 void Texture::clear(){

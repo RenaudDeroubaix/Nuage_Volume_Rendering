@@ -74,6 +74,7 @@ public slots:
     void setFacteurBruitG(float _g);
     void setFacteurBruitB(float _b);
     void setFacteurBruitA(float _a);
+    void setVitesse(float _v);
 
 signals:
 

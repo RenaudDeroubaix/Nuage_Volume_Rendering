@@ -79,6 +79,8 @@ Window::Window()
     connect(madDockWidget, &TextureDockWidget::gFreqBruitCurlValueChanged, viewer, &TextureViewer::setFreqBruitCurlG);
     connect(madDockWidget, &TextureDockWidget::bFreqBruitCurlValueChanged, viewer, &TextureViewer::setFreqBruitCurlB);
 
+    connect(madDockWidget, &TextureDockWidget::vitesseSliderChanged, viewer, &TextureViewer::setVitesse);
+
 
     this->setCentralWidget(viewerGroupBox);
 
