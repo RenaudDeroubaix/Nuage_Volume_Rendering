@@ -304,7 +304,7 @@ void Texture::draw( QVector3D & LightPos ,  QVector3D & LightCol  , const qglvie
    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "couleurNuage"),1, &couleurNuage[0]);
 
    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "LightPos"),1, &LightPos[0]);
-   glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "LightColor"),1, &LightColor[0]);
+   glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "LightColor"),1, &LightCol[0]);
    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "absorptionLight"), absorptionLight);
 
 
