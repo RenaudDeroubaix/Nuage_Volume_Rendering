@@ -28,6 +28,8 @@ RESOURCES += \
     GLSL/shaders/volume.frag \
     GLSL/shaders/volume.vert \
     GLSL/shaders/volume.comp \
+    GLSL/shaders/light.frag \
+    GLSL/shaders/light.vert \
 
 INCLUDEPATH = ./GLSL
 EXT_DIR = external
