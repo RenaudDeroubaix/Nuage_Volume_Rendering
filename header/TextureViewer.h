@@ -3,12 +3,12 @@
 
 #include <QKeyEvent>
 #include <QGLViewer/qglviewer.h>
-
 #include <iostream>
 #include <fstream>
 #include <string>
 #include <math.h>
 #include <algorithm>
+#include "light.h"
 #include "Texture.h"
 
 class TextureViewer : public QGLViewer
@@ -18,15 +18,18 @@ class TextureViewer : public QGLViewer
 public :
     TextureViewer(QWidget *parent = nullptr);
 
-//    void open3DImage(const QString & fileName);
+    //void open3DImage(const QString & fileName);
     void openOffMesh(const QString & fileName);
 
 
 
 protected :
     Texture * texture;
+    Light * light;
+    //Mesh * mesh;
 
     virtual void draw();
+
     virtual void init();
 
     virtual QString helpString() const;

@@ -10,19 +10,26 @@ SOURCES += src/Main.cpp \
     src/Window.cpp \
     src/TextureViewer.cpp \
     src/Texture.cpp \
-    src/TextureDockWidget.cpp
+    src/TextureDockWidget.cpp \
+    src/light.cpp \
+    src/mesh.cpp
 HEADERS += header/Window.h \
+    header/GLFunc.h \
     header/PowerOfTwoSpinBox.h \
     header/TextureViewer.h \
     header/Texture.h \
     header/TextureDockWidget.h \
     header/Vec3D.h \
+    header/light.h \
+    header/mesh.h \
     header/WidgetSetup.h
 
 RESOURCES += \
     GLSL/shaders/volume.frag \
     GLSL/shaders/volume.vert \
     GLSL/shaders/volume.comp \
+    GLSL/shaders/light.frag \
+    GLSL/shaders/light.vert \
 
 INCLUDEPATH = ./GLSL
 EXT_DIR = external
@@ -56,4 +63,8 @@ release:QMAKE_CXXFLAGS_RELEASE += -O3 \
     -fopenmp
 release:QMAKE_CFLAGS_RELEASE += -O3 \
     -fopenmp
+
+DISTFILES += \
+    GLSL/shaders/light.frag \
+    GLSL/shaders/light.vert
 

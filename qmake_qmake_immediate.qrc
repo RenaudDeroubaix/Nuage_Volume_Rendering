@@ -1,7 +1,0 @@
-<!DOCTYPE RCC><RCC version="1.0">
-<qresource prefix="/">
-<file alias="GLSL/shaders/volume.frag">/mnt/c/Users/Renaud/Desktop/VR_UNREAL_PROJECT/Nuage_Volume_Rendering/GLSL/shaders/volume.frag</file>
-<file alias="GLSL/shaders/volume.vert">/mnt/c/Users/Renaud/Desktop/VR_UNREAL_PROJECT/Nuage_Volume_Rendering/GLSL/shaders/volume.vert</file>
-<file alias="GLSL/shaders/volume.comp">/mnt/c/Users/Renaud/Desktop/VR_UNREAL_PROJECT/Nuage_Volume_Rendering/GLSL/shaders/volume.comp</file>
-</qresource>
-</RCC>

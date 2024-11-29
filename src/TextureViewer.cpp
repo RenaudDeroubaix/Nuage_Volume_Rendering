@@ -10,19 +10,69 @@ TextureViewer::TextureViewer(QWidget *parent):QGLViewer(parent){
     //init();
 }
 
+void TextureViewer::init() {
+    // Initialisation des objets
+    texture = new Texture(QOpenGLContext::currentContext());
+    light = new Light(QOpenGLContext::currentContext());
 
-void TextureViewer::draw(){
+    // Initialisation de la scène
+    setManipulatedFrame(new ManipulatedFrame());
 
-    //drawClippingPlane();
+    // Désactiver l'éclairage fixe OpenGL (non utilisé ici)
+    glDisable(GL_LIGHTING);
 
+    // Activer le plan de clipping (optionnel, dépend de vos besoins)
+    glEnable(GL_CLIP_PLANE0);
 
+    // Configurer le test de profondeur pour un rendu 3D correct
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
+
+    // Mode de remplissage des polygones (face avant uniquement)
+    glPolygonMode(GL_FRONT, GL_FILL);
+
+    // Configurer l'ordre des faces pour le culling
+    glFrontFace(GL_CCW);
+
+    // Couleur de fond (bleu ciel)
+    glClearColor(0.529f, 0.808f, 0.922f, 1.0f); // RGB: (135, 206, 235)
+
+    // Activer le face culling (par défaut, désactivé pour la lumière dans draw())
+
+    glEnable(GL_CULL_FACE); // Activer le culling pour la texture
+}
+
+void TextureViewer::draw() {
+    // Effacer le tampon de couleur et de profondeur
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+    // Configurer la caméra
     camera()->setSceneRadius(10);
-    texture->draw(camera());
 
+    // 1. Dessiner la texture 3D (opaque)
+    glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE); // Autoriser l'écriture dans le tampon de profondeur
+    glCullFace(GL_FRONT);  // Dessiner les faces avant uniquement
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    texture->draw(light->getpos(), light->getcol(), camera());
+
+    // 2. Dessiner la lumière (transparente)
+    glDisable(GL_DEPTH_TEST); // Désactiver le test de profondeur pour la lumière
+    light->draw(camera());
+
+    // Restaurer les paramètres par défaut
+    glDisable(GL_BLEND);
+    glEnable(GL_DEPTH_TEST);  // Réactiver le test de profondeur
+
+    // Mettre à jour la scène
     update();
 }
 
+
+
 void TextureViewer::drawMesh() {
+    // Exemple de dessin d'un mesh (ajouté si nécessaire)
     glBegin(GL_TRIANGLES);
     for (const auto& triangle : triangles) {
         for (size_t i = 0; i < 3; ++i) {
@@ -33,27 +83,6 @@ void TextureViewer::drawMesh() {
     glEnd();
 }
 
-void TextureViewer::init()
-{
-    texture = new Texture (QOpenGLContext::currentContext());
-    
-    // The ManipulatedFrame will be used as the clipping plane
-    setManipulatedFrame(new ManipulatedFrame());
-    // Enable plane clipping
-    //glEnable(GL_CLIP_PLANE0);
-//    glEnable(GL_DEPTH_TEST);
-//    glDepthFunc(GL_LESS);
-//    glPolygonMode( GL_FRONT , GL_FILL );
-//    glEnable(GL_CULL_FACE);
-//    glCullFace(GL_FRONT);
-    glFrontFace(GL_CCW);
-
-    glClearColor(0.2f, 0.3f, 0.8f, 1.f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-}
 
 void TextureViewer::clear(){
     texture->clear();
@@ -178,27 +207,27 @@ void TextureViewer::setBlueNuage(float _b){
     update();
 }
 void TextureViewer::setXlightpos(float _x){
-    texture->setXlightposDisplay(_x);
+    light->setXlightposDisplay(_x);
     update();
 }
 void TextureViewer::setYlightpos(float _y){
-    texture->setYlightposDisplay(_y);
+    light->setYlightposDisplay(_y);
     update();
 }
 void TextureViewer::setZlightpos(float _z){
-    texture->setZlightposDisplay(_z);
+    light->setZlightposDisplay(_z);
     update();
 }
 void TextureViewer::setRlightcol(float _r){
-    texture->setRlightcolDisplay(_r);
+    light->setRlightcolDisplay(_r);
     update();
 }
 void TextureViewer::setGlightcol(float _g){
-    texture->setGlightcolDisplay(_g);
+    light->setGlightcolDisplay(_g);
     update();
 }
 void TextureViewer::setBlightcol(float _b){
-    texture->setBlightcolDisplay(_b);
+    light->setBlightcolDisplay(_b);
     update();
 }
 void TextureViewer::setAbsorptionNuage(float _a){

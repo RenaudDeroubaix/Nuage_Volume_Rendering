@@ -1,5 +1,6 @@
 #version 430 core
 #define PI 3.14159265358979
+
 struct Plan{
     vec3 point;
     vec3 normale;
@@ -11,7 +12,6 @@ struct Plan{
 // Uniforms
 // --------------------------------------------------
 uniform sampler3D tex;
-
 
 
 uniform int NuageSample;
@@ -55,6 +55,7 @@ float HenyeyGreenstein(float g , float costh) {
 // --------------------------------------------------
 // Functions
 // --------------------------------------------------
+
 float beersLaw(float distance, float absorbtion ) {
     return exp(-distance * absorbtion );
 }
@@ -124,6 +125,7 @@ float anisotropic_scatering(float g , vec3 point_j,  vec3 dir){
 // --------------------------------------------------
 
 void main() {
+
     float epsilon = 0.0001;
     float transparence = 1.0;
     float LightDensity = absorptionLight;
@@ -180,9 +182,8 @@ void main() {
                 //float luminance = ((textureValueLight.g + textureValueLight.b + textureValueLight.a)/3.0 - textureValueLight.r*3);
                 float luminance = (textureValue.r * facteurWorley[0] + textureValue.g * facteurWorley[1] + textureValue.b * facteurWorley[2] + textureValue.a * facteurWorley[3]);
 
-                dist_light += luminance * anisotropic_scatering(0.3 * c , Ipos , dir_light);
+                dist_light += luminance * anisotropic_scatering(luminance , Ipos , dir_light);
 
-                c *= (1.0 - phase_attenuation);
 
             }
             float cur_density= densite * NuageDensity;
