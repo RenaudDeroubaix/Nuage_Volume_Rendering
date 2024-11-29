@@ -84,6 +84,7 @@ public:
     void deleteTexture();
 
     void draw( QVector3D & LightPos ,  QVector3D & LightCol  ,  const qglviewer::Camera * camera );
+    void drawPlaneInFrontOfCamera(const qglviewer::Camera *camera, float distance);
     void drawCube();
 
     GLuint getTextureId(){return textureId;}

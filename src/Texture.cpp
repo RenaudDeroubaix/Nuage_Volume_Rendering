@@ -44,6 +44,9 @@ void Texture::init(){
     BBmin = QVector3D(-0.5,-0.5,-0.5) ;
     BBmax = QVector3D(0.5,0.5,0.5) ;
 
+//    BBmin = QVector3D(-10.0,-10.0,-10.0) ;
+//    BBmax = QVector3D(10.0,10.0,10.0) ;
+
 
 
     plans.push_back(Plan(
@@ -365,10 +368,51 @@ void Texture::draw( QVector3D & LightPos ,  QVector3D & LightCol  , const qglvie
     glFunctions->glActiveTexture(GL_TEXTURE0 + textureId);
     glFunctions->glBindTexture(GL_TEXTURE_3D, textureId);
     glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "tex"), textureId);
-
+    //drawPlaneInFrontOfCamera(camera,0.1);
     drawCube();
 
 }
+
+void Texture::drawPlaneInFrontOfCamera(const qglviewer::Camera *camera, float distance) {
+    // Désactiver le culling et le Z-buffer pour éviter les problèmes
+    glDisable(GL_CULL_FACE);
+
+    // Récupérer la position de la caméra
+    qglviewer::Vec cameraPos = camera->position();
+
+    // Direction de la caméra (avant)
+    qglviewer::Vec forward = camera->viewDirection();
+    forward.normalize();
+
+    // Calculer le centre du plan à une distance donnée
+    qglviewer::Vec planeCenter = cameraPos + forward * distance;
+
+    // Obtenir les axes "droite" et "haut" de la caméra
+    qglviewer::Vec right = camera->rightVector();
+    qglviewer::Vec up = camera->upVector();
+
+    // Taille du plan
+    float planeWidth = BBmax[0]-BBmin[0];  // Largeur augmentée
+    float planeHeight = BBmax[1]-BBmin[1]; // Hauteur augmentée
+
+    // Calcul des coins
+    qglviewer::Vec bottomLeft  = planeCenter - right * (planeWidth / 2.0f) - up * (planeHeight / 2.0f);
+    qglviewer::Vec bottomRight = planeCenter + right * (planeWidth / 2.0f) - up * (planeHeight / 2.0f);
+    qglviewer::Vec topRight    = planeCenter + right * (planeWidth / 2.0f) + up * (planeHeight / 2.0f);
+    qglviewer::Vec topLeft     = planeCenter - right * (planeWidth / 2.0f) + up * (planeHeight / 2.0f);
+
+    // Dessiner le plan
+    glBegin(GL_QUADS);
+    glVertex3f(bottomLeft.x, bottomLeft.y, bottomLeft.z);
+    glVertex3f(bottomRight.x, bottomRight.y, bottomRight.z);
+    glVertex3f(topRight.x, topRight.y, topRight.z);
+    glVertex3f(topLeft.x, topLeft.y, topLeft.z);
+    glEnd();
+
+    // Réactiver le culling et le Z-buffer après le test
+    glEnable(GL_CULL_FACE);
+}
+
 
 void Texture::drawCube(){
 

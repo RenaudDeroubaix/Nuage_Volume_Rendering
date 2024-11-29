@@ -45,7 +45,7 @@ out vec4 fragColor;  // The output color of the fragment
 
 
 vec3 centresphere = vec3(0.0);
-float radius = 0.42;
+float radius = 0.490;
 
 
 float HenyeyGreenstein(float g , float costh) {
@@ -77,12 +77,12 @@ vec3 IntersectionPlan(vec3 camPos , float epsilon , vec3 dir) {
         vec3 intersection = fragPosition + t * dir;
         vec3 localCoord = intersection - planPoint;
 
-        float u = dot(localCoord, plans[i].right_vect);
-        float v = dot(localCoord, plans[i].up_vect);
+        float u = dot(localCoord, plans[i].right_vect) / length(plans[i].right_vect);
+        float v = dot(localCoord, plans[i].up_vect) / length(plans[i].up_vect);
 
-        if (u >= 0.0 && u <= 1.0 && v >= 0.0 && v <= 1.0 && t >= epsilon) {
-            tExit = min(tExit, t); // Plus proche sortie
 
+        if (u >= 0.0 && u <= (BBmax.x - BBmin.x) && v >= 0.0 && v <= (BBmax.y - BBmin.y) && t >= epsilon) {
+            tExit = min(tExit, t);
         }
     }
 
@@ -138,9 +138,13 @@ void main() {
     NuageDensity *= NuageStepSize;
 
     vec3 camPos = -vec3(view_mat[3][0], view_mat[3][1], view_mat[3][2]) * mat3(view_mat);
-    vec3 dir = normalize(fragPosition - camPos ) * NuageStepSize ;
+
+    vec3 dir = normalize(fragPosition - camPos )  ;
 
     vec3 exitPoint = IntersectionPlan(camPos , epsilon , dir);
+    if(exitPoint == fragPosition){
+        discard;
+    }
 
     vec4 textureValue = vec4(0.0);
     float densite = 0.0;
@@ -149,10 +153,18 @@ void main() {
 
     for (int i = 0 ; i < NuageSample; i++){
 
-        vec3 point_i = point_i_in_tex3D(dist  , dir , i );
+        vec3 point_i = point_i_in_tex3D(dist * NuageStepSize , dir  , i );
         vec3 point_i_tex_coord = translate_in_tex_coord(point_i);
+
+
 //        if (length(point_i - centresphere) > radius )
 //            continue;
+
+//       float distance_point_i_centre = smoothstep(1.0 , 0.0 ,length(vec3(0) - point_i) ) ;
+
+//       if (length(vec3(0) - point_i) < distance_point_i_centre )
+//            continue;
+
 
         textureValue =  dist * texture(tex,  point_i_tex_coord);
         //densite = ((textureValue.g + textureValue.b + textureValue.a)/3. - textureValue.r*3.0);
@@ -177,7 +189,7 @@ void main() {
                 }
                 vec3 point_light_j_tex_coord = translate_in_tex_coord(Ipos);
 
-                textureValueLight =  dist_J  * texture(tex,  point_light_j_tex_coord);
+                textureValueLight = dist_J  * texture(tex,  point_light_j_tex_coord);
 
                 //float luminance = ((textureValueLight.g + textureValueLight.b + textureValueLight.a)/3.0 - textureValueLight.r*3);
                 float luminance = (textureValueLight.r * facteurWorley[0] + textureValueLight.g * facteurWorley[1] + textureValueLight.b * facteurWorley[2] + textureValueLight.a * facteurWorley[3]);
@@ -191,16 +203,19 @@ void main() {
             float shadowterm = beersLaw(dist_light, LightDensity);
             vec3 absorbed_light = vec3(cur_density * shadowterm );
             LightEnergy += absorbed_light * transparence;
-            transparence *= 1-cur_density;
+            transparence *= 1 - cur_density;
+
+
 
 
         }
 
     }
     float a =  1.0 - transparence;
-    //if ( a < 0.4) a = 0;
 
 
-    fragColor = vec4(couleurNuage * LightColor * LightEnergy  ,  a  ); // Visualisation distance
+
+    fragColor = vec4(couleurNuage * LightColor * LightEnergy  ,  a /** LightEnergy */); // Visualisation distance
+    //fragColor = vec4(couleurNuage,1.0);
 }
 

@@ -22,10 +22,6 @@ out mat4 prof_mat;
 // Vertex-Shader
 // --------------------------------------------------
 
-uniform float xMax;  // Max value for the X axis
-uniform float yMax;  // Max value for the Y axis
-uniform float zMax;  // Max value for the Z axis
-
 uniform vec3 BBmin;
 uniform vec3 BBmax;
 
