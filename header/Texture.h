@@ -2,7 +2,7 @@
 #define TEXTURE_H
 
 #include "Vec3D.h"
-
+#include "GLFunc.h"
 #include <QString>
 #include <QColor>
 #include <QVector>
@@ -11,7 +11,6 @@
 #include <QVector4D>
 #include <QGLViewer/vec.h>
 #include <QOpenGLContext>
-#include <QOpenGLExtraFunctions>
 #include <QGLViewer/camera.h>
 #include <QElapsedTimer>
 
@@ -44,12 +43,6 @@ private :
 
     unsigned char * rgbTexture;
 
-    unsigned int n[3];
-    float d[3];
-    unsigned int gridSize;
-
-    float minD;
-
     QVector3D sizeTexture3D; //longueur largeur profondeur
     QVector3D resolutionBruit;
     QVector4D freqBruit;
@@ -75,52 +68,33 @@ private :
     int LightEch;
     int NuageEch;
 
-    QVector3D LightPos;
-    QVector3D LightColor;
-
     QVector<Plan> plans;
-
 
     bool textureCreated;
 
 public:
 
     void init();
-
     void clear();
 
+    void initGLSL();
     void initTexture();
     void updateTextureData();
     void computePass();
-
     void deleteTexture();
 
-    void draw( const qglviewer::Camera * camera );
+    void draw( QVector3D & LightPos ,  QVector3D & LightCol  ,  const qglviewer::Camera * camera );
     void drawCube();
-    void drawBoundingBox(bool fill = false);
-
 
     GLuint getTextureId(){return textureId;}
 
-    float getGridStep(){return minD;}
-
-
-
-    bool printShaderErrors(GLuint shader);
-    bool printProgramErrors(int program);
-    bool checkOpenGLError();
-    std::string readShaderSource(std::string filename);
-
     GLuint cShader, vShader, gShader, fShader, programID , computeID;
+
     QOpenGLContext* glContext;
     QOpenGLExtraFunctions* glFunctions;
 
-    static void /*GLAPIENTRY */MessageCallback( GLenum source, GLenum type,
-                                                GLuint id, GLenum severity,
-                                                GLsizei length, const GLchar* message,
-                                                const void* userParam );
 
-    void initGLSL();
+
 
 public slots:
     void setNuageEch(int value);
@@ -129,12 +103,7 @@ public slots:
     void setRedNuageDisplay(float _r);
     void setGreenNuageDisplay(float _g);
     void setBlueNuageDisplay(float _b);
-    void setXlightposDisplay(float _x);
-    void setYlightposDisplay(float _y);
-    void setZlightposDisplay(float _z);
-    void setRlightcolDisplay(float _r);
-    void setGlightcolDisplay(float _g);
-    void setBlightcolDisplay(float _b);
+
     void setAbsorptionNuageDisplay(float _a);
     void recompileShaders();
     void setResolutionBruitX(float _x);
