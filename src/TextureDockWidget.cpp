@@ -1,5 +1,6 @@
 #include "../header/TextureDockWidget.h"
 #include "../header/WidgetSetup.h"
+#include "qdebug.h"
 #include <QLabel>
 #include <QLayout>
 #include <QFileDialog>
@@ -140,7 +141,7 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     setSpinBox(LightColorB,0.0,1.0,0.01,1.0,50);
 
     QLabel *rayonSoleilVisuelLabel = new QLabel("Rayon du soleil:", lightFrame);
-    QSlider * rayonSoleilSlider = new QSlider(Qt::Horizontal,lightFrame);
+    rayonSoleilSlider = new QSlider(Qt::Horizontal,lightFrame);
     setSlider(rayonSoleilSlider,0,200,10,150);
 
     QLabel *absorptionLightLabel = new QLabel("Coeff d'absorption:", lightFrame);
@@ -175,23 +176,49 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
 
     // Widgets pour le nb rayon nuage
     QLabel *SampleNuageLabel = new QLabel("Nuage :", echantillonFrame);
-    QSlider *NuageSampleSlider = new QSlider(Qt::Horizontal, echantillonFrame);
+    NuageSampleSlider = new QSlider(Qt::Horizontal, echantillonFrame);
     setSlider(NuageSampleSlider,1,200,50,200);
-    QSpinBox *NuageSampleBox = new QSpinBox(echantillonFrame);
+    NuageSampleBox = new QSpinBox(echantillonFrame);
     setSpinBox(NuageSampleBox,1,200,1,50,50);
 
     // Widgets pour le nb rayon lumière
     QLabel *SampleLightLabel = new QLabel("Lumière :", echantillonFrame);
-    QSlider *LightSampleSlider = new QSlider(Qt::Horizontal, echantillonFrame);
+    LightSampleSlider = new QSlider(Qt::Horizontal, echantillonFrame);
     setSlider(LightSampleSlider,1,100,20,200);
-    QSpinBox *LightSampleBox = new QSpinBox(echantillonFrame);
-    setSpinBox(LightSampleBox,1,200,1,50,50);
+    LightSampleBox = new QSpinBox(echantillonFrame);
+    setSpinBox(LightSampleBox,1,100,1,20,50);
 
     echantillonFrame->adjustSize();
+
+    QFrame *otherFrame = new QFrame();
+    otherFrame->setFrameShape(QFrame::StyledPanel);
+    otherFrame->setFrameShadow(QFrame::Sunken);
+    QLabel *OtherLabel = new QLabel("Autres Paramètres:");
+    QLabel *vitesseLabel = new QLabel("Vitesse du mouvement (fast to slow):",otherFrame);
+    vitesseSlider = new QSlider(Qt::Horizontal, otherFrame);
+    setSlider(vitesseSlider,1,5000,5000,100);
+
+    QFrame *presetFrame = new QFrame();
+    presetFrame->setFrameShape(QFrame::StyledPanel);
+    presetFrame->setFrameShadow(QFrame::Sunken);
+
+    QLabel *PresetGeneralLabel = new QLabel("Preset de nuage:");
+    QPushButton *PresetButton1 = new QPushButton("Nuage 1",presetFrame);
+    QPushButton *PresetButton2 = new QPushButton("Nuage 2",presetFrame);
+    QPushButton *PresetButton3 = new QPushButton("Nuage 3",presetFrame);
+    QPushButton *PresetButton4 = new QPushButton("Nuage 4",presetFrame);
+    QPushButton *PresetButton5 = new QPushButton("Nuage 5",presetFrame);
+    QPushButton *PresetButton6 = new QPushButton("Nuage 6",presetFrame);
+
+    QBoxLayout *presetLayout2 = createLayout(NULL,false,{PresetButton4,PresetButton5,PresetButton6},{});
+    QBoxLayout *presetLayout1 = createLayout(NULL,false,{PresetButton1,PresetButton2,PresetButton3},{});
+    QBoxLayout *groupPresetLayout = createLayout(presetFrame,true,{},{presetLayout1,presetLayout2});
+    QBoxLayout *vitesseLayout = createLayout(NULL,false,{vitesseLabel,vitesseSlider},{});
+    QBoxLayout *otherParamLayout = createLayout(otherFrame,true,{},{vitesseLayout});
     QBoxLayout *lightEchLayout =createLayout(NULL,false,{SampleLightLabel,LightSampleSlider,LightSampleBox},{});
     QBoxLayout *nuageEchLayout = createLayout(NULL,false,{SampleNuageLabel,NuageSampleSlider,NuageSampleBox},{});
     QBoxLayout *groupBoxLayout = createLayout(echantillonFrame,true,{},{nuageEchLayout,lightEchLayout});
-    QBoxLayout *otherLayout = createLayout(otherTab,true,{echantillonLabel,echantillonFrame},{});
+    QBoxLayout *otherLayout = createLayout(otherTab,true,{echantillonLabel,echantillonFrame,OtherLabel,otherFrame,PresetGeneralLabel,presetFrame},{});
     otherLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
     tabWidget->addTab(otherTab, "Autres");
     // Add the tab widget to the main layout
@@ -266,6 +293,14 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     connect(LightSampleSlider, &QSlider::valueChanged, this, &TextureDockWidget::onLightSliderChanged);
     connect(LightSampleBox, QOverload<int>::of(&QSpinBox::valueChanged), this, &TextureDockWidget::onLightSpinBoxChanged);
 
+    connect(PresetButton1, &QPushButton::clicked, this, &TextureDockWidget::presetButton1ClickedSlot);
+    connect(PresetButton2, &QPushButton::clicked, this, &TextureDockWidget::presetButton2ClickedSlot);
+    connect(PresetButton3, &QPushButton::clicked, this, &TextureDockWidget::presetButton3ClickedSlot);
+    connect(PresetButton4, &QPushButton::clicked, this, &TextureDockWidget::presetButton4ClickedSlot);
+    connect(PresetButton5, &QPushButton::clicked, this, &TextureDockWidget::presetButton5ClickedSlot);
+    connect(PresetButton6, &QPushButton::clicked, this, &TextureDockWidget::presetButton5ClickedSlot);
+
+    connect(vitesseSlider, &QSlider::valueChanged, this, &TextureDockWidget::vitesseSliderChangedSlot);
 
 }
 
@@ -306,6 +341,7 @@ void TextureDockWidget::setlightcolGSlot(float value){emit setlightcolGValueChan
 void TextureDockWidget::setlightcolBSlot(float value){emit setlightcolBValueChanged(value);}
 
 void TextureDockWidget::rayonSoleilSliderChangedSlot(int value) {emit rayonSoleilSliderChanged(value/10.0);}
+void TextureDockWidget::vitesseSliderChangedSlot(int value) {emit vitesseSliderChanged(float(value));}
 
 void TextureDockWidget::absorptionLightSpinBoxChangedSlot(float value){emit absorptionLightValueChanged(value) ;}
 void TextureDockWidget::absorptionLightSliderChangedSlot(int i){emit absorptionLightValueChanged((float) i/(float)sliderAbsorptionMax);}
@@ -317,10 +353,121 @@ void TextureDockWidget::onNuageSpinBoxChangedSlot(int value){emit onNuageSpinBox
 void TextureDockWidget::onLightSliderChangedSlot(int value){emit onLightSliderChanged(value);}
 void TextureDockWidget::onLightSpinBoxChangedSlot(int value){emit onLightSpinBoxChanged(value);}
 
+void TextureDockWidget::presetButton1ClickedSlot(){
+    // Résolutions du bruit
+    //ATTENTION DONNEE LA PUISSANCE DE DEUX PAS LA VALEUR DIRECT EX 2^7=128 donc donne 7
+    xbruitworleySpinBox->setValue(7.0f);
+    ybruitworleySpinBox->setValue(7.0f);
+    zbruitworleySpinBox->setValue(7.0f);
 
+    // Fréquences du bruit
+    rfreqWorleySpinBox->setValue(2.0f);
+    gfreqWorleySpinBox->setValue(6.0f);
+    bfreqWorleySpinBox->setValue(12.0f);
+    afreqWorleySpinBox->setValue(24.0f);
 
+    // Facteurs du bruit
+    rfacteurWorleySpinBox->setValue(-3.0f);
+    gfacteurWorleySpinBox->setValue(0.33f);
+    bfacteurWorleySpinBox->setValue(0.33f);
+    afacteurWorleySpinBox->setValue(0.33f);
 
+    // Résolutions du bruit Curl (puissance de 2)
+    xbruitCurlSpinBox->setValue(7.0f);
+    ybruitCurlSpinBox->setValue(7.0f);
 
+    // Fréquences du bruit Curl
+    rfreqCurlSpinBox->setValue(0.8f);
+    gfreqCurlSpinBox->setValue(0.8f);
+    bfreqCurlSpinBox->setValue(0.8f);
 
+    // Lumière - Nuages
+    redColorNuageSpinBox->setValue(1.0f);
+    greenColorNuageSpinBox->setValue(1.0f);
+    blueColorNuageSpinBox->setValue(1.0f);
 
+    absorptionSpinBox->setValue(9.0f);
+    absorptionLightSpinBox->setValue(1.0f);
 
+    // Position et couleur de la lumière
+    LightPosX->setValue(0.0f);
+    LightPosY->setValue(5.0f);
+    LightPosZ->setValue(0.0f);
+
+    LightColorR->setValue(1.0f);
+    LightColorG->setValue(1.0f);
+    LightColorB->setValue(1.0f);
+
+    // Soleil
+    rayonSoleilSlider->setValue(1.0f);
+
+    // Autres paramètres
+    NuageSampleBox->setValue(50);
+
+    LightSampleBox->setValue(20);
+
+    vitesseSlider->setValue(5000);
+
+}
+
+void TextureDockWidget::presetButton2ClickedSlot(){
+    // Résolutions du bruit
+    //ATTENTION DONNEE LA PUISSANCE DE DEUX PAS LA VALEUR DIRECT EX 2^7=128 donc donne 7
+    xbruitworleySpinBox->setValue(5.0f);
+    ybruitworleySpinBox->setValue(5.0f);
+    zbruitworleySpinBox->setValue(5.0f);
+
+    // Fréquences du bruit
+    rfreqWorleySpinBox->setValue(2.0f);
+    gfreqWorleySpinBox->setValue(6.0f);
+    bfreqWorleySpinBox->setValue(12.0f);
+    afreqWorleySpinBox->setValue(24.0f);
+
+    // Facteurs du bruit
+    rfacteurWorleySpinBox->setValue(1.0f);
+    gfacteurWorleySpinBox->setValue(-0.33f);
+    bfacteurWorleySpinBox->setValue(-0.33f);
+    afacteurWorleySpinBox->setValue(-0.33f);
+
+    // Résolutions du bruit Curl (puissance de 2)
+    xbruitCurlSpinBox->setValue(7.0f);
+    ybruitCurlSpinBox->setValue(7.0f);
+
+    // Fréquences du bruit Curl
+    rfreqCurlSpinBox->setValue(0.8f);
+    gfreqCurlSpinBox->setValue(0.8f);
+    bfreqCurlSpinBox->setValue(0.8f);
+
+    // Lumière - Nuages
+    redColorNuageSpinBox->setValue(1.0f);
+    greenColorNuageSpinBox->setValue(1.0f);
+    blueColorNuageSpinBox->setValue(1.0f);
+
+    absorptionSpinBox->setValue(9.0f);
+    absorptionLightSpinBox->setValue(1.0f);
+
+    // Position et couleur de la lumière
+    LightPosX->setValue(0.0f);
+    LightPosY->setValue(0.0f);
+    LightPosZ->setValue(0.0f);
+
+    LightColorR->setValue(1.0f);
+    LightColorG->setValue(1.0f);
+    LightColorB->setValue(1.0f);
+
+    // Soleil
+    rayonSoleilSlider->setValue(1.0f);
+
+    // Autres paramètres
+    NuageSampleBox->setValue(50);
+
+    LightSampleBox->setValue(20);
+
+    vitesseSlider->setValue(1000);
+
+}
+
+void TextureDockWidget::presetButton3ClickedSlot(){;}
+void TextureDockWidget::presetButton4ClickedSlot(){;}
+void TextureDockWidget::presetButton5ClickedSlot(){;}
+void TextureDockWidget::presetButton6ClickedSlot(){;}

@@ -9,6 +9,7 @@
 #include <QWidget>
 #include <QListWidget>
 #include <QDoubleSpinBox>
+#include <QPushButton>
 #include "PowerOfTwoSpinBox.h"
 
 class TextureDockWidget : public QDockWidget
@@ -55,6 +56,15 @@ public:
     QDoubleSpinBox *bfacteurWorleySpinBox;
     QDoubleSpinBox *afacteurWorleySpinBox;
 
+    QSlider * rayonSoleilSlider;
+
+    QSlider *NuageSampleSlider;
+    QSpinBox *NuageSampleBox;
+    QSlider *LightSampleSlider;
+    QSpinBox *LightSampleBox ;
+
+    QSlider * vitesseSlider;
+
 private slots:
 ///bruit
     void xResolutionBruitSpinBoxChangedSlot(float value);
@@ -94,6 +104,7 @@ private slots:
     void setlightcolBSlot(float value);
 
     void rayonSoleilSliderChangedSlot(int value);
+    void vitesseSliderChangedSlot (int value);
 
     void absorptionLightSpinBoxChangedSlot(float value);
     void absorptionLightSliderChangedSlot(int i);
@@ -103,6 +114,14 @@ private slots:
     void onNuageSpinBoxChangedSlot(int value);
     void onLightSliderChangedSlot(int value);
     void onLightSpinBoxChangedSlot(int value);
+
+    void presetButton1ClickedSlot();
+    void presetButton2ClickedSlot();
+    void presetButton3ClickedSlot();
+    void presetButton4ClickedSlot();
+    void presetButton5ClickedSlot();
+    void presetButton6ClickedSlot();
+
 
 
 public slots:
@@ -145,6 +164,7 @@ signals:
     void setlightcolBValueChanged(float b);
 
     void rayonSoleilSliderChanged(int rayonValue);
+    void vitesseSliderChanged(float value);
 
     void absorptionLightValueChanged(float absorptionValue);
 
