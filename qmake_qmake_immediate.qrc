@@ -1,7 +1,7 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource prefix="/">
-<file alias="GLSL/shaders/volume.frag">/home/e20170003790/Bureau/Master2/PROJET_VOLUMIC_RENDERING/GLSL/shaders/volume.frag</file>
-<file alias="GLSL/shaders/volume.vert">/home/e20170003790/Bureau/Master2/PROJET_VOLUMIC_RENDERING/GLSL/shaders/volume.vert</file>
-<file alias="GLSL/shaders/volume.comp">/home/e20170003790/Bureau/Master2/PROJET_VOLUMIC_RENDERING/GLSL/shaders/volume.comp</file>
+<file alias="GLSL/shaders/volume.frag">/home/orenu/Documents/CoursM2/Projet3D/Nuage_Volume_Rendering/GLSL/shaders/volume.frag</file>
+<file alias="GLSL/shaders/volume.vert">/home/orenu/Documents/CoursM2/Projet3D/Nuage_Volume_Rendering/GLSL/shaders/volume.vert</file>
+<file alias="GLSL/shaders/volume.comp">/home/orenu/Documents/CoursM2/Projet3D/Nuage_Volume_Rendering/GLSL/shaders/volume.comp</file>
 </qresource>
 </RCC>

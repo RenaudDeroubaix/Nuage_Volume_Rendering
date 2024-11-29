@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <string>
 #include <algorithm>
 #include <QFile>
 #include <QTextStream>
@@ -13,33 +14,10 @@
 Texture::Texture(QOpenGLContext* context)
 {
     glContext = context;
-    // Récupérer les informations sous forme de chaînes
-    const char* version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
-    const char* renderer = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
 
-    // Afficher les informations correctement
-    qDebug() << "OpenGL Version:" << version;
-    qDebug() << "Renderer:" << renderer;
-
-    int workGroupCount[3], workGroupSize[3], sharedMemorySize;
-    glFunctions = glContext->extraFunctions();
-    glFunctions->glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 0, &workGroupCount[0]);
-    glFunctions->glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 1, &workGroupCount[1]);
-    glFunctions->glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 2, &workGroupCount[2]);
-
-    glFunctions->glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 0, &workGroupSize[0]);
-    glFunctions->glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 1, &workGroupSize[1]);
-    glFunctions->glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 2, &workGroupSize[2]);
-
-    glGetIntegerv(GL_MAX_COMPUTE_SHARED_MEMORY_SIZE, &sharedMemorySize);
-
-    std::cout << "Max work group counts: (" << workGroupCount[0] << ", " << workGroupCount[1] << ", " << workGroupCount[2] << ")\n";
-    std::cout << "Max work group sizes: (" << workGroupSize[0] << ", " << workGroupSize[1] << ", " << workGroupSize[2] << ")\n";
-    std::cout << "Max shared memory size: " << sharedMemorySize << " bytes\n";
     init();
     initGLSL();
     initTexture();
-    computePass();
 }
 
 Texture::~Texture(){
@@ -57,12 +35,11 @@ void Texture::init(){
 
     LightEch = 20;
     NuageEch = 50;
-    BBmin = QVector3D(-0.5,-0.5,-0.5) ;
 
+    BBmin = QVector3D(-0.5,-0.5,-0.5) ;
     BBmax = QVector3D(0.5,0.5,0.5) ;
 
-    LightPos =  QVector3D(0.0,1.0,0.0);
-    LightColor =  QVector3D(1.0,1.0,1.0);
+
 
     plans.push_back(Plan(
         QVector3D(BBmin.x(), BBmin.y(), BBmin.z()),  // Bottom-left corner of the back face
@@ -112,6 +89,7 @@ void Texture::init(){
 
 void Texture::recompileShaders() {
     init();
+
     glFunctions->glDetachShader(this->programID, this->vShader);
     glFunctions->glDeleteShader(this->vShader);
 
@@ -128,7 +106,7 @@ void Texture::recompileShaders() {
 
     glFunctions = glContext->extraFunctions();
     glEnable( GL_DEBUG_OUTPUT );
-    glFunctions->glDebugMessageCallback(&Texture::MessageCallback, 0 );
+    glFunctions->glDebugMessageCallback(&MessageCallback, 0 );
 
     // Create programs and link shaders
     this->computeID = glFunctions->glCreateProgram();
@@ -141,7 +119,7 @@ void Texture::recompileShaders() {
         glFunctions->glShaderSource(this->cShader, 1, &src, NULL);
         glFunctions->glCompileShader(this->cShader);
         glFunctions->glAttachShader(this->computeID, this->cShader);
-        printShaderErrors(this->cShader);
+        printShaderErrors(glFunctions,this->cShader);
     }
 
     content = readShaderSource(vShaderPath);
@@ -151,7 +129,7 @@ void Texture::recompileShaders() {
         glFunctions->glShaderSource(this->vShader, 1, &src, NULL);
         glFunctions->glCompileShader(this->vShader);
         glFunctions->glAttachShader(this->programID, this->vShader);
-        printShaderErrors(this->vShader);
+        printShaderErrors(glFunctions,this->vShader);
     }
     content = readShaderSource(fShaderPath);
     if (!content.empty()) {
@@ -161,7 +139,7 @@ void Texture::recompileShaders() {
         glFunctions->glShaderSource(this->fShader, 1, &src, NULL);
         glFunctions->glCompileShader(this->fShader);
         glFunctions->glAttachShader(this->programID, this->fShader);
-        printShaderErrors(this->fShader);
+        printShaderErrors(glFunctions,this->fShader);
     }
      glFunctions->glLinkProgram(this->programID);
      glFunctions->glLinkProgram(this->computeID);
@@ -179,7 +157,7 @@ void Texture::initGLSL(){
 
     glFunctions = glContext->extraFunctions();
     glEnable( GL_DEBUG_OUTPUT );
-    glFunctions->glDebugMessageCallback(&Texture::MessageCallback, 0 );
+    glFunctions->glDebugMessageCallback(&MessageCallback, 0 );
 
 
     // Create programs and link shaders
@@ -193,7 +171,7 @@ void Texture::initGLSL(){
         glFunctions->glShaderSource(this->cShader, 1, &src, NULL);
         glFunctions->glCompileShader(this->cShader);
         glFunctions->glAttachShader(this->computeID, this->cShader);
-        printShaderErrors(this->cShader);
+        printShaderErrors(glFunctions,this->cShader);
     }
 
     content = readShaderSource(vShaderPath);
@@ -203,7 +181,7 @@ void Texture::initGLSL(){
         glFunctions->glShaderSource(this->vShader, 1, &src, NULL);
         glFunctions->glCompileShader(this->vShader);
         glFunctions->glAttachShader(this->programID, this->vShader);
-        printShaderErrors(this->vShader);
+        printShaderErrors(glFunctions,this->vShader);
     }
     content = readShaderSource(fShaderPath);
     if (!content.empty()) {
@@ -213,98 +191,16 @@ void Texture::initGLSL(){
         glFunctions->glShaderSource(this->fShader, 1, &src, NULL);
         glFunctions->glCompileShader(this->fShader);
         glFunctions->glAttachShader(this->programID, this->fShader);
-        printShaderErrors(this->fShader);
+        printShaderErrors(glFunctions,this->fShader);
     }
 
     glFunctions->glLinkProgram(this->programID);
+    printProgramErrors(glFunctions,programID);
+
     glFunctions->glLinkProgram(this->computeID);
-    printProgramErrors(programID);
-    printProgramErrors(computeID);
+    printProgramErrors(glFunctions,computeID);
+
     checkOpenGLError();
-}
-
-void /*GLAPIENTRY */Texture::MessageCallback( GLenum source, GLenum type,
-                                              GLuint id, GLenum severity,
-                                              GLsizei length, const GLchar* message,
-                                              const void* userParam )
-{
-    if (severity == GL_DEBUG_SEVERITY_HIGH || severity == GL_DEBUG_SEVERITY_MEDIUM || severity == GL_DEBUG_SEVERITY_LOW) {
-        std::string s_severity = (severity == GL_DEBUG_SEVERITY_HIGH ? "High" : severity == GL_DEBUG_SEVERITY_MEDIUM ? "Medium" : "Low");
-        std::cout << "Error " << id << " [severity=" << s_severity << "]: " << message << std::endl;
-    }
-}
-bool Texture::checkOpenGLError()
-{
-    bool error = false;
-    int glErr = glGetError();
-    while(glErr != GL_NO_ERROR)
-    {
-        std::cout << "[OpenGL] Error: " << glErr << std::endl;
-        error = true;
-        glErr = glGetError();
-    }
-    return !error;
-}
-
-bool Texture::printShaderErrors(GLuint shader)
-{
-    int state = 0;
-    glFunctions->glGetShaderiv(shader, GL_COMPILE_STATUS, &state);
-    if (state == 1)
-        return true;
-    int len = 0;
-    int chWritten = 0;
-    char* log;
-    glFunctions->glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &len);
-    if (len > 0)
-    {
-        log = (char*)malloc(len);
-        glFunctions->glGetShaderInfoLog(shader, len, &chWritten, log);
-        std::cout << "[OpenGL] Shader error: " << log << std::endl;
-        free(log);
-    }
-    return false;
-}
-bool Texture::printProgramErrors(int program)
-{
-    int state = 0;
-    glFunctions->glGetProgramiv(program, GL_LINK_STATUS, &state);
-    if (state == 1)
-        return true;
-    int len = 0;
-    int chWritten = 0;
-    char* log;
-    glFunctions->glGetProgramiv(program, GL_INFO_LOG_LENGTH, &len);
-    if (len > 0)
-    {
-        log = (char*)malloc(len);
-        glFunctions->glGetProgramInfoLog(program, len, &chWritten, log);
-        std::cout << "[OpenGL] Program error: " << log << std::endl;
-        free(log);
-    }
-    return false;
-}
-
-std::string Texture::readShaderSource(std::string filename)
-{
-    std::string content = "";
-    QString qFilename = QString::fromStdString(filename);
-    if (!QFile::exists(qFilename))
-        qFilename = ":" + qFilename;
-    if (!QFile::exists(qFilename)) {
-        std::cerr << "The shader " << filename << " doesn't exist!" << std::endl;
-        return "";
-    }
-    QFile file(qFilename);
-    file.open(QIODevice::ReadOnly | QIODevice::Text);
-    std::string line;
-    QTextStream in(&file);
-    while (!in.atEnd()) {
-        line = in.readLine().toStdString();
-        content += line + " \n";
-    }
-    file.close();
-    return content;
 }
 
 
@@ -317,9 +213,6 @@ void Texture::initTexture(){
 
     glGenTextures(1, &textureId);
     glFunctions->glBindTexture(GL_TEXTURE_3D, textureId);
-
-
-
 	//TODO complete texture options
     glFunctions->glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glFunctions->glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -360,211 +253,112 @@ void Texture::computePass() {
     glFunctions->glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
     glFunctions->glBindImageTexture (0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
     glFunctions->glBindTexture(GL_TEXTURE_3D, 0);
-    glFunctions->glUseProgram(programID);
+
+
+
+
 }
 
-void Texture::draw( const qglviewer::Camera * camera ){
-    computePass();
-
+void Texture::draw( QVector3D & LightPos ,  QVector3D & LightCol  , const qglviewer::Camera * camera ){
 
     if(!textureCreated)
         return;
 
-    glDisable(GL_LIGHTING);
-    //glPolygonMode( GL_FRONT , GL_FILL );
+    computePass();
 
-    // GPU start
-    // Récuperation des matrices de projection / vue-modèle
+    glFunctions->glUseProgram(0);
+    glFunctions->glUseProgram(programID);
+
+
 
     float pMatrix[16];
     float mvMatrix[16];
     camera->getProjectionMatrix(pMatrix);
     camera->getModelViewMatrix(mvMatrix);
+
     glFunctions->glUniformMatrix4fv(glFunctions->glGetUniformLocation(programID, "proj_matrix"),
                                     1, GL_FALSE, pMatrix);
     glFunctions->glUniformMatrix4fv(glFunctions->glGetUniformLocation(programID, "mv_matrix"),
                                     1, GL_FALSE, mvMatrix);
 
 
-    ///***********************************************************************/
-    ////Parameters to given to the shader // TODO complete
-    /***********************************************************************/
-
-
     glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "xMax"), resolutionBruit[0]);
-   glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "yMax"), resolutionBruit[1]);
-   glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "zMax"), resolutionBruit[2]);
+    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "yMax"), resolutionBruit[1]);
+    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "zMax"), resolutionBruit[2]);
 
-   glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "LightSample"), LightEch);
-   glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "NuageSample"), NuageEch);
+    glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "LightSample"), LightEch);
+    glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "NuageSample"), NuageEch);
 
-   glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "absorptionNuage"), absorptionNuage);
-   glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "couleurNuage"),1, &couleurNuage[0]);
+    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "absorptionNuage"), absorptionNuage);
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "couleurNuage"),1, &couleurNuage[0]);
 
-   glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "LightPos"),1, &LightPos[0]);
-   glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "LightColor"),1, &LightColor[0]);
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "LightPos"),1, &LightPos[0]);
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "LightColor"),1, &LightCol[0]);
 
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "BBmin"),1,&BBmin[0]);
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "BBmax"),1,&BBmax[0]);
 
-   glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "BBmin"),1,&BBmin[0]);
-   glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "BBmax"),1,&BBmax[0]);
+    for (int i = 0 ; i < plans.size() ; i++)
+    {
+        glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, (std::string("plans[") + std::to_string(i) + std::string("].normale")).c_str() ), 1, &plans[i].normale[0]);
+        glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, (std::string("plans[") + std::to_string(i) + std::string("].point")).c_str() ), 1, &plans[i].point[0]);
+        glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, (std::string("plans[") + std::to_string(i) + std::string("].up_vect")).c_str() ), 1, &plans[i].up_vect[0]);
+        glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, (std::string("plans[") + std::to_string(i) + std::string("].right_vect")).c_str() ), 1, &plans[i].right_vect[0]);
+    }
 
-    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[0].normale"),1, &plans[0].normale[0]);
-    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[0].point"),1, &plans[0].point[0]);
-    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[0].up_vect"),1, &plans[0].up_vect[0]);
-    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[0].right_vect"),1, &plans[0].right_vect[0]);
+    glFunctions->glActiveTexture(GL_TEXTURE0 + textureId);
+    glFunctions->glBindTexture(GL_TEXTURE_3D, textureId);
+    glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "tex"), textureId);
 
-
-    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[1].normale"),1, &plans[1].normale[0]);
-    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[1].point"),1, &plans[1].point[0]);
-    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[1].up_vect"),1, &plans[1].up_vect[0]);
-    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[1].right_vect"),1, &plans[1].right_vect[0]);
-
-    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[2].normale"),1, &plans[2].normale[0]);
-    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[2].point"),1, &plans[2].point[0]);
-    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[2].up_vect"),1, &plans[2].up_vect[0]);
-    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[2].right_vect"),1, &plans[2].right_vect[0]);
-
-    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[3].normale"),1, &plans[3].normale[0]);
-    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[3].point"),1, &plans[3].point[0]);
-    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[3].up_vect"),1, &plans[3].up_vect[0]);
-    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[3].right_vect"),1, &plans[3].right_vect[0]);
-
-    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[4].normale"),1, &plans[4].normale[0]);
-    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[4].point"),1, &plans[4].point[0]);
-    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[4].up_vect"),1, &plans[4].up_vect[0]);
-    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[4].right_vect"),1, &plans[4].right_vect[0]);
-
-    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[5].normale"),1, &plans[5].normale[0]);
-    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[5].point"),1, &plans[5].point[0]);
-    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[5].up_vect"),1, &plans[5].up_vect[0]);
-    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, "plans[5].right_vect"),1, &plans[5].right_vect[0]);
-
-
-
-//   glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "xCutPosition"), xCutPosition);
-//   glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "yCutPosition"), yCutPosition);
-//   glFunctions->glUniform1f(glFunctions->glGetUniformLocation(programID, "zCutPosition"), zCutPosition);
-
-//   glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "xCutDirection"), xCutDirection);
-//   glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "yCutDirection"), yCutDirection);
-//   glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "zCutDirection"), zCutDirection);
-
-
-   glFunctions->glActiveTexture(GL_TEXTURE0 + textureId);
-   glFunctions->glBindTexture(GL_TEXTURE_3D, textureId); // Bind the 3D texture
-   glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "tex"), textureId);
-
-    /***********************************************************************/
-    drawBoundingBox(false);
+    drawCube();
 
 }
 
 void Texture::drawCube(){
-//    Définition des limites du cube entre -0.5 et 0.5 pour x, y et z
-//    float xMinCube = -0.5, xMaxCube = 0.5;
-//    float yMinCube = -0.5, yMaxCube = 0.5;
-//    float zMinCube = -0.5, zMaxCube = 0.5;
-
-//    float xMinCube =0, xMaxCube = 128;
-//    float yMinCube = 0, yMaxCube = 128;
-//    float zMinCube = 0, zMaxCube = 128;
-
-    float xMinCube = BBmin.x(), xMaxCube = BBmax.x();
-    float yMinCube = BBmin.y(), yMaxCube = BBmax.y();
-    float zMinCube = BBmin.z(), zMaxCube = BBmax.z();
 
     glBegin(GL_QUADS);
 
-           // Face arrière (normale vers -Z)
-           glVertex3f(xMinCube, yMinCube, zMinCube); // Bottom Left
-           glVertex3f(xMaxCube, yMinCube, zMinCube); // Bottom Right
-           glVertex3f(xMaxCube, yMaxCube, zMinCube); // Top Right
-           glVertex3f(xMinCube, yMaxCube, zMinCube); // Top Left
+    // Face arrière (normale vers -Z)
+    glVertex3f(BBmin.x(), BBmin.y(), BBmin.z()); // Bottom Left
+    glVertex3f(BBmax.x(), BBmin.y(), BBmin.z()); // Bottom Right
+    glVertex3f(BBmax.x(), BBmax.y(), BBmin.z()); // Top Right
+    glVertex3f(BBmin.x(), BBmax.y(), BBmin.z()); // Top Left
 
-           // Face avant (normale vers +Z)
-           glVertex3f(xMinCube, yMinCube, zMaxCube); // Bottom Left
-           glVertex3f(xMinCube, yMaxCube, zMaxCube); // Top Left
-           glVertex3f(xMaxCube, yMaxCube, zMaxCube); // Top Right
-           glVertex3f(xMaxCube, yMinCube, zMaxCube); // Bottom Right
+    // Face avant (normale vers +Z)
+    glVertex3f(BBmin.x(), BBmin.y(), BBmax.z()); // Bottom Left
+    glVertex3f(BBmin.x(), BBmax.y(), BBmax.z()); // Top Left
+    glVertex3f(BBmax.x(), BBmax.y(), BBmax.z()); // Top Right
+    glVertex3f(BBmax.x(), BBmin.y(), BBmax.z()); // Bottom Right
 
-           // Face gauche (normale vers -X)
-           glVertex3f(xMinCube, yMinCube, zMaxCube); // Bottom Right
-           glVertex3f(xMinCube, yMinCube, zMinCube); // Bottom Left
-           glVertex3f(xMinCube, yMaxCube, zMinCube); // Top Left
-           glVertex3f(xMinCube, yMaxCube, zMaxCube); // Top Right
+    // Face gauche (normale vers -X)
+    glVertex3f(BBmin.x(), BBmin.y(), BBmax.z()); // Bottom Right
+    glVertex3f(BBmin.x(), BBmin.y(), BBmin.z()); // Bottom Left
+    glVertex3f(BBmin.x(), BBmax.y(), BBmin.z()); // Top Left
+    glVertex3f(BBmin.x(), BBmax.y(), BBmax.z()); // Top Right
 
-           // Face droite (normale vers +X)
-           glVertex3f(xMaxCube, yMaxCube, zMinCube); // Top Left
-           glVertex3f(xMaxCube, yMinCube, zMinCube); // Bottom Left
-           glVertex3f(xMaxCube, yMinCube, zMaxCube); // Bottom Right
-           glVertex3f(xMaxCube, yMaxCube, zMaxCube); // Top Right
-
-
-           // Face du bas (normale vers -Y)
-           glVertex3f(xMaxCube, yMinCube, zMinCube); // Bottom Right
-           glVertex3f(xMinCube, yMinCube, zMinCube); // Bottom Left
-           glVertex3f(xMinCube, yMinCube, zMaxCube); // Top Left
-           glVertex3f(xMaxCube, yMinCube, zMaxCube); // Top Right
+    // Face droite (normale vers +X)
+    glVertex3f(BBmax.x(), BBmax.y(), BBmin.z()); // Top Left
+    glVertex3f(BBmax.x(), BBmin.y(), BBmin.z()); // Bottom Left
+    glVertex3f(BBmax.x(), BBmin.y(), BBmax.z()); // Bottom Right
+    glVertex3f(BBmax.x(), BBmax.y(), BBmax.z()); // Top Right
 
 
-           // Face du haut (normale vers +Y)
-           glVertex3f(xMinCube, yMaxCube, zMaxCube); // Bottom Right
-           glVertex3f(xMinCube, yMaxCube, zMinCube); // Bottom Left
-           glVertex3f(xMaxCube, yMaxCube, zMinCube); // Top Left
-           glVertex3f(xMaxCube, yMaxCube, zMaxCube); // Top Right
+    // Face du bas (normale vers -Y)
+    glVertex3f(BBmax.x(), BBmin.y(), BBmin.z()); // Bottom Right
+    glVertex3f(BBmin.x(), BBmin.y(), BBmin.z()); // Bottom Left
+    glVertex3f(BBmin.x(), BBmin.y(), BBmax.z()); // Top Left
+    glVertex3f(BBmax.x(), BBmin.y(), BBmax.z()); // Top Right
 
 
-           glEnd();
+    // Face du haut (normale vers +Y)
+    glVertex3f(BBmin.x(), BBmax.y(), BBmax.z()); // Bottom Right
+    glVertex3f(BBmin.x(), BBmax.y(), BBmin.z()); // Bottom Left
+    glVertex3f(BBmax.x(), BBmax.y(), BBmin.z()); // Top Left
+    glVertex3f(BBmax.x(), BBmax.y(), BBmax.z()); // Top Right
+
+
+    glEnd();
 }
-
-
-//void Texture::drawCutPlanes(){
-
-//    double x = xCutPosition + xCutDirection*.001;
-//    double y = yCutPosition + yCutDirection*.001;
-//    double z = zCutPosition + zCutDirection*.001;
-
-//    glColor4f(1.0,0.,0.,0.25);
-//    glBegin(GL_QUADS);
-
-//    if(xCutDisplay){
-//        // Right face
-//        glVertex3f( x, 0.0f, 0.0f);	// Bottom Right Of The Texture and Quad
-//        glVertex3f( x, yMax, 0.0f);	// Top Right Of The Texture and Quad
-//        glVertex3f( x, yMax, zMax);	// Top Left Of The Texture and Quad
-//        glVertex3f( x, 0.0f, zMax);	// Bottom Left Of The Texture and Quad
-//    }
-
-//    if(zCutDisplay){
-//        // Front Face
-//        glVertex3f(0.0f, 0.0f, z);	// Bottom Left Of The Texture and Quad
-//        glVertex3f(xMax, 0.0f, z);	// Bottom Right Of The Texture and Quad
-//        glVertex3f(xMax, yMax, z);	// Top Right Of The Texture and Quad
-//        glVertex3f(0.0f, yMax, z);	// Top Left Of The Texture and Quad
-//    }
-
-//    if(yCutDisplay){
-//        // Top Face
-//        glVertex3f(0.0f, y, 0.0f);	// Top Left Of The Texture and Quad
-//        glVertex3f(0.0f, y, zMax);	// Bottom Left Of The Texture and Quad
-//        glVertex3f(xMax, y, zMax);	// Bottom Right Of The Texture and Quad
-//        glVertex3f(xMax, y, 0.0f);	// Top Right Of The Texture and Quad
-//    }
-//    glEnd();
-
-
-//}
-
-void Texture::drawBoundingBox(bool fill){
-
-    //glPolygonMode (GL_FRONT_AND_BACK, fill ? GL_FILL : GL_FILL);
-    //glColor3f(1.f,0.f,0.f);
-    drawCube();
-    //glPolygonMode (GL_FRONT_AND_BACK, GL_FILL);
-
-}
-
-
 
 void Texture::setLightEch(int value)
 {
@@ -583,40 +377,19 @@ void Texture::setGreenNuageDisplay(float _g){
 void Texture::setBlueNuageDisplay(float _b){
     couleurNuage[2]=_b;
 }
-void Texture::setXlightposDisplay(float _x){
-    LightPos[0]=_x;
-}
-void Texture::setYlightposDisplay(float _y){
-    LightPos[1]=_y;
-}
-void Texture::setZlightposDisplay(float _z){
-    LightPos[2]=_z;
-}
-void Texture::setRlightcolDisplay(float _r){
-    LightColor[0]=_r;
-}
-void Texture::setGlightcolDisplay(float _g){
-    LightColor[1]=_g;
-}
-void Texture::setBlightcolDisplay(float _b){
-    LightColor[2]=_b;
-}
 void Texture::setAbsorptionNuageDisplay(float _a){
     absorptionNuage=_a;
 }
 void Texture::setResolutionBruitX(float _x){
     resolutionBruit[0]=_x;
-//    std::cout << resolutionBruit[0] <<std::endl;
     initTexture();
 }
 void Texture::setResolutionBruitY(float _y){
     resolutionBruit[1]=_y;
-//    std::cout << resolutionBruit[1] <<std::endl;
     initTexture();
 }
 void Texture::setResolutionBruitZ(float _z){
     resolutionBruit[2]=_z;
-//    std::cout << resolutionBruit[2] <<std::endl;
     initTexture();
 }
 void Texture::setFreqBruitR(float _r){
@@ -638,6 +411,5 @@ void Texture::clear(){
         glDeleteTextures(1, &textureId);
 
     init();
-
 }
 
