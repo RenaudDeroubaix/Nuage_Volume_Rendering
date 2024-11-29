@@ -25,9 +25,10 @@ HEADERS += header/Window.h \
     header/WidgetSetup.h
 
 RESOURCES += \
+    GLSL/shaders/tex3D.glsl \
+    GLSL/shaders/tex2D.glsl \
     GLSL/shaders/volume.frag \
     GLSL/shaders/volume.vert \
-    GLSL/shaders/volume.comp \
     GLSL/shaders/light.frag \
     GLSL/shaders/light.vert \
 
@@ -63,8 +64,4 @@ release:QMAKE_CXXFLAGS_RELEASE += -O3 \
     -fopenmp
 release:QMAKE_CFLAGS_RELEASE += -O3 \
     -fopenmp
-
-DISTFILES += \
-    GLSL/shaders/light.frag \
-    GLSL/shaders/light.vert
 

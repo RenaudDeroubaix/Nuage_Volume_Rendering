@@ -115,3 +115,6 @@ void Light::setGlightcolDisplay(float _g){
 void Light::setBlightcolDisplay(float _b){
     LightColor[2]=_b;
 }
+void Light::setRayon(float _r){
+    rayon=_r;
+}

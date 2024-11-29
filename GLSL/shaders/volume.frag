@@ -180,10 +180,11 @@ void main() {
                 textureValueLight =  dist_J  * texture(tex,  point_light_j_tex_coord);
 
                 //float luminance = ((textureValueLight.g + textureValueLight.b + textureValueLight.a)/3.0 - textureValueLight.r*3);
-                float luminance = (textureValue.r * facteurWorley[0] + textureValue.g * facteurWorley[1] + textureValue.b * facteurWorley[2] + textureValue.a * facteurWorley[3]);
+                float luminance = (textureValueLight.r * facteurWorley[0] + textureValueLight.g * facteurWorley[1] + textureValueLight.b * facteurWorley[2] + textureValueLight.a * facteurWorley[3]);
 
-                dist_light += luminance * anisotropic_scatering(luminance , Ipos , dir_light);
+                dist_light += luminance * anisotropic_scatering(0.3 * c , Ipos , dir_light);
 
+                c *= (1.0 - phase_attenuation);
 
             }
             float cur_density= densite * NuageDensity;
@@ -200,6 +201,6 @@ void main() {
     //if ( a < 0.4) a = 0;
 
 
-    fragColor = vec4(couleurNuage * LightColor * LightEnergy   ,  a  ); // Visualisation distance
+    fragColor = vec4(couleurNuage * LightColor * LightEnergy  ,  a  ); // Visualisation distance
 }
 

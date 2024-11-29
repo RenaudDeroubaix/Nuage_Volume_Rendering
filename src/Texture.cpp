@@ -102,13 +102,17 @@ void Texture::recompileShaders() {
     glFunctions->glDetachShader(this->programID, this->fShader);
     glFunctions->glDeleteShader(this->fShader);
 
-    glFunctions->glDetachShader(this->computeID, this->cShader);
-    glFunctions->glDeleteShader(this->cShader);
+    glFunctions->glDetachShader(this->computeID, this->cShader3D);
+    glFunctions->glDeleteShader(this->cShader3D);
+
+    glFunctions->glDetachShader(this->computeID_tex2D, this->cShader2D);
+    glFunctions->glDeleteShader(this->cShader2D);
 
     std::string path = "GLSL/shaders/";
     std::string vShaderPath = path + "volume.vert";
     std::string fShaderPath = path + "volume.frag";
-    std::string cShaderPath = path + "volume.comp";
+    std::string cShader3DPath = path + "tex3D.glsl";
+    std::string cShader2DPath = path + "tex2D.glsl";
 
     glFunctions = glContext->extraFunctions();
     glEnable( GL_DEBUG_OUTPUT );
@@ -118,15 +122,25 @@ void Texture::recompileShaders() {
     this->computeID = glFunctions->glCreateProgram();
     this->programID = glFunctions->glCreateProgram();
 
-    std::string content = readShaderSource(cShaderPath);
+    std::string content = readShaderSource(cShader3DPath);
     if (!content.empty()) {
-        this->cShader = glFunctions->glCreateShader(GL_COMPUTE_SHADER);
+        this->cShader3D = glFunctions->glCreateShader(GL_COMPUTE_SHADER);
         const char* src = content.c_str();
-        glFunctions->glShaderSource(this->cShader, 1, &src, NULL);
-        glFunctions->glCompileShader(this->cShader);
-        glFunctions->glAttachShader(this->computeID, this->cShader);
-        printShaderErrors(glFunctions,this->cShader);
+        glFunctions->glShaderSource(this->cShader3D, 1, &src, NULL);
+        glFunctions->glCompileShader(this->cShader3D);
+        glFunctions->glAttachShader(this->computeID, this->cShader3D);
+        printShaderErrors(glFunctions,this->cShader3D);
     }
+
+    content = readShaderSource(cShader2DPath);
+        if (!content.empty()) {
+            this->cShader2D = glFunctions->glCreateShader(GL_COMPUTE_SHADER);
+            const char* src = content.c_str();
+            glFunctions->glShaderSource(this->cShader2D, 1, &src, NULL);
+            glFunctions->glCompileShader(this->cShader2D);
+            glFunctions->glAttachShader(this->computeID_tex2D, this->cShader2D);
+            printShaderErrors(glFunctions,this->cShader2D);
+        }
 
     content = readShaderSource(vShaderPath);
     if (!content.empty()) {
@@ -159,7 +173,8 @@ void Texture::initGLSL(){
     std::string path = "GLSL/shaders/";
     std::string vShaderPath = path + "volume.vert";
     std::string fShaderPath = path + "volume.frag";
-    std::string cShaderPath = path + "volume.comp";
+    std::string cShader3DPath = path + "tex3D.glsl";
+    std::string cShader2DPath = path + "tex2D.glsl";
 
     glFunctions = glContext->extraFunctions();
     glEnable( GL_DEBUG_OUTPUT );
@@ -170,15 +185,25 @@ void Texture::initGLSL(){
     this->computeID = glFunctions->glCreateProgram();
     this->programID = glFunctions->glCreateProgram();
 
-    std::string content = readShaderSource(cShaderPath);
+    std::string content = readShaderSource(cShader3DPath);
     if (!content.empty()) {
-        this->cShader = glFunctions->glCreateShader(GL_COMPUTE_SHADER);
+        this->cShader3D = glFunctions->glCreateShader(GL_COMPUTE_SHADER);
         const char* src = content.c_str();
-        glFunctions->glShaderSource(this->cShader, 1, &src, NULL);
-        glFunctions->glCompileShader(this->cShader);
-        glFunctions->glAttachShader(this->computeID, this->cShader);
-        printShaderErrors(glFunctions,this->cShader);
+        glFunctions->glShaderSource(this->cShader3D, 1, &src, NULL);
+        glFunctions->glCompileShader(this->cShader3D);
+        glFunctions->glAttachShader(this->computeID, this->cShader3D);
+        printShaderErrors(glFunctions,this->cShader3D);
     }
+
+    content = readShaderSource(cShader2DPath);
+        if (!content.empty()) {
+            this->cShader2D = glFunctions->glCreateShader(GL_COMPUTE_SHADER);
+            const char* src = content.c_str();
+            glFunctions->glShaderSource(this->cShader2D, 1, &src, NULL);
+            glFunctions->glCompileShader(this->cShader2D);
+            glFunctions->glAttachShader(this->computeID_tex2D, this->cShader2D);
+            printShaderErrors(glFunctions,this->cShader2D);
+        }
 
     content = readShaderSource(vShaderPath);
     if (!content.empty()) {
@@ -206,6 +231,9 @@ void Texture::initGLSL(){
     glFunctions->glLinkProgram(this->computeID);
     printProgramErrors(glFunctions,computeID);
 
+    glFunctions->glLinkProgram(this->computeID_tex2D);
+    printProgramErrors(glFunctions,computeID_tex2D);
+
     checkOpenGLError();
 }
 
@@ -213,8 +241,9 @@ void Texture::initGLSL(){
 void Texture::initTexture(){
 
 
-    if(textureId != 0){
+    if(textureId != 0 && textureId_2 !=0){
         glDeleteTextures(1, &textureId);
+        glDeleteTextures(1, &textureId_2);
     }
 
     glGenTextures(1, &textureId);
@@ -234,6 +263,16 @@ void Texture::initTexture(){
 
     // Charger les données de la texture dans OpenGL
     glFunctions->glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA32F, resolutionBruit[0], resolutionBruit[1], resolutionBruit[2], 0, GL_RGBA, GL_FLOAT, nullptr);
+
+//    glGenTextures(1, &textureId_2);
+//    glFunctions->glBindTexture(GL_TEXTURE_2D, textureId_2);
+//    glFunctions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+//    glFunctions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+//    glFunctions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//    glFunctions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+//    glFunctions->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, resolutionBruitCurl[0], resolutionBruitCurl[1], 0, GL_RGB,
+//                 GL_FLOAT, nullptr);
+
     textureCreated = true;
 
 }
@@ -264,7 +303,11 @@ void Texture::computePass() {
     glFunctions->glBindImageTexture (0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
     glFunctions->glBindTexture(GL_TEXTURE_3D, 0);
 
-
+//    glFunctions->glUseProgram(0);
+//    glFunctions->glUseProgram(computeID_tex2D);
+//    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(computeID_tex2D, "u_time"), timer.elapsed()/vitesse);
+//    glFunctions->glUniform2fv(glFunctions->glGetUniformLocation(computeID_tex2D, "resolution"),1, &resolutionBruitCurl[0]);
+//    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(computeID_tex2D, "frequenceCurl"),1, &freqBruitCurl[0]);
 
 
 }
@@ -462,6 +505,7 @@ void Texture::clear(){
 
     if( textureCreated )
         glDeleteTextures(1, &textureId);
+        glDeleteTextures(1, &textureId_2);
 
     init();
 }

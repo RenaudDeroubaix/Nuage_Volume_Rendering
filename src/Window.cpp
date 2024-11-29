@@ -81,6 +81,10 @@ Window::Window()
 
     connect(madDockWidget, &TextureDockWidget::vitesseSliderChanged, viewer, &TextureViewer::setVitesse);
 
+    connect(madDockWidget, &TextureDockWidget::setlightcolRValueChanged, viewer, &TextureViewer::setRlightcol);
+    connect(madDockWidget, &TextureDockWidget::setlightcolGValueChanged, viewer, &TextureViewer::setGlightcol);
+    connect(madDockWidget, &TextureDockWidget::setlightcolBValueChanged, viewer, &TextureViewer::setBlightcol);
+
 
     this->setCentralWidget(viewerGroupBox);
 

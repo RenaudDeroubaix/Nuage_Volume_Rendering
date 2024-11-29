@@ -39,7 +39,7 @@ public:
     ~Texture();
 private :
 
-    GLuint textureId = 0;
+    GLuint textureId = 0, textureId_2 = 0;
 
     unsigned char * rgbTexture;
 
@@ -88,7 +88,7 @@ public:
 
     GLuint getTextureId(){return textureId;}
 
-    GLuint cShader, vShader, gShader, fShader, programID , computeID;
+    GLuint cShader3D, cShader2D, vShader, gShader, fShader, programID , computeID, computeID_tex2D;
 
     QOpenGLContext* glContext;
     QOpenGLExtraFunctions* glFunctions;

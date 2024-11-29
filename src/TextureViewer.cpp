@@ -40,6 +40,10 @@ void TextureViewer::init() {
     // Activer le face culling (par défaut, désactivé pour la lumière dans draw())
 
     glEnable(GL_CULL_FACE); // Activer le culling pour la texture
+    glCullFace(GL_FRONT);  // Dessiner les faces avant uniquement
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void TextureViewer::draw() {
@@ -48,22 +52,13 @@ void TextureViewer::draw() {
 
     // Configurer la caméra
     camera()->setSceneRadius(10);
-
-    // 1. Dessiner la texture 3D (opaque)
-    glEnable(GL_DEPTH_TEST);
-    glDepthMask(GL_TRUE); // Autoriser l'écriture dans le tampon de profondeur
-    glCullFace(GL_FRONT);  // Dessiner les faces avant uniquement
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    texture->draw(light->getpos(), light->getcol(), camera());
-
-    // 2. Dessiner la lumière (transparente)
     glDisable(GL_DEPTH_TEST); // Désactiver le test de profondeur pour la lumière
     light->draw(camera());
+    // 1. Dessiner la texture 3D (opaque)
+    glEnable(GL_DEPTH_TEST);
+    //glDepthMask(GL_TRUE); // Autoriser l'écriture dans le tampon de profondeur
 
-    // Restaurer les paramètres par défaut
-    glDisable(GL_BLEND);
-    glEnable(GL_DEPTH_TEST);  // Réactiver le test de profondeur
+    texture->draw(light->getpos(), light->getcol(), camera());
 
     // Mettre à jour la scène
     update();
@@ -268,7 +263,7 @@ void TextureViewer::setFreqBruitA(float _a){
     update();
 }
 void TextureViewer::setRayonSoleil(float _rayonValue){
-    //a faire lien sur light
+    light->setRayon(_rayonValue);
     update();
 }
 void TextureViewer::setAbsorptionLight(float _a){
