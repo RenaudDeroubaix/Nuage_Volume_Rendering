@@ -13,7 +13,8 @@ Window::Window()
     this->resize(1280, 720);
 
     viewer = new TextureViewer(this);
-    viewer->openOBJMesh(":/Ressources/fuji/source/Mount_Fuji.obj");
+    Mesh * p =viewer->initPlan();
+    viewer->openOBJMesh(":/Ressources/fuji/source/Mount_Fuji.obj", p);
 
     QWidget * textureWidget = new QWidget(this);
     QGridLayout * gridLayout = new QGridLayout(textureWidget);

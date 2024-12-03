@@ -72,19 +72,11 @@ void TextureViewer::draw() {
 
 void TextureViewer::drawMesh() {
     // Exemple de dessin d'un mesh (ajouté si nécessaire)
-//    glBegin(GL_TRIANGLES);
-//    for (const auto& triangle : triangles) {
-//        for (size_t i = 0; i < 3; ++i) {
-//            const qglviewer::Vec& vertex = vertices[triangle[i]];
-//            glVertex3f(vertex.x, vertex.y, vertex.z);
-//        }
-//    }
-//    glEnd();
     glBegin(GL_TRIANGLES);
-    for (const auto& face : faces) {
-        for (int index : face.vertexIndices) {
-            const QVector3D& vertex = vertices[index];
-            glVertex3f(vertex.x(), vertex.y(), vertex.z());
+    for (const auto& triangle : triangles) {
+        for (size_t i = 0; i < 3; ++i) {
+            const qglviewer::Vec& vertex = vertices[triangle[i]];
+            glVertex3f(vertex.x, vertex.y, vertex.z);
         }
     }
     glEnd();
@@ -95,6 +87,10 @@ void TextureViewer::clear(){
     texture->clear(camera());
 }
 
+Mesh* TextureViewer::initPlan(){
+    Mesh* plan= new Mesh;
+    return plan;
+}
 
 void TextureViewer::updateCamera(const qglviewer::Vec & center, float radius){
     camera()->setSceneCenter(center);
@@ -103,7 +99,7 @@ void TextureViewer::updateCamera(const qglviewer::Vec & center, float radius){
     camera()->showEntireScene();
 }
 
-void TextureViewer::openOBJMesh(const QString &fileName){
+void TextureViewer::openOBJMesh(const QString &fileName, Mesh*  m){
     std::cout << "Opening " << fileName.toStdString() << std::endl;
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -125,15 +121,15 @@ void TextureViewer::openOBJMesh(const QString &fileName){
         if (parts[0] == "v") {
             // Vertex position
             if (parts.size() < 4) continue;
-            vertices.append(QVector3D(parts[1].toFloat(), parts[2].toFloat(), parts[3].toFloat()));
+            m->vertices.append(QVector3D(parts[1].toFloat(), parts[2].toFloat(), parts[3].toFloat()));
         } else if (parts[0] == "vt") {
             // Texture coordinates
             if (parts.size() < 3) continue;
-            textureCoords.append(QVector3D(parts[1].toFloat(), parts[2].toFloat(), 0.0f));
+            m->textureCoords.append(QVector2D(parts[1].toFloat(), parts[2].toFloat()));
         } else if (parts[0] == "vn") {
             // Vertex normal
             if (parts.size() < 4) continue;
-            normals.append(QVector3D(parts[1].toFloat(), parts[2].toFloat(), parts[3].toFloat()));
+            m->normals.append(QVector3D(parts[1].toFloat(), parts[2].toFloat(), parts[3].toFloat()));
         } else if (parts[0] == "f") {
             // Face
             Face face;
@@ -146,15 +142,15 @@ void TextureViewer::openOBJMesh(const QString &fileName){
                 if (indices.size() > 2 && !indices[2].isEmpty())
                     face.normalIndices.append(indices[2].toInt() - 1);
             }
-            faces.append(face);
+            m->faces.append(face);
         }
     }
 
     file.close();
-    std::cout << "OBJ LOAD, nbVertices: " << vertices.size() <<std::endl;
-    std::cout << "          nbUVcoords: " << textureCoords.size() <<std::endl;
-    std::cout << "          nbNormales: " << normals.size() <<std::endl;
-    std::cout << "          nbFaces: " << faces.size() <<std::endl;
+    std::cout << "OBJ LOAD, nbVertices: " << m->vertices.size() <<std::endl;
+    std::cout << "          nbUVcoords: " << m->textureCoords.size() <<std::endl;
+    std::cout << "          nbNormales: " << m->normals.size() <<std::endl;
+    std::cout << "          nbFaces: " << m->faces.size() <<std::endl;
     return;
 }
 
