@@ -31,7 +31,7 @@ public :
 
 protected :
     Texture * texture;
-    Mesh* plan;
+    Mesh* plan = nullptr;
     Light * light;
     //Mesh * mesh;
 

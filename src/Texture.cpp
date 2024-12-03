@@ -271,6 +271,7 @@ void Texture::initGLSL(){
     glFunctions->glLinkProgram(this->computeID_tex2D);
     std::cout << "ERROR SHADER computeID_tex2D" << std::endl;
     printProgramErrors(glFunctions,computeID_tex2D);
+    std::cout << "Fin error init GLSL nuage" << std::endl;
 
     checkOpenGLError();
 }

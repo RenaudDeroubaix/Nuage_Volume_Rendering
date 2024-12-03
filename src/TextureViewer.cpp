@@ -14,6 +14,11 @@ void TextureViewer::init() {
     // Initialisation des objets
     texture = new Texture(QOpenGLContext::currentContext(),camera());
     light = new Light(QOpenGLContext::currentContext());
+    plan = initPlan();
+    openOBJMesh(":/Ressources/Moutain.obj", plan);
+    //openOBJMesh(":/Ressources/sphere.obj", plan);
+    plan->initializeGL();
+    //plan->initTexture(":/Ressources/fuji/source/ESRI_AERIAL_WM.tif");
 
     // Initialisation de la scène
     setManipulatedFrame(new ManipulatedFrame());
@@ -61,10 +66,17 @@ void TextureViewer::draw() {
     //glEnable(GL_DEPTH_TEST);
     //glDepthMask(GL_TRUE); // Autoriser l'écriture dans le tampon de profondeur
 
-    texture->draw(light->getpos(), light->getcol(), camera());
+    //texture->draw(light->getpos(), light->getcol(), camera());
 
     // Mettre à jour la scène
-    drawMesh();
+    if(plan != nullptr){
+        glEnable(GL_DEPTH_TEST);       // Enable depth testing for the plan
+        glDepthMask(GL_TRUE);          // Allow writing to the depth buffer
+        glFrontFace(GL_CW);
+        plan->draw(light->getpos(), light->getcol(),camera());
+        glFrontFace(GL_CCW);
+        //std::cout << "plan dessiné" <<std::endl;
+    }
     update();
 }
 
@@ -88,7 +100,8 @@ void TextureViewer::clear(){
 }
 
 Mesh* TextureViewer::initPlan(){
-    Mesh* plan= new Mesh;
+    Mesh* plan= new Mesh(QOpenGLContext::currentContext());
+    plan->initGLSL();
     return plan;
 }
 
@@ -99,7 +112,7 @@ void TextureViewer::updateCamera(const qglviewer::Vec & center, float radius){
     camera()->showEntireScene();
 }
 
-void TextureViewer::openOBJMesh(const QString &fileName, Mesh*  m){
+void TextureViewer::openOBJMesh(const QString &fileName, Mesh* m) {
     std::cout << "Opening " << fileName.toStdString() << std::endl;
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -108,6 +121,10 @@ void TextureViewer::openOBJMesh(const QString &fileName, Mesh*  m){
     }
 
     QTextStream in(&file);
+    QVector3D minVertex(FLT_MAX, FLT_MAX, FLT_MAX);  // Initialiser à des valeurs très grandes
+    QVector3D maxVertex(-FLT_MAX, -FLT_MAX, -FLT_MAX); // Initialiser à des valeurs très petites
+
+    // Chargement des données
     while (!in.atEnd()) {
         QString line = in.readLine().trimmed();
 
@@ -121,7 +138,12 @@ void TextureViewer::openOBJMesh(const QString &fileName, Mesh*  m){
         if (parts[0] == "v") {
             // Vertex position
             if (parts.size() < 4) continue;
-            m->vertices.append(QVector3D(parts[1].toFloat(), parts[2].toFloat(), parts[3].toFloat()));
+            QVector3D vertex(parts[1].toFloat(), parts[2].toFloat(), parts[3].toFloat());
+            m->vertices.append(vertex);
+
+            // Mettre à jour les coordonnées min et max
+            minVertex = QVector3D(qMin(minVertex.x(), vertex.x()), qMin(minVertex.y(), vertex.y()), qMin(minVertex.z(), vertex.z()));
+            maxVertex = QVector3D(qMax(maxVertex.x(), vertex.x()), qMax(maxVertex.y(), vertex.y()), qMax(maxVertex.z(), vertex.z()));
         } else if (parts[0] == "vt") {
             // Texture coordinates
             if (parts.size() < 3) continue;
@@ -147,12 +169,27 @@ void TextureViewer::openOBJMesh(const QString &fileName, Mesh*  m){
     }
 
     file.close();
-    std::cout << "OBJ LOAD, nbVertices: " << m->vertices.size() <<std::endl;
-    std::cout << "          nbUVcoords: " << m->textureCoords.size() <<std::endl;
-    std::cout << "          nbNormales: " << m->normals.size() <<std::endl;
-    std::cout << "          nbFaces: " << m->faces.size() <<std::endl;
+
+    // Normalisation des vertices
+    QVector3D range = maxVertex - minVertex;
+    QVector3D center = minVertex + range / 2.0f;
+
+    for (int i = 0; i < m->vertices.size(); ++i) {
+        QVector3D& vertex = m->vertices[i];
+
+        // Déplacer le vertex vers l'origine et le normaliser dans l'intervalle [0, 1]
+        vertex -= center;  // Centrer le mesh
+        vertex /= range;   // Redimensionner le mesh dans l'intervalle [0, 1]
+    }
+
+    std::cout << "OBJ LOAD, nbVertices: " << m->vertices.size() << std::endl;
+    std::cout << "          nbUVcoords: " << m->textureCoords.size() << std::endl;
+    std::cout << "          nbNormales: " << m->normals.size() << std::endl;
+    std::cout << "          nbFaces: " << m->faces.size() << std::endl;
+
     return;
 }
+
 
 //void TextureViewer::openOffMesh(const QString &fileName) {
 //    std::cout << "Opening " << fileName.toStdString() << std::endl;
