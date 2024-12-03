@@ -12,7 +12,7 @@ TextureViewer::TextureViewer(QWidget *parent):QGLViewer(parent){
 
 void TextureViewer::init() {
     // Initialisation des objets
-    texture = new Texture(QOpenGLContext::currentContext());
+    texture = new Texture(QOpenGLContext::currentContext(),camera());
     light = new Light(QOpenGLContext::currentContext());
 
     // Initialisation de la scène
@@ -20,9 +20,6 @@ void TextureViewer::init() {
 
     // Désactiver l'éclairage fixe OpenGL (non utilisé ici)
     glDisable(GL_LIGHTING);
-
-    // Activer le plan de clipping (optionnel, dépend de vos besoins)
-    glEnable(GL_CLIP_PLANE0);
 
     // Configurer le test de profondeur pour un rendu 3D correct
     glEnable(GL_DEPTH_TEST);
@@ -44,9 +41,12 @@ void TextureViewer::init() {
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //updateCamera(camera()->position(), 00.0);
+    //camera()->setUpVector(qglviewer::Vec(0.0,1.0,0.0), false);
 }
 
 void TextureViewer::draw() {
+   // camera()->setUpVector(qglviewer::Vec(0.0,1.0,0.0), true);
     // Effacer le tampon de couleur et de profondeur
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -80,7 +80,7 @@ void TextureViewer::drawMesh() {
 
 
 void TextureViewer::clear(){
-    texture->clear();
+    texture->clear(camera());
 }
 
 

@@ -20,14 +20,14 @@ Window::Window()
     gridLayout->addWidget(viewer, 0, 1, 1, 1);
 
     //QAction * actionLoad3Dimage = new QAction("Load 3D image", this);
-    QAction * recompileShaders = new QAction("Recompile shaders", this);
+    //QAction * recompileShaders = new QAction("Recompile shaders", this);
 
 
     QMenu * menuFile = new QMenu("File", this);
 
     //menuFile->addAction(actionLoad3Dimage);
 
-    connect(recompileShaders, &QAction::triggered, viewer, &TextureViewer::recompileShaders);
+    //connect(recompileShaders, &QAction::triggered, viewer, &TextureViewer::recompileShaders);
 
     QGroupBox * viewerGroupBox = new QGroupBox ("Clouds: Volume Rendering", this);
     QHBoxLayout * viewerLayout = new QHBoxLayout (viewerGroupBox);
@@ -91,7 +91,7 @@ Window::Window()
     QMenuBar * menubar = new QMenuBar(this);
 
     menubar->addAction(menuFile->menuAction());
-    menubar->addAction(recompileShaders);
+    //menubar->addAction(recompileShaders);
 
     this->setMenuBar(menubar);
 

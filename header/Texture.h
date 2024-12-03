@@ -34,7 +34,7 @@ class Texture
 {
 
 public:
-    Texture( QOpenGLContext* context);
+    Texture( QOpenGLContext* context, qglviewer::Camera * camera);
 
     ~Texture();
 private :
@@ -74,8 +74,8 @@ private :
 
 public:
 
-    void init();
-    void clear();
+    void init(qglviewer::Camera * camera);
+    void clear(qglviewer::Camera * camera);
 
     void initGLSL();
     void initTexture();

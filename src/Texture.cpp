@@ -11,11 +11,34 @@
 #include <complex>
 
 
-Texture::Texture(QOpenGLContext* context)
+Texture::Texture(QOpenGLContext* context, qglviewer::Camera * camera)
 {
     glContext = context;
+//    // Récupérer les informations sous forme de chaînes
+//    const char* version = reinterpret_cast<const char*>(glGetString(GL_VERSION));
+//    const char* renderer = reinterpret_cast<const char*>(glGetString(GL_RENDERER));
 
-    init();
+//    // Afficher les informations correctement
+//    qDebug() << "OpenGL Version:" << version;
+//    qDebug() << "Renderer:" << renderer;
+
+//    int workGroupCount[3], workGroupSize[3], sharedMemorySize;
+//    glFunctions = glContext->extraFunctions();
+//    glFunctions->glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 0, &workGroupCount[0]);
+//    glFunctions->glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 1, &workGroupCount[1]);
+//    glFunctions->glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, 2, &workGroupCount[2]);
+
+//    glFunctions->glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 0, &workGroupSize[0]);
+//    glFunctions->glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 1, &workGroupSize[1]);
+//    glFunctions->glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_SIZE, 2, &workGroupSize[2]);
+
+//    glGetIntegerv(GL_MAX_COMPUTE_SHARED_MEMORY_SIZE, &sharedMemorySize);
+
+//    std::cout << "Max work group counts: (" << workGroupCount[0] << ", " << workGroupCount[1] << ", " << workGroupCount[2] << ")\n";
+//    std::cout << "Max work group sizes: (" << workGroupSize[0] << ", " << workGroupSize[1] << ", " << workGroupSize[2] << ")\n";
+//    std::cout << "Max shared memory size: " << sharedMemorySize << " bytes\n";
+
+    init(camera);
     initGLSL();
     initTexture();
 }
@@ -25,7 +48,7 @@ Texture::~Texture(){
         deleteTexture();
 }
 
-void Texture::init(){
+void Texture::init(qglviewer::Camera * camera){
 
     //Set texture to cube of size 1.
     timer.start();
@@ -38,14 +61,19 @@ void Texture::init(){
     resolutionBruitCurl = QVector2D(128.0,128.0);
     freqBruitCurl =QVector3D(2.0,6.0,12.0);
 
-    LightEch = 20;
-    NuageEch = 50;
+    LightEch = 8;
+    NuageEch = 35;
 
     BBmin = QVector3D(-0.5,-0.5,-0.5) ;
     BBmax = QVector3D(0.5,0.5,0.5) ;
 
-//    BBmin = QVector3D(-10.0,-10.0,-10.0) ;
-//    BBmax = QVector3D(10.0,10.0,10.0) ;
+    BBmin = QVector3D(-50.0,-50.0,-50.0) ;
+    BBmax = QVector3D(50.0,50.0,50.0) ;
+
+    qglviewer::Vec bbmin(BBmin.x(),BBmin.y(),BBmin.z());
+    qglviewer::Vec bbmax(BBmax.x(),BBmax.y(),BBmax.z());
+
+    camera->setSceneBoundingBox(bbmin*2.0,bbmax*2.0);
 
 
 
@@ -97,7 +125,7 @@ void Texture::init(){
 }
 
 void Texture::recompileShaders() {
-    init();
+    //init();
 
     glFunctions->glDetachShader(this->programID, this->vShader);
     glFunctions->glDeleteShader(this->vShader);
@@ -165,6 +193,7 @@ void Texture::recompileShaders() {
         printShaderErrors(glFunctions,this->fShader);
     }
      glFunctions->glLinkProgram(this->programID);
+     glFunctions->glLinkProgram(this->computeID_tex2D);
      glFunctions->glLinkProgram(this->computeID);
      initTexture();
      computePass();
@@ -229,12 +258,15 @@ void Texture::initGLSL(){
     }
 
     glFunctions->glLinkProgram(this->programID);
+    std::cout << "ERROR SHADER programID" << std::endl;
     printProgramErrors(glFunctions,programID);
 
     glFunctions->glLinkProgram(this->computeID);
+    std::cout << "ERROR SHADER computeID" << std::endl;
     printProgramErrors(glFunctions,computeID);
 
     glFunctions->glLinkProgram(this->computeID_tex2D);
+    std::cout << "ERROR SHADER computeID_tex2D" << std::endl;
     printProgramErrors(glFunctions,computeID_tex2D);
 
     checkOpenGLError();
@@ -277,7 +309,7 @@ void Texture::initTexture(){
 //                 GL_FLOAT, nullptr);
 
     textureCreated = true;
-
+    computePass();
 }
 
 void Texture::updateTextureData(){
@@ -320,7 +352,7 @@ void Texture::draw( QVector3D & LightPos ,  QVector3D & LightCol  , const qglvie
     if(!textureCreated)
         return;
 
-    computePass();
+    //computePass();
 
     glFunctions->glUseProgram(0);
     glFunctions->glUseProgram(programID);
@@ -368,8 +400,8 @@ void Texture::draw( QVector3D & LightPos ,  QVector3D & LightCol  , const qglvie
     glFunctions->glActiveTexture(GL_TEXTURE0 + textureId);
     glFunctions->glBindTexture(GL_TEXTURE_3D, textureId);
     glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "tex"), textureId);
-    //drawPlaneInFrontOfCamera(camera,0.1);
-    drawCube();
+    drawPlaneInFrontOfCamera(camera,0.1);
+    //drawCube();
 
 }
 
@@ -392,8 +424,8 @@ void Texture::drawPlaneInFrontOfCamera(const qglviewer::Camera *camera, float di
     qglviewer::Vec up = camera->upVector();
 
     // Taille du plan
-    float planeWidth = BBmax[0]-BBmin[0];  // Largeur augmentée
-    float planeHeight = BBmax[1]-BBmin[1]; // Hauteur augmentée
+    float planeWidth = 0.5;  // Largeur augmentée
+    float planeHeight = 0.1; // Hauteur augmentée
 
     // Calcul des coins
     qglviewer::Vec bottomLeft  = planeCenter - right * (planeWidth / 2.0f) - up * (planeHeight / 2.0f);
@@ -545,12 +577,12 @@ void Texture::setVitesse(float _v){
     vitesse=_v;
 }
 
-void Texture::clear(){
+void Texture::clear(qglviewer::Camera * camera){
 
     if( textureCreated )
         glDeleteTextures(1, &textureId);
         glDeleteTextures(1, &textureId_2);
 
-    init();
+    init(camera);
 }
 
