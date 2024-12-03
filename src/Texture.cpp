@@ -67,13 +67,16 @@ void Texture::init(qglviewer::Camera * camera){
     BBmin = QVector3D(-0.5,-0.5,-0.5) ;
     BBmax = QVector3D(0.5,0.5,0.5) ;
 
+    BBmin = QVector3D(-5.0,-5.00,-5.0) ;
+    BBmax = QVector3D(5.0,5.0,5.0) ;
+
     BBmin = QVector3D(-50.0,-50.0,-50.0) ;
     BBmax = QVector3D(50.0,50.0,50.0) ;
 
     qglviewer::Vec bbmin(BBmin.x(),BBmin.y(),BBmin.z());
     qglviewer::Vec bbmax(BBmax.x(),BBmax.y(),BBmax.z());
 
-    camera->setSceneBoundingBox(bbmin*2.0,bbmax*2.0);
+    //camera->setSceneBoundingBox(bbmin*2.0,bbmax*2.0);
 
 
 
@@ -352,7 +355,7 @@ void Texture::draw( QVector3D & LightPos ,  QVector3D & LightCol  , const qglvie
     if(!textureCreated)
         return;
 
-    //computePass();
+    computePass();
 
     glFunctions->glUseProgram(0);
     glFunctions->glUseProgram(programID);
@@ -441,8 +444,7 @@ void Texture::drawPlaneInFrontOfCamera(const qglviewer::Camera *camera, float di
     glVertex3f(topLeft.x, topLeft.y, topLeft.z);
     glEnd();
 
-    // Réactiver le culling et le Z-buffer après le test
-    glEnable(GL_CULL_FACE);
+
 }
 
 

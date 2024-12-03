@@ -31,6 +31,7 @@ RESOURCES += \
     GLSL/shaders/volume.vert \
     GLSL/shaders/light.frag \
     GLSL/shaders/light.vert \
+    Ressources/fuji/source/Mount_Fuji.obj
 
 INCLUDEPATH = ./GLSL
 EXT_DIR = external
