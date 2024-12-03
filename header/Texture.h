@@ -34,12 +34,12 @@ class Texture
 {
 
 public:
-    Texture( QOpenGLContext* context);
+    Texture( QOpenGLContext* context, qglviewer::Camera * camera);
 
     ~Texture();
 private :
 
-    GLuint textureId = 0;
+    GLuint textureId = 0, textureId_2 = 0;
 
     unsigned char * rgbTexture;
 
@@ -74,8 +74,8 @@ private :
 
 public:
 
-    void init();
-    void clear();
+    void init(qglviewer::Camera * camera);
+    void clear(qglviewer::Camera * camera);
 
     void initGLSL();
     void initTexture();
@@ -84,11 +84,12 @@ public:
     void deleteTexture();
 
     void draw( QVector3D & LightPos ,  QVector3D & LightCol  ,  const qglviewer::Camera * camera );
+    void drawPlaneInFrontOfCamera(const qglviewer::Camera *camera, float distance);
     void drawCube();
 
     GLuint getTextureId(){return textureId;}
 
-    GLuint cShader, vShader, gShader, fShader, programID , computeID;
+    GLuint cShader3D, cShader2D, vShader, gShader, fShader, programID , computeID, computeID_tex2D;
 
     QOpenGLContext* glContext;
     QOpenGLExtraFunctions* glFunctions;

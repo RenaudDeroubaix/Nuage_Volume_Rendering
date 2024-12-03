@@ -3,6 +3,7 @@
 
 #include <QKeyEvent>
 #include <QGLViewer/qglviewer.h>
+#include <QFile>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -10,6 +11,13 @@
 #include <algorithm>
 #include "light.h"
 #include "Texture.h"
+
+struct Face {
+    QVector<int> vertexIndices;
+    QVector<int> textureIndices;
+    QVector<int> normalIndices;
+};
+
 
 class TextureViewer : public QGLViewer
 {
@@ -19,7 +27,8 @@ public :
     TextureViewer(QWidget *parent = nullptr);
 
     //void open3DImage(const QString & fileName);
-    void openOffMesh(const QString & fileName);
+    //void openOffMesh(const QString & fileName);
+    void openOBJMesh(const QString & fileName);
 
 
 
@@ -39,8 +48,13 @@ protected :
     void clear();
     void updateCamera(const qglviewer::Vec & center, float radius);
 
-    std::vector<qglviewer::Vec> vertices;
-    std::vector<std::array<size_t,3>> triangles;
+//    std::vector<qglviewer::Vec> vertices;
+//    std::vector<std::array<size_t,3>> triangles;
+
+    QVector<QVector3D> vertices;
+    QVector<QVector3D> normals;
+    QVector<QVector3D> textureCoords;
+    QVector<Face> faces;
 
 
 public slots:

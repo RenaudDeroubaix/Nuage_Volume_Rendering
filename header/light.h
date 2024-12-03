@@ -14,8 +14,10 @@
 
 class Light
 {
+private:
     float rayon;
-
+    QVector3D LightPos;
+    QVector3D LightColor;
 public:
 
     Light( QOpenGLContext* context);
@@ -26,8 +28,7 @@ public:
 
     void draw(const qglviewer::Camera * camera );
     void drawSquareForLight();
-    QVector3D LightPos;
-    QVector3D LightColor;
+
     GLuint  vShader, fShader , LightID;
     QOpenGLContext* glContext;
     QOpenGLExtraFunctions* glFunctions;
@@ -41,6 +42,7 @@ public:
     void setRlightcolDisplay(float _r);
     void setGlightcolDisplay(float _g);
     void setBlightcolDisplay(float _b);
+    void setRayon(float _r);
 
 };
 

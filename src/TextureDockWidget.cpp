@@ -128,7 +128,7 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     LightPosX = new QDoubleSpinBox(lightFrame);
     setSpinBox(LightPosX,-25.0,25.0,0.1,0.0,50);
     LightPosY = new QDoubleSpinBox(lightFrame);
-    setSpinBox(LightPosY,-25.0,25.0,0.1,0.0,50);
+    setSpinBox(LightPosY,-25.0,25.0,0.1,1.0,50);
     LightPosZ = new QDoubleSpinBox(lightFrame);
     setSpinBox(LightPosZ,-25.0,25.0,0.1,0.0,50);
 

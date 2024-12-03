@@ -12,7 +12,7 @@ TextureViewer::TextureViewer(QWidget *parent):QGLViewer(parent){
 
 void TextureViewer::init() {
     // Initialisation des objets
-    texture = new Texture(QOpenGLContext::currentContext());
+    texture = new Texture(QOpenGLContext::currentContext(),camera());
     light = new Light(QOpenGLContext::currentContext());
 
     // Initialisation de la scène
@@ -20,9 +20,6 @@ void TextureViewer::init() {
 
     // Désactiver l'éclairage fixe OpenGL (non utilisé ici)
     glDisable(GL_LIGHTING);
-
-    // Activer le plan de clipping (optionnel, dépend de vos besoins)
-    glEnable(GL_CLIP_PLANE0);
 
     // Configurer le test de profondeur pour un rendu 3D correct
     glEnable(GL_DEPTH_TEST);
@@ -40,32 +37,34 @@ void TextureViewer::init() {
     // Activer le face culling (par défaut, désactivé pour la lumière dans draw())
 
     glEnable(GL_CULL_FACE); // Activer le culling pour la texture
+    glCullFace(GL_FRONT);  // Dessiner les faces avant uniquement
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //updateCamera(camera()->position(), .1);
+    //camera()->setSceneRadius(100);
+    camera()->setZNearCoefficient(0.00001);
+    camera()->setZClippingCoefficient(1000.0);
+    //camera()->setUpVector(qglviewer::Vec(0.0,1.0,0.0), false);
 }
 
 void TextureViewer::draw() {
+   // camera()->setUpVector(qglviewer::Vec(0.0,1.0,0.0), true);
     // Effacer le tampon de couleur et de profondeur
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Configurer la caméra
-    camera()->setSceneRadius(10);
 
-    // 1. Dessiner la texture 3D (opaque)
-    glEnable(GL_DEPTH_TEST);
-    glDepthMask(GL_TRUE); // Autoriser l'écriture dans le tampon de profondeur
-    glCullFace(GL_FRONT);  // Dessiner les faces avant uniquement
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    texture->draw(light->getpos(), light->getcol(), camera());
-
-    // 2. Dessiner la lumière (transparente)
     glDisable(GL_DEPTH_TEST); // Désactiver le test de profondeur pour la lumière
     light->draw(camera());
+    // 1. Dessiner la texture 3D (opaque)
+    //glEnable(GL_DEPTH_TEST);
+    //glDepthMask(GL_TRUE); // Autoriser l'écriture dans le tampon de profondeur
 
-    // Restaurer les paramètres par défaut
-    glDisable(GL_BLEND);
-    glEnable(GL_DEPTH_TEST);  // Réactiver le test de profondeur
+    texture->draw(light->getpos(), light->getcol(), camera());
 
     // Mettre à jour la scène
+    drawMesh();
     update();
 }
 
@@ -73,11 +72,19 @@ void TextureViewer::draw() {
 
 void TextureViewer::drawMesh() {
     // Exemple de dessin d'un mesh (ajouté si nécessaire)
+//    glBegin(GL_TRIANGLES);
+//    for (const auto& triangle : triangles) {
+//        for (size_t i = 0; i < 3; ++i) {
+//            const qglviewer::Vec& vertex = vertices[triangle[i]];
+//            glVertex3f(vertex.x, vertex.y, vertex.z);
+//        }
+//    }
+//    glEnd();
     glBegin(GL_TRIANGLES);
-    for (const auto& triangle : triangles) {
-        for (size_t i = 0; i < 3; ++i) {
-            const qglviewer::Vec& vertex = vertices[triangle[i]];
-            glVertex3f(vertex.x, vertex.y, vertex.z);
+    for (const auto& face : faces) {
+        for (int index : face.vertexIndices) {
+            const QVector3D& vertex = vertices[index];
+            glVertex3f(vertex.x(), vertex.y(), vertex.z());
         }
     }
     glEnd();
@@ -85,7 +92,7 @@ void TextureViewer::drawMesh() {
 
 
 void TextureViewer::clear(){
-    texture->clear();
+    texture->clear(camera());
 }
 
 
@@ -96,75 +103,130 @@ void TextureViewer::updateCamera(const qglviewer::Vec & center, float radius){
     camera()->showEntireScene();
 }
 
-void TextureViewer::openOffMesh(const QString &fileName) {
+void TextureViewer::openOBJMesh(const QString &fileName){
     std::cout << "Opening " << fileName.toStdString() << std::endl;
-
-    // open the file
-    std::ifstream myfile;
-    myfile.open(fileName.toStdString());
-    if (!myfile.is_open())
-    {
-        std::cout << fileName.toStdString() << " cannot be opened" << std::endl;
+    QFile file(fileName);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
+        qWarning() << "Could not open file:" << fileName;
         return;
     }
 
-    std::string magic_s;
+    QTextStream in(&file);
+    while (!in.atEnd()) {
+        QString line = in.readLine().trimmed();
 
-    myfile >> magic_s;
+        // Skip comments and empty lines
+        if (line.startsWith("#") || line.isEmpty())
+            continue;
 
-    // check if it's OFF
-    if( magic_s != "OFF" )
-    {
-        std::cout << magic_s << " != OFF :   We handle ONLY *.off files." << std::endl;
-        myfile.close();
-        exit(1);
-    }
+        // Split line into parts
+        QStringList parts = line.split(" ", Qt::SkipEmptyParts);
 
-    int n_vertices , n_faces , dummy_int;
-    myfile >> n_vertices >> n_faces >> dummy_int;
-
-    // Clear any verticies
-    vertices.clear();
-
-    // Read the verticies
-    for( int v = 0 ; v < n_vertices ; ++v )
-    {
-        float x , y , z;
-        myfile >> x >> y >> z ;
-        vertices.push_back( Vec( x , y , z ) );
-    }
-
-    // Clear any triangles
-    triangles.clear();
-
-    // Read the triangles
-    for( int f = 0 ; f < n_faces ; ++f )
-    {
-        int n_vertices_on_face;
-        myfile >> n_vertices_on_face;
-        if( n_vertices_on_face == 3 )
-        {
-            unsigned int _v1 , _v2 , _v3;
-            myfile >> _v1 >> _v2 >> _v3;
-            triangles.push_back( {_v1, _v2, _v3} );
-        }
-        else if( n_vertices_on_face == 4 )
-        {
-            unsigned int _v1 , _v2 , _v3 , _v4;
-
-            myfile >> _v1 >> _v2 >> _v3 >> _v4;
-            triangles.push_back({_v1, _v2, _v3});
-            triangles.push_back({_v1, _v3, _v4});
-        }
-        else
-        {
-            std::cout << "We handle ONLY *.off files with 3 or 4 vertices per face" << std::endl;
-            myfile.close();
-            exit(1);
+        if (parts[0] == "v") {
+            // Vertex position
+            if (parts.size() < 4) continue;
+            vertices.append(QVector3D(parts[1].toFloat(), parts[2].toFloat(), parts[3].toFloat()));
+        } else if (parts[0] == "vt") {
+            // Texture coordinates
+            if (parts.size() < 3) continue;
+            textureCoords.append(QVector3D(parts[1].toFloat(), parts[2].toFloat(), 0.0f));
+        } else if (parts[0] == "vn") {
+            // Vertex normal
+            if (parts.size() < 4) continue;
+            normals.append(QVector3D(parts[1].toFloat(), parts[2].toFloat(), parts[3].toFloat()));
+        } else if (parts[0] == "f") {
+            // Face
+            Face face;
+            for (int i = 1; i < parts.size(); ++i) {
+                QStringList indices = parts[i].split("/", Qt::KeepEmptyParts);
+                if (indices.size() > 0 && !indices[0].isEmpty())
+                    face.vertexIndices.append(indices[0].toInt() - 1);
+                if (indices.size() > 1 && !indices[1].isEmpty())
+                    face.textureIndices.append(indices[1].toInt() - 1);
+                if (indices.size() > 2 && !indices[2].isEmpty())
+                    face.normalIndices.append(indices[2].toInt() - 1);
+            }
+            faces.append(face);
         }
     }
 
+    file.close();
+    std::cout << "OBJ LOAD, nbVertices: " << vertices.size() <<std::endl;
+    std::cout << "          nbUVcoords: " << textureCoords.size() <<std::endl;
+    std::cout << "          nbNormales: " << normals.size() <<std::endl;
+    std::cout << "          nbFaces: " << faces.size() <<std::endl;
+    return;
 }
+
+//void TextureViewer::openOffMesh(const QString &fileName) {
+//    std::cout << "Opening " << fileName.toStdString() << std::endl;
+
+//    // open the file
+//    std::ifstream myfile;
+//    myfile.open(fileName.toStdString());
+//    if (!myfile.is_open())
+//    {
+//        std::cout << fileName.toStdString() << " cannot be opened" << std::endl;
+//        return;
+//    }
+
+//    std::string magic_s;
+
+//    myfile >> magic_s;
+
+//    // check if it's OFF
+//    if( magic_s != "OFF" )
+//    {
+//        std::cout << magic_s << " != OFF :   We handle ONLY *.off files." << std::endl;
+//        myfile.close();
+//        exit(1);
+//    }
+
+//    int n_vertices , n_faces , dummy_int;
+//    myfile >> n_vertices >> n_faces >> dummy_int;
+
+//    // Clear any verticies
+//    vertices.clear();
+
+//    // Read the verticies
+//    for( int v = 0 ; v < n_vertices ; ++v )
+//    {
+//        float x , y , z;
+//        myfile >> x >> y >> z ;
+//        vertices.push_back( Vec( x , y , z ) );
+//    }
+
+//    // Clear any triangles
+//    triangles.clear();
+
+//    // Read the triangles
+//    for( int f = 0 ; f < n_faces ; ++f )
+//    {
+//        int n_vertices_on_face;
+//        myfile >> n_vertices_on_face;
+//        if( n_vertices_on_face == 3 )
+//        {
+//            unsigned int _v1 , _v2 , _v3;
+//            myfile >> _v1 >> _v2 >> _v3;
+//            triangles.push_back( {_v1, _v2, _v3} );
+//        }
+//        else if( n_vertices_on_face == 4 )
+//        {
+//            unsigned int _v1 , _v2 , _v3 , _v4;
+
+//            myfile >> _v1 >> _v2 >> _v3 >> _v4;
+//            triangles.push_back({_v1, _v2, _v3});
+//            triangles.push_back({_v1, _v3, _v4});
+//        }
+//        else
+//        {
+//            std::cout << "We handle ONLY *.off files with 3 or 4 vertices per face" << std::endl;
+//            myfile.close();
+//            exit(1);
+//        }
+//    }
+
+//}
 
 
 std::istream & operator>>(std::istream & stream, qglviewer::Vec & v)
@@ -268,7 +330,7 @@ void TextureViewer::setFreqBruitA(float _a){
     update();
 }
 void TextureViewer::setRayonSoleil(float _rayonValue){
-    //a faire lien sur light
+    light->setRayon(_rayonValue);
     update();
 }
 void TextureViewer::setAbsorptionLight(float _a){
