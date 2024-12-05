@@ -68,12 +68,16 @@ void Texture::init(qglviewer::Camera * camera){
     BBmax = QVector3D(10,10,10) ;
 
 
+//    BBmin = QVector3D(-5.0,-5.0,-5.0) ;
+//    BBmax = QVector3D(5.0,5.0,5.0) ;
 
-    qglviewer::Vec bbmin(BBmin.x(),BBmin.y(),BBmin.z());
-    qglviewer::Vec bbmax(BBmax.x(),BBmax.y(),BBmax.z());
+//    BBmin = QVector3D(-50.0,-50.0,-50.0) ;
+//    BBmax = QVector3D(50.0,50.0,50.0) ;
 
-    camera->setSceneBoundingBox(bbmin*2.0,bbmax*2.0);
+//    qglviewer::Vec bbmin(BBmin.x(),BBmin.y(),BBmin.z());
+//    qglviewer::Vec bbmax(BBmax.x(),BBmax.y(),BBmax.z());
 
+    //camera->setSceneBoundingBox(bbmin*2.0,bbmax*2.0);
 
 
     plans.push_back(Plan(
@@ -95,22 +99,22 @@ void Texture::init(qglviewer::Camera * camera){
         QVector3D(0.0, BBmax.y() - BBmin.y(), 0.0)  // Up vector spans in Y
         ));
     plans.push_back(Plan(
-        QVector3D(BBmax.x(), BBmin.y(), BBmin.z()),  // Bottom-left corner of the front face
+        QVector3D(BBmax.x(), BBmax.y(), BBmax.z()),  // Bottom-left corner of the front face
         QVector3D(1.0, 0.0, 0.0),                   // Normal points towards +X
-        QVector3D(0.0, BBmax.y() - BBmin.y(), 0.0), // Right vector spans in Y
-        QVector3D(0.0, 0.0, BBmax.z() - BBmin.z())  // Up vector spans in Z
+        QVector3D(0.0, -(BBmax.y()-BBmin.y()), 0.0), // Right vector spans in Y
+        QVector3D(0.0, 0.0, -(BBmax.z() - BBmin.z()))  // Up vector spans in Z
         ));
     plans.push_back(Plan(
-        QVector3D(BBmin.x(), BBmax.y(), BBmin.z()),  // Bottom-left corner of the top face
+        QVector3D(BBmax.x(), BBmax.y(), BBmax.z()),  // Bottom-left corner of the top face
         QVector3D(0.0, 1.0, 0.0),                   // Normal points towards +Y
-        QVector3D(BBmax.x() - BBmin.x(), 0.0, 0.0), // Right vector spans in X
-        QVector3D(0.0, 0.0, BBmax.z() - BBmin.z())  // Up vector spans in Z
+        QVector3D(0.0,0.0,-(BBmax.z() - BBmin.z())), // Right vector spans in X
+        QVector3D(-(BBmax.x() - BBmin.x()),0.0, 0.0)  // Up vector spans in Z
         ));
     plans.push_back(Plan(
-        QVector3D(BBmin.x(), BBmin.y(), BBmax.z()),  // Bottom-left corner of the right face
+        QVector3D(BBmax.x(), BBmax.y(), BBmax.z()),  // Bottom-left corner of the right face
         QVector3D(0.0, 0.0, 1.0),                   // Normal points towards +Z
-        QVector3D(BBmax.x() - BBmin.x(), 0.0, 0.0), // Right vector spans in X
-        QVector3D(0.0, BBmax.y() - BBmin.y(), 0.0)  // Up vector spans in Y
+        QVector3D(-(BBmax.x() - BBmin.x()), 0.0, 0.0), // Right vector spans in X
+        QVector3D(0.0, -(BBmax.y() - BBmin.y()), 0.0)  // Up vector spans in Y
         ));
 
 
@@ -267,9 +271,7 @@ void Texture::initGLSL(){
     glFunctions->glLinkProgram(this->computeID_tex2D);
     std::cout << "ERROR SHADER computeID_tex2D" << std::endl;
     printProgramErrors(glFunctions,computeID_tex2D);
-
-    std::cout << "End InitGLSL texture" << std::endl;
-
+    std::cout << "Fin error init GLSL nuage" << std::endl;
 
     checkOpenGLError();
 }
@@ -354,7 +356,7 @@ void Texture::draw( QVector3D & LightPos ,  QVector3D & LightCol  , const qglvie
     if(!textureCreated)
         return;
 
-    //computePass();
+    computePass();
 
     glFunctions->glUseProgram(0);
     glFunctions->glUseProgram(programID);
@@ -443,8 +445,7 @@ void Texture::drawPlaneInFrontOfCamera(const qglviewer::Camera *camera, float di
     glVertex3f(topLeft.x, topLeft.y, topLeft.z);
     glEnd();
 
-    // Réactiver le culling et le Z-buffer après le test
-    glEnable(GL_CULL_FACE);
+
 }
 
 
@@ -577,6 +578,72 @@ void Texture::setFacteurBruitA(float _a){
 }
 void Texture::setVitesse(float _v){
     vitesse=_v;
+}
+void Texture::updateBBplan(){
+    plans.clear();
+    plans.push_back(Plan(
+        QVector3D(BBmin.x(), BBmin.y(), BBmin.z()),  // Bottom-left corner of the back face
+        QVector3D(-1.0, 0.0, 0.0),                  // Normal points towards -X
+        QVector3D(0.0, BBmax.y() - BBmin.y(), 0.0), // Right vector spans in Y
+        QVector3D(0.0, 0.0, BBmax.z() - BBmin.z())  // Up vector spans in Z
+        ));
+    plans.push_back(Plan(
+        QVector3D(BBmin.x(), BBmin.y(), BBmin.z()),  // Bottom-left corner of the bottom face
+        QVector3D(0.0, -1.0, 0.0),                  // Normal points towards -Y
+        QVector3D(BBmax.x() - BBmin.x(), 0.0, 0.0), // Right vector spans in X
+        QVector3D(0.0, 0.0, BBmax.z() - BBmin.z())  // Up vector spans in Z
+        ));
+    plans.push_back(Plan(
+        QVector3D(BBmin.x(), BBmin.y(), BBmin.z()),  // Bottom-left corner of the left face
+        QVector3D(0.0, 0.0, -1.0),                  // Normal points towards -Z
+        QVector3D(BBmax.x() - BBmin.x(), 0.0, 0.0), // Right vector spans in X
+        QVector3D(0.0, BBmax.y() - BBmin.y(), 0.0)  // Up vector spans in Y
+        ));
+    plans.push_back(Plan(
+        QVector3D(BBmax.x(), BBmax.y(), BBmax.z()),  // Bottom-left corner of the front face
+        QVector3D(1.0, 0.0, 0.0),                   // Normal points towards +X
+        QVector3D(0.0, -(BBmax.y()-BBmin.y()), 0.0), // Right vector spans in Y
+        QVector3D(0.0, 0.0, -(BBmax.z() - BBmin.z()))  // Up vector spans in Z
+        ));
+    plans.push_back(Plan(
+        QVector3D(BBmax.x(), BBmax.y(), BBmax.z()),  // Bottom-left corner of the top face
+        QVector3D(0.0, 1.0, 0.0),                   // Normal points towards +Y
+        QVector3D(0.0,0.0,-(BBmax.z() - BBmin.z())), // Right vector spans in X
+        QVector3D(-(BBmax.x() - BBmin.x()),0.0, 0.0)  // Up vector spans in Z
+        ));
+    plans.push_back(Plan(
+        QVector3D(BBmax.x(), BBmax.y(), BBmax.z()),  // Bottom-left corner of the right face
+        QVector3D(0.0, 0.0, 1.0),                   // Normal points towards +Z
+        QVector3D(-(BBmax.x() - BBmin.x()), 0.0, 0.0), // Right vector spans in X
+        QVector3D(0.0, -(BBmax.y() - BBmin.y()), 0.0)  // Up vector spans in Y
+        ));
+
+}
+void Texture::setxBBmin( float _x){
+    BBmin[0]=_x;
+    updateBBplan();
+}
+void Texture::setyBBmin( float _y){
+    BBmin[1]=_y;
+    updateBBplan();
+}
+
+void Texture::setzBBmin( float _z){
+    BBmin[2]=_z;
+    updateBBplan();
+}
+void Texture::setxBBmax( float _x){
+    BBmax[0]=_x;
+    updateBBplan();
+}
+
+void Texture::setyBBmax( float _y){
+    BBmax[1]=_y;
+    updateBBplan();
+}
+void Texture::setzBBmax( float _z){
+    BBmax[2]=_z;
+    updateBBplan();
 }
 
 void Texture::clear(qglviewer::Camera * camera){

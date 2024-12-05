@@ -3,6 +3,7 @@
 
 #include <QKeyEvent>
 #include <QGLViewer/qglviewer.h>
+#include <QFile>
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -10,6 +11,9 @@
 #include <algorithm>
 #include "light.h"
 #include "Texture.h"
+#include "mesh.h"
+
+
 #include "skybox.h"
 
 class TextureViewer : public QGLViewer
@@ -20,12 +24,15 @@ public :
     TextureViewer(QWidget *parent = nullptr);
 
     //void open3DImage(const QString & fileName);
-    void openOffMesh(const QString & fileName);
+    //void openOffMesh(const QString & fileName);
+    Mesh* initPlan();
+    void openOBJMesh(const QString & fileName, Mesh* m);
 
 
 
 protected :
     Texture * texture;
+    Mesh* plan = nullptr;
     Light * light;
     //Mesh * mesh;
     SkyBox * skybox;
@@ -79,6 +86,12 @@ public slots:
     void setFacteurBruitB(float _b);
     void setFacteurBruitA(float _a);
     void setVitesse(float _v);
+    void setxBBmin( float _x);
+    void setyBBmin( float _y);
+    void setzBBmin( float _z);
+    void setxBBmax( float _x);
+    void setyBBmax( float _y);
+    void setzBBmax( float _z);
 
 signals:
 

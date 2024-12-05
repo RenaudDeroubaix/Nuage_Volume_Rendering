@@ -65,8 +65,26 @@ public:
 
     QSlider * vitesseSlider;
 
+    QDoubleSpinBox *xBBminSpinBox;
+    QDoubleSpinBox *yBBminSpinBox;
+    QDoubleSpinBox *zBBminSpinBox;
+
+    QDoubleSpinBox *xBBmaxSpinBox;
+    QDoubleSpinBox *yBBmaxSpinBox;
+    QDoubleSpinBox *zBBmaxSpinBox;
+
+
 private slots:
 ///bruit
+
+    void xBBminSpinBoxChangedSlot(float value);
+    void yBBminSpinBoxChangedSlot(float value);
+    void zBBminSpinBoxChangedSlot(float value);
+
+    void xBBmaxSpinBoxChangedSlot(float value);
+    void yBBmaxSpinBoxChangedSlot(float value);
+    void zBBmaxSpinBoxChangedSlot(float value);
+
     void xResolutionBruitSpinBoxChangedSlot(float value);
     void yResolutionBruitSpinBoxChangedSlot(float value);
     void zResolutionBruitSpinBoxChangedSlot(float value);
@@ -128,6 +146,15 @@ public slots:
 
 signals:
 ///Bruit
+
+    void xBBminValueChanged(float xValue);
+    void yBBminValueChanged(float yValue);
+    void zBBminValueChanged(float zValue);
+
+    void xBBmaxValueChanged(float xValue);
+    void yBBmaxValueChanged(float yValue);
+    void zBBmaxValueChanged(float zValue);
+
     void xResolutionBruitValueChanged(float xValue);
     void yResolutionBruitValueChanged(float yValue);
     void zResolutionBruitValueChanged(float zValue);

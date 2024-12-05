@@ -4,6 +4,7 @@
 # Project:  Nuage.pro
 # Template: app
 # Command: /usr/lib/qt5/bin/qmake -o Makefile Nuage.pro
+# Command: /usr/lib/qt5/bin/qmake -o Makefile Nuage.pro
 #############################################################################
 
 MAKEFILE      = Makefile
@@ -17,6 +18,7 @@ CXX           = g++
 DEFINES       = -DQT_NO_DEBUG -DQT_OPENGL_LIB -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_XML_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -O2 -O3 -fopenmp -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
 CXXFLAGS      = -pipe -O2 -O3 -fopenmp -Wall -Wextra -D_REENTRANT -fPIC $(DEFINES)
+INCPATH       = -I. -IGLSL -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtXml -I/usr/include/x86_64-linux-gnu/qt5/QtCore -Imoc -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++
 INCPATH       = -I. -IGLSL -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtXml -I/usr/include/x86_64-linux-gnu/qt5/QtCore -Imoc -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++
 QMAKE         = /usr/lib/qt5/bin/qmake
 DEL_FILE      = rm -f
@@ -40,6 +42,7 @@ DISTNAME      = nuage1.0.0
 DISTDIR = /home/orenu/Documents/CoursM2/Projet3D/Nuage_Volume_Rendering/obj/nuage1.0.0
 LINK          = g++
 LFLAGS        = -Wl,-O1
+LIBS          = $(SUBLIBS) -lQGLViewer-qt5 -lglut -lGLU -lgsl -lgomp /usr/lib/x86_64-linux-gnu/libQt5OpenGL.so /usr/lib/x86_64-linux-gnu/libQt5Widgets.so /usr/lib/x86_64-linux-gnu/libQt5Gui.so /usr/lib/x86_64-linux-gnu/libQt5Xml.so /usr/lib/x86_64-linux-gnu/libQt5Core.so -lGL -lpthread   
 LIBS          = $(SUBLIBS) -lQGLViewer-qt5 -lglut -lGLU -lgsl -lgomp /usr/lib/x86_64-linux-gnu/libQt5OpenGL.so /usr/lib/x86_64-linux-gnu/libQt5Widgets.so /usr/lib/x86_64-linux-gnu/libQt5Gui.so /usr/lib/x86_64-linux-gnu/libQt5Xml.so /usr/lib/x86_64-linux-gnu/libQt5Core.so -lGL -lpthread   
 AR            = ar cqs
 RANLIB        = 
@@ -88,14 +91,6 @@ DIST          = GLSL/shaders/skybox.frag \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/g++-base.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/g++-unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/qconfig.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_Baloo.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_KConfigCore.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_KConfigGui.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_KCoreAddons.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_KDBusAddons.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_KI18n.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_KService.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_KWindowSystem.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_accessibility_support_private.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_bootstrap_private.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_concurrent.pri \
@@ -168,6 +163,7 @@ DIST          = GLSL/shaders/skybox.frag \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
 		Nuage.pro header/Window.h \
 		header/GLFunc.h \
+		header/GLFunc.h \
 		header/PowerOfTwoSpinBox.h \
 		header/TextureViewer.h \
 		header/Texture.h \
@@ -204,14 +200,6 @@ Makefile: Nuage.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf /
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/g++-base.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/g++-unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/qconfig.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_Baloo.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_KConfigCore.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_KConfigGui.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_KCoreAddons.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_KDBusAddons.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_KI18n.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_KService.pri \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_KWindowSystem.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_accessibility_support_private.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_bootstrap_private.pri \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_concurrent.pri \
@@ -285,6 +273,7 @@ Makefile: Nuage.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf /
 		Nuage.pro \
 		qmake_qmake_immediate.qrc \
 		/usr/lib/x86_64-linux-gnu/libQGLViewer-qt5.prl
+		/usr/lib/x86_64-linux-gnu/libQGLViewer-qt5.prl
 	$(QMAKE) -o Makefile Nuage.pro
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf:
@@ -295,14 +284,6 @@ Makefile: Nuage.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf /
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/g++-base.conf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/g++-unix.conf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/qconfig.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_Baloo.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_KConfigCore.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_KConfigGui.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_KCoreAddons.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_KDBusAddons.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_KI18n.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_KService.pri:
-/usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_KWindowSystem.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_accessibility_support_private.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_bootstrap_private.pri:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/modules/qt_lib_concurrent.pri:
@@ -376,7 +357,9 @@ Makefile: Nuage.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake.conf /
 Nuage.pro:
 qmake_qmake_immediate.qrc:
 /usr/lib/x86_64-linux-gnu/libQGLViewer-qt5.prl:
+/usr/lib/x86_64-linux-gnu/libQGLViewer-qt5.prl:
 qmake: FORCE
+	@$(QMAKE) -o Makefile Nuage.pro
 	@$(QMAKE) -o Makefile Nuage.pro
 
 qmake_all: FORCE
@@ -422,6 +405,10 @@ compiler_rcc_clean:
 	-$(DEL_FILE) qrc_qmake_qmake_immediate.cpp
 qrc_qmake_qmake_immediate.cpp: qmake_qmake_immediate.qrc \
 		/usr/lib/qt5/bin/rcc \
+		Ressources/sphere.obj \
+		Ressources/mountain/Mountain.obj \
+		Ressources/mountain/textures/aerial_grass_rock_diff_4k.jpg \
+		GLSL/shaders/plan.frag \
 		GLSL/shaders/volume.vert \
 		GLSL/shaders/light.frag \
 		GLSL/shaders/tex3D.glsl \
@@ -444,8 +431,11 @@ moc/moc_Window.cpp: header/Window.h \
 		header/TextureViewer.h \
 		header/light.h \
 		header/GLFunc.h \
+		header/light.h \
+		header/GLFunc.h \
 		header/Texture.h \
 		header/Vec3D.h \
+		header/mesh.h \
 		header/PowerOfTwoSpinBox.h \
 		moc/moc_predefs.h \
 		/usr/lib/qt5/bin/moc
@@ -459,6 +449,8 @@ moc/moc_PowerOfTwoSpinBox.cpp: header/PowerOfTwoSpinBox.h \
 moc/moc_TextureViewer.cpp: header/TextureViewer.h \
 		header/light.h \
 		header/GLFunc.h \
+		header/light.h \
+		header/GLFunc.h \
 		header/Texture.h \
 		header/Vec3D.h \
 		moc/moc_predefs.h \
@@ -469,8 +461,11 @@ moc/moc_TextureDockWidget.cpp: header/TextureDockWidget.h \
 		header/TextureViewer.h \
 		header/light.h \
 		header/GLFunc.h \
+		header/light.h \
+		header/GLFunc.h \
 		header/Texture.h \
 		header/Vec3D.h \
+		header/mesh.h \
 		header/PowerOfTwoSpinBox.h \
 		moc/moc_predefs.h \
 		/usr/lib/qt5/bin/moc
@@ -497,8 +492,11 @@ obj/Main.o: src/Main.cpp header/Window.h \
 		header/TextureViewer.h \
 		header/light.h \
 		header/GLFunc.h \
+		header/light.h \
+		header/GLFunc.h \
 		header/Texture.h \
 		header/Vec3D.h \
+		header/mesh.h \
 		header/PowerOfTwoSpinBox.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/Main.o src/Main.cpp
 
@@ -507,12 +505,17 @@ obj/Window.o: src/Window.cpp header/Window.h \
 		header/TextureViewer.h \
 		header/light.h \
 		header/GLFunc.h \
+		header/light.h \
+		header/GLFunc.h \
 		header/Texture.h \
 		header/Vec3D.h \
+		header/mesh.h \
 		header/PowerOfTwoSpinBox.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/Window.o src/Window.cpp
 
 obj/TextureViewer.o: src/TextureViewer.cpp header/TextureViewer.h \
+		header/light.h \
+		header/GLFunc.h \
 		header/light.h \
 		header/GLFunc.h \
 		header/Texture.h \
@@ -522,14 +525,18 @@ obj/TextureViewer.o: src/TextureViewer.cpp header/TextureViewer.h \
 obj/Texture.o: src/Texture.cpp header/Texture.h \
 		header/Vec3D.h \
 		header/GLFunc.h
+		header/GLFunc.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/Texture.o src/Texture.cpp
 
 obj/TextureDockWidget.o: src/TextureDockWidget.cpp header/TextureDockWidget.h \
 		header/TextureViewer.h \
 		header/light.h \
 		header/GLFunc.h \
+		header/light.h \
+		header/GLFunc.h \
 		header/Texture.h \
 		header/Vec3D.h \
+		header/mesh.h \
 		header/PowerOfTwoSpinBox.h \
 		header/WidgetSetup.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/TextureDockWidget.o src/TextureDockWidget.cpp
@@ -538,7 +545,8 @@ obj/light.o: src/light.cpp header/light.h \
 		header/GLFunc.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/light.o src/light.cpp
 
-obj/mesh.o: src/mesh.cpp header/mesh.h
+obj/mesh.o: src/mesh.cpp header/mesh.h \
+		header/GLFunc.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/mesh.o src/mesh.cpp
 
 obj/skybox.o: src/skybox.cpp header/skybox.h \

@@ -33,6 +33,13 @@ RESOURCES += \
     GLSL/shaders/volume.vert \
     GLSL/shaders/light.frag \
     GLSL/shaders/light.vert \
+    GLSL/shaders/plan.frag \
+    GLSL/shaders/plan.vert \
+    GLSL/shaders/skybox.frag \
+    GLSL/shaders/skybox.vert \
+    Ressources/mountain/Mountain.obj \
+    Ressources/mountain/textures/aerial_grass_rock_diff_4k.jpg\
+    Ressources/sphere.obj \
 
 INCLUDEPATH = ./GLSL
 EXT_DIR = external
@@ -66,8 +73,3 @@ release:QMAKE_CXXFLAGS_RELEASE += -O3 \
     -fopenmp
 release:QMAKE_CFLAGS_RELEASE += -O3 \
     -fopenmp
-
-DISTFILES += \
-    GLSL/shaders/skybox.frag \
-    GLSL/shaders/skybox.vert
-

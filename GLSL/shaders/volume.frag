@@ -84,8 +84,8 @@ void IntersectionPlan(vec3 camPos, float epsilon, vec3 dir,out vec3 tEntryOut,ou
         float v = dot(localCoord, plans[i].up_vect) / length(plans[i].up_vect);
 
         // Dimensions de la boîte
-        float boxWidth = BBmax.x - BBmin.x;
-        float boxHeight = BBmax.y - BBmin.y;
+        float boxWidth = length(plans[i].right_vect);// BBmax.x - BBmin.x;
+        float boxHeight = length(plans[i].up_vect) ;//BBmax.y - BBmin.y;
 
         if (u >= 0.0 && u <= boxWidth && v >= 0.0 && v <= boxHeight) {
             // Intersection valide, classifier en entrée ou sortie
@@ -101,7 +101,7 @@ void IntersectionPlan(vec3 camPos, float epsilon, vec3 dir,out vec3 tEntryOut,ou
     if (isInside) {
         // Si le fragment est déjà dans la boîte, on considère le point d'entrée à `fragPosition`
         tEntryOut = fragPosition;
-    } else if (tEntry <= tExit && tExit < 1000.0) {
+    } else if (tEntry <= tExit && tExit < 10000.0) {
         // Si on a un intervalle valide pour l'entrée et la sortie
         tEntryOut = fragPosition + tEntry * dir;
     } else {
@@ -110,7 +110,7 @@ void IntersectionPlan(vec3 camPos, float epsilon, vec3 dir,out vec3 tEntryOut,ou
     }
 
     // Calcul du point de sortie
-    if (tExit < 1000.0) {
+    if (tExit < 10000.0) {
         tExitOut = fragPosition + tExit * dir;
     } else {
         tExitOut = fragPosition; // Pas de point de sortie trouvé
@@ -168,7 +168,7 @@ void main() {
     vec3 exitPoint;
     vec3 entryPoint;
     IntersectionPlan(camPos , epsilon , dir, entryPoint, exitPoint);
-    if(exitPoint == fragPosition && entryPoint == fragPosition){
+    if(exitPoint ==  entryPoint ){
         discard;
     }
 
