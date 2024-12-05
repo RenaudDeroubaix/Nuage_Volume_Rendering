@@ -90,4 +90,3 @@ nuage
 *.pro.user
 *.qmake.stash
 *.pro.user.*
-qmake_qmake_immediate.qrc
