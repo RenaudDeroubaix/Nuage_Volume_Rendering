@@ -28,6 +28,7 @@ void TextureViewer::init() {
 
     // Configurer le test de profondeur pour un rendu 3D correct
     glEnable(GL_DEPTH_TEST);
+    glDepthMask(GL_TRUE);          // Allow writing to the depth buffer
     glDepthFunc(GL_LESS);
 
     // Mode de remplissage des polygones (face avant uniquement)
@@ -56,29 +57,33 @@ void TextureViewer::init() {
 void TextureViewer::draw() {
    // camera()->setUpVector(qglviewer::Vec(0.0,1.0,0.0), true);
     // Effacer le tampon de couleur et de profondeur
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Configurer la caméra
 
     glDisable(GL_DEPTH_TEST); // Désactiver le test de profondeur pour la lumière
     light->draw(camera());
+    glEnable(GL_DEPTH_TEST);
     // 1. Dessiner la texture 3D (opaque)
     //glEnable(GL_DEPTH_TEST);
     //glDepthMask(GL_TRUE); // Autoriser l'écriture dans le tampon de profondeur
 
-    texture->draw(light->getpos(), light->getcol(), camera());
+
 
     // Mettre à jour la scène
     if(plan != nullptr){
-        glEnable(GL_DEPTH_TEST);       // Enable depth testing for the plan
-        glDepthMask(GL_TRUE);          // Allow writing to the depth buffer
-        glDisable(GL_CULL_FACE);
-
+        //glEnable(GL_DEPTH_TEST);       // Enable depth testing for the plan
+       // glDisable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
         plan->draw(light->getpos(), light->getcol(),camera());
-        glEnable(GL_CULL_FACE);
-        glDisable(GL_DEPTH_TEST);
+       // glEnable(GL_CULL_FACE);
+        //glDisable(GL_DEPTH_TEST);
+        glCullFace(GL_FRONT);
         //std::cout << "plan dessiné" <<std::endl;
     }
+
+    texture->draw(light->getpos(), light->getcol(), camera());
+
     update();
 }
 
