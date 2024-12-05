@@ -15,7 +15,7 @@ void TextureViewer::init() {
     texture = new Texture(QOpenGLContext::currentContext(),camera());
     light = new Light(QOpenGLContext::currentContext());
     plan = initPlan();
-    openOBJMesh(":/Ressources/Moutain.obj", plan);
+    openOBJMesh(":/Ressources/moutain/Mountain.obj", plan);
     //openOBJMesh(":/Ressources/sphere.obj", plan);
     plan->initializeGL();
     //plan->initTexture(":/Ressources/fuji/source/ESRI_AERIAL_WM.tif");

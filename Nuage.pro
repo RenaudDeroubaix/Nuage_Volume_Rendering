@@ -33,8 +33,8 @@ RESOURCES += \
     GLSL/shaders/light.vert \
     GLSL/shaders/plan.frag \
     GLSL/shaders/plan.vert \
-    Ressources/moutain/Mountain.obj \
-    Ressources/moutain/textures/aerial_grass_rock_diff_4k.jpg\
+    Ressources/mountain/Mountain.obj \
+    Ressources/mountain/textures/aerial_grass_rock_diff_4k.jpg\
     Ressources/sphere.obj \
 
 INCLUDEPATH = ./GLSL
