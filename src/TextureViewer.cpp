@@ -14,6 +14,7 @@ void TextureViewer::init() {
     // Initialisation des objets
     texture = new Texture(QOpenGLContext::currentContext(),camera());
     light = new Light(QOpenGLContext::currentContext());
+    skybox = new SkyBox(QOpenGLContext::currentContext());
 
     // Initialisation de la scène
     setManipulatedFrame(new ManipulatedFrame());
@@ -32,35 +33,49 @@ void TextureViewer::init() {
     glFrontFace(GL_CCW);
 
     // Couleur de fond (bleu ciel)
-    glClearColor(0.529f, 0.808f, 0.922f, 1.0f); // RGB: (135, 206, 235)
+    //glClearColor(0.529f, 0.808f, 0.922f, 1.0f); // RGB: (135, 206, 235)
 
     // Activer le face culling (par défaut, désactivé pour la lumière dans draw())
 
     glEnable(GL_CULL_FACE); // Activer le culling pour la texture
-    glCullFace(GL_FRONT);  // Dessiner les faces avant uniquement
-
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    //updateCamera(camera()->position(), 00.0);
-    //camera()->setUpVector(qglviewer::Vec(0.0,1.0,0.0), false);
+
+
+    camera()->setZNearCoefficient(0.000001);
+    camera()->setZClippingCoefficient(1000.0);
+
+
 }
 
 void TextureViewer::draw() {
-   // camera()->setUpVector(qglviewer::Vec(0.0,1.0,0.0), true);
     // Effacer le tampon de couleur et de profondeur
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
+
+
+    glCullFace(GL_BACK);
+    skybox->draw(light->getpos(), light->getcol(), light->getdir() , camera());
     // Configurer la caméra
-    camera()->setSceneRadius(10);
+    //
+
     glDisable(GL_DEPTH_TEST); // Désactiver le test de profondeur pour la lumière
+
+    glCullFace(GL_FRONT);
     light->draw(camera());
+
+
+
     // 1. Dessiner la texture 3D (opaque)
     glEnable(GL_DEPTH_TEST);
     //glDepthMask(GL_TRUE); // Autoriser l'écriture dans le tampon de profondeur
-
+    glCullFace(GL_FRONT);  // Dessiner les faces avant uniquement
     texture->draw(light->getpos(), light->getcol(), camera());
 
+
     // Mettre à jour la scène
+    camera()->setSceneCenter(camera()->position());
     update();
 }
 

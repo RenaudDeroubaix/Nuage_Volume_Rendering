@@ -12,7 +12,8 @@ SOURCES += src/Main.cpp \
     src/Texture.cpp \
     src/TextureDockWidget.cpp \
     src/light.cpp \
-    src/mesh.cpp
+    src/mesh.cpp \
+    src/skybox.cpp
 HEADERS += header/Window.h \
     header/GLFunc.h \
     header/PowerOfTwoSpinBox.h \
@@ -22,7 +23,8 @@ HEADERS += header/Window.h \
     header/Vec3D.h \
     header/light.h \
     header/mesh.h \
-    header/WidgetSetup.h
+    header/WidgetSetup.h \
+    header/skybox.h
 
 RESOURCES += \
     GLSL/shaders/tex3D.glsl \
@@ -64,4 +66,8 @@ release:QMAKE_CXXFLAGS_RELEASE += -O3 \
     -fopenmp
 release:QMAKE_CFLAGS_RELEASE += -O3 \
     -fopenmp
+
+DISTFILES += \
+    GLSL/shaders/skybox.frag \
+    GLSL/shaders/skybox.vert
 

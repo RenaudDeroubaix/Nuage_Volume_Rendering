@@ -10,6 +10,7 @@
 #include <algorithm>
 #include "light.h"
 #include "Texture.h"
+#include "skybox.h"
 
 class TextureViewer : public QGLViewer
 {
@@ -27,7 +28,7 @@ protected :
     Texture * texture;
     Light * light;
     //Mesh * mesh;
-
+    SkyBox * skybox;
     virtual void draw();
 
     virtual void init();

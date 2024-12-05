@@ -64,11 +64,10 @@ void Texture::init(qglviewer::Camera * camera){
     LightEch = 8;
     NuageEch = 35;
 
-    BBmin = QVector3D(-0.5,-0.5,-0.5) ;
-    BBmax = QVector3D(0.5,0.5,0.5) ;
+    BBmin = QVector3D(-10,-10,-10) ;
+    BBmax = QVector3D(10,10,10) ;
 
-    BBmin = QVector3D(-50.0,-50.0,-50.0) ;
-    BBmax = QVector3D(50.0,50.0,50.0) ;
+
 
     qglviewer::Vec bbmin(BBmin.x(),BBmin.y(),BBmin.z());
     qglviewer::Vec bbmax(BBmax.x(),BBmax.y(),BBmax.z());
@@ -268,6 +267,9 @@ void Texture::initGLSL(){
     glFunctions->glLinkProgram(this->computeID_tex2D);
     std::cout << "ERROR SHADER computeID_tex2D" << std::endl;
     printProgramErrors(glFunctions,computeID_tex2D);
+
+    std::cout << "End InitGLSL texture" << std::endl;
+
 
     checkOpenGLError();
 }

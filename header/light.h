@@ -18,6 +18,7 @@ private:
     float rayon;
     QVector3D LightPos;
     QVector3D LightColor;
+    QVector3D LightDir;
 public:
 
     Light( QOpenGLContext* context);
@@ -35,6 +36,7 @@ public:
 
     QVector3D & getpos() {return LightPos;}
     QVector3D & getcol() {return LightColor;}
+    QVector3D & getdir() {return LightDir;}
 
     void setXlightposDisplay(float _x);
     void setYlightposDisplay(float _y);

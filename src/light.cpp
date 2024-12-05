@@ -12,6 +12,7 @@ void Light::init(){
 
     LightPos =  QVector3D(0.0,1.0,0.0);
     LightColor =  QVector3D(1.0,1.0,1.0);
+    LightDir = -LightPos.normalized();
     rayon = 1.f;
 
 
@@ -58,6 +59,7 @@ void Light::initLightShader(){
 }
 void Light::draw(const qglviewer::Camera * camera )
 {
+    LightDir = -LightPos.normalized();
     glFunctions->glUseProgram(0);
     glFunctions->glUseProgram(LightID);
 
@@ -88,7 +90,7 @@ void Light::drawSquareForLight()
     float yMin = LightPos.y() - rayon, yMax = LightPos.y() + rayon;
 
     glBegin(GL_QUADS);
-    glVertex3f(xMin, yMin, LightPos.z()); // Utilisez LightPos.z au lieu de 0
+    glVertex3f(xMin, yMin, LightPos.z());
     glVertex3f(xMin, yMax, LightPos.z());
     glVertex3f(xMax, yMax, LightPos.z());
     glVertex3f(xMax, yMin, LightPos.z());
@@ -116,5 +118,5 @@ void Light::setBlightcolDisplay(float _b){
     LightColor[2]=_b;
 }
 void Light::setRayon(float _r){
-    rayon=_r;
+    rayon = _r;
 }
