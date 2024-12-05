@@ -15,10 +15,10 @@ void TextureViewer::init() {
     texture = new Texture(QOpenGLContext::currentContext(),camera());
     light = new Light(QOpenGLContext::currentContext());
     plan = initPlan();
-    openOBJMesh(":/Ressources/moutain/Mountain.obj", plan);
+    openOBJMesh(":/Ressources/mountain/Mountain.obj", plan);
     //openOBJMesh(":/Ressources/sphere.obj", plan);
     plan->initializeGL();
-    //plan->initTexture(":/Ressources/fuji/source/ESRI_AERIAL_WM.tif");
+    plan->initTexture(":/Ressources/mountain/textures/aerial_grass_rock_diff_4k.jpg");
 
     // Initialisation de la scène
     setManipulatedFrame(new ManipulatedFrame());
@@ -47,7 +47,7 @@ void TextureViewer::init() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     //updateCamera(camera()->position(), .1);
-    //camera()->setSceneRadius(100);
+    //camera()->setSceneRadius(10);
     camera()->setZNearCoefficient(0.00001);
     camera()->setZClippingCoefficient(1000.0);
     //camera()->setUpVector(qglviewer::Vec(0.0,1.0,0.0), false);
@@ -66,15 +66,17 @@ void TextureViewer::draw() {
     //glEnable(GL_DEPTH_TEST);
     //glDepthMask(GL_TRUE); // Autoriser l'écriture dans le tampon de profondeur
 
-    //texture->draw(light->getpos(), light->getcol(), camera());
+    texture->draw(light->getpos(), light->getcol(), camera());
 
     // Mettre à jour la scène
     if(plan != nullptr){
         glEnable(GL_DEPTH_TEST);       // Enable depth testing for the plan
         glDepthMask(GL_TRUE);          // Allow writing to the depth buffer
-        glFrontFace(GL_CW);
+        glDisable(GL_CULL_FACE);
+
         plan->draw(light->getpos(), light->getcol(),camera());
-        glFrontFace(GL_CCW);
+        glEnable(GL_CULL_FACE);
+        glDisable(GL_DEPTH_TEST);
         //std::cout << "plan dessiné" <<std::endl;
     }
     update();
@@ -174,13 +176,13 @@ void TextureViewer::openOBJMesh(const QString &fileName, Mesh* m) {
     QVector3D range = maxVertex - minVertex;
     QVector3D center = minVertex + range / 2.0f;
 
-    for (int i = 0; i < m->vertices.size(); ++i) {
-        QVector3D& vertex = m->vertices[i];
+//    for (int i = 0; i < m->vertices.size(); ++i) {
+//        QVector3D& vertex = m->vertices[i];
 
-        // Déplacer le vertex vers l'origine et le normaliser dans l'intervalle [0, 1]
-        vertex -= center;  // Centrer le mesh
-        vertex /= range;   // Redimensionner le mesh dans l'intervalle [0, 1]
-    }
+//        // Déplacer le vertex vers l'origine et le normaliser dans l'intervalle [0, 1]
+//        vertex -= center;  // Centrer le mesh
+//        vertex /= range;   // Redimensionner le mesh dans l'intervalle [0, 1]
+//    }
 
     std::cout << "OBJ LOAD, nbVertices: " << m->vertices.size() << std::endl;
     std::cout << "          nbUVcoords: " << m->textureCoords.size() << std::endl;
@@ -408,6 +410,30 @@ void TextureViewer::setFacteurBruitA(float _a){
 }
 void TextureViewer::setVitesse(float _v){
     texture->setVitesse(_v);
+    update();
+}
+void TextureViewer::setxBBmin( float _x){
+    texture->setxBBmin(_x);
+    update();
+}
+void TextureViewer::setyBBmin( float _y){
+    texture->setyBBmin(_y);
+    update();
+}
+void TextureViewer::setzBBmin( float _z){
+    texture->setzBBmin(_z);
+    update();
+}
+void TextureViewer::setxBBmax( float _x){
+    texture->setxBBmax(_x);
+    update();
+}
+void TextureViewer::setyBBmax( float _y){
+    texture->setyBBmax(_y);
+    update();
+}
+void TextureViewer::setzBBmax( float _z){
+    texture->setzBBmax(_z);
     update();
 }
 

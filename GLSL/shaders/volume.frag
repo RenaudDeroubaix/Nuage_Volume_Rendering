@@ -84,8 +84,8 @@ void IntersectionPlan(vec3 camPos, float epsilon, vec3 dir,out vec3 tEntryOut,ou
         float v = dot(localCoord, plans[i].up_vect) / length(plans[i].up_vect);
 
         // Dimensions de la boîte
-        float boxWidth = BBmax.x - BBmin.x;
-        float boxHeight = BBmax.y - BBmin.y;
+        float boxWidth = length(plans[i].right_vect);// BBmax.x - BBmin.x;
+        float boxHeight = length(plans[i].up_vect) ;//BBmax.y - BBmin.y;
 
         if (u >= 0.0 && u <= boxWidth && v >= 0.0 && v <= boxHeight) {
             // Intersection valide, classifier en entrée ou sortie

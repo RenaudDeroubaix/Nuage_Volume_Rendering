@@ -85,6 +85,12 @@ public slots:
     void setFacteurBruitB(float _b);
     void setFacteurBruitA(float _a);
     void setVitesse(float _v);
+    void setxBBmin( float _x);
+    void setyBBmin( float _y);
+    void setzBBmin( float _z);
+    void setxBBmax( float _x);
+    void setyBBmax( float _y);
+    void setzBBmax( float _z);
 
 signals:
 

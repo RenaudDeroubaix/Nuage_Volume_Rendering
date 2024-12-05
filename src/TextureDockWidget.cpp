@@ -23,6 +23,32 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     noiseTab->setMaximumWidth(450);  // Set a maximum width
     noiseTab->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
     // Create a frame for "Nuage" section
+    QFrame *paramNuageFrame = new QFrame();
+    paramNuageFrame->setFrameShape(QFrame::StyledPanel);
+    paramNuageFrame->setFrameShadow(QFrame::Sunken);
+
+
+    QLabel *paramNuageLabel = new QLabel("Information sur le Nuage:");
+    QLabel *BBminLabel = new QLabel("Position BBmin Nuage:", paramNuageFrame);
+    xBBminSpinBox = new QDoubleSpinBox(paramNuageFrame);
+    setSpinBox(xBBminSpinBox,-500,500.0,0.1,-5.0,50);
+    yBBminSpinBox = new QDoubleSpinBox(paramNuageFrame);
+    setSpinBox(yBBminSpinBox,-500,500.0,0.1,-5.0,50);
+    zBBminSpinBox = new QDoubleSpinBox(paramNuageFrame);
+    setSpinBox(zBBminSpinBox,-500,500.0,0.1,-5.0,50);
+
+    QLabel *BBmaxLabel = new QLabel("Position BBmax Nuage:", paramNuageFrame);
+    xBBmaxSpinBox = new QDoubleSpinBox(paramNuageFrame);
+    setSpinBox(xBBmaxSpinBox,-500,500.0,0.1,5.0,50);
+    yBBmaxSpinBox = new QDoubleSpinBox(paramNuageFrame);
+    setSpinBox(yBBmaxSpinBox,-500,500.0,0.1,5.0,50);
+    zBBmaxSpinBox = new QDoubleSpinBox(paramNuageFrame);
+    setSpinBox(zBBmaxSpinBox,-500,500.0,0.1,5.0,50);
+
+    QBoxLayout *BBminLayout = createLayout(NULL,false,{BBminLabel,xBBminSpinBox,yBBminSpinBox,zBBminSpinBox},{});
+    QBoxLayout *BBmaxLayout = createLayout(NULL,false,{BBmaxLabel,xBBmaxSpinBox,yBBmaxSpinBox,zBBmaxSpinBox},{});
+    QBoxLayout *paramNuageLayout = createLayout(paramNuageFrame,true,{},{BBminLayout,BBmaxLayout});
+
     QFrame *bruitFrame = new QFrame();
     bruitFrame->setFrameShape(QFrame::StyledPanel);
     bruitFrame->setFrameShadow(QFrame::Sunken);
@@ -82,7 +108,7 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     QBoxLayout *freqbruitCurlLayout = createLayout(NULL,false,{freqCurlLabel,rfreqCurlSpinBox,gfreqCurlSpinBox,bfreqCurlSpinBox},{});
     QBoxLayout *bruitCurlParamLayout = createLayout(bruitCurlFrame,true,{},{bruitCurlLayout,freqbruitCurlLayout});
 
-    QBoxLayout *noiseLayout = createLayout(noiseTab,true,{bruitLabel,bruitFrame,bruitCurlParamLabel,bruitCurlFrame},{});
+    QBoxLayout *noiseLayout = createLayout(noiseTab,true,{paramNuageLabel,paramNuageFrame,bruitLabel,bruitFrame,bruitCurlParamLabel,bruitCurlFrame},{});
     noiseLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
     // Add the noise tab to the tab widget
     tabWidget->addTab(noiseTab, "Bruit");
@@ -228,6 +254,14 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     this->setWidget(contents);
 
     //bruit tab
+    connect(xBBminSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::xBBminValueChanged);
+    connect(yBBminSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::yBBminValueChanged);
+    connect(zBBminSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::zBBminValueChanged);
+
+    connect(xBBmaxSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::xBBmaxValueChanged);
+    connect(yBBmaxSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::yBBmaxValueChanged);
+    connect(zBBmaxSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::zBBmaxValueChanged);
+
     connect(xbruitworleySpinBox, QOverload<double>::of(&PowerOfTwoSpinBox::valueChanged), this, &TextureDockWidget::xResolutionBruitValueChanged);
     connect(ybruitworleySpinBox, QOverload<double>::of(&PowerOfTwoSpinBox::valueChanged), this, &TextureDockWidget::yResolutionBruitValueChanged);
     connect(zbruitworleySpinBox, QOverload<double>::of(&PowerOfTwoSpinBox::valueChanged), this, &TextureDockWidget::zResolutionBruitValueChanged);
@@ -305,6 +339,15 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
 }
 
 ///bruit
+
+void TextureDockWidget::xBBminSpinBoxChangedSlot(float value){emit xBBminValueChanged(value) ;}
+void TextureDockWidget::yBBminSpinBoxChangedSlot(float value){emit yBBminValueChanged(value) ;}
+void TextureDockWidget::zBBminSpinBoxChangedSlot(float value){emit zBBminValueChanged(value);}
+
+void TextureDockWidget::xBBmaxSpinBoxChangedSlot(float value){emit xBBmaxValueChanged(value) ;}
+void TextureDockWidget::yBBmaxSpinBoxChangedSlot(float value){emit yBBmaxValueChanged(value) ;}
+void TextureDockWidget::zBBmaxSpinBoxChangedSlot(float value){emit zBBmaxValueChanged(value);}
+
 void TextureDockWidget::xResolutionBruitSpinBoxChangedSlot(float value){emit xResolutionBruitValueChanged(value) ;}
 void TextureDockWidget::yResolutionBruitSpinBoxChangedSlot(float value){emit yResolutionBruitValueChanged(value) ;}
 void TextureDockWidget::zResolutionBruitSpinBoxChangedSlot(float value){emit zResolutionBruitValueChanged(value);}
@@ -355,6 +398,14 @@ void TextureDockWidget::onLightSpinBoxChangedSlot(int value){emit onLightSpinBox
 
 void TextureDockWidget::presetButton1ClickedSlot(){
     // Résolutions du bruit
+    xBBminSpinBox->setValue(-5.0f);
+    yBBminSpinBox->setValue(-5.0f);
+    zBBminSpinBox->setValue(-5.0f);
+
+    xBBmaxSpinBox->setValue(5.0f);
+    yBBmaxSpinBox->setValue(5.0f);
+    zBBmaxSpinBox->setValue(5.0f);
+
     //ATTENTION DONNEE LA PUISSANCE DE DEUX PAS LA VALEUR DIRECT EX 2^7=128 donc donne 7
     xbruitworleySpinBox->setValue(7.0f);
     ybruitworleySpinBox->setValue(7.0f);
@@ -412,6 +463,14 @@ void TextureDockWidget::presetButton1ClickedSlot(){
 
 void TextureDockWidget::presetButton2ClickedSlot(){
     // Résolutions du bruit
+
+    xBBminSpinBox->setValue(-5.0f);
+    yBBminSpinBox->setValue(-5.0f);
+    zBBminSpinBox->setValue(-5.0f);
+
+    xBBmaxSpinBox->setValue(5.0f);
+    yBBmaxSpinBox->setValue(5.0f);
+    zBBmaxSpinBox->setValue(5.0f);
     //ATTENTION DONNEE LA PUISSANCE DE DEUX PAS LA VALEUR DIRECT EX 2^7=128 donc donne 7
     xbruitworleySpinBox->setValue(5.0f);
     ybruitworleySpinBox->setValue(5.0f);
