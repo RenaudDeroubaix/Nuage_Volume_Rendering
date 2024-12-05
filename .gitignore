@@ -81,7 +81,6 @@ moc/
 # Ignore build artifacts
 obj/
 *.o
-*.obj
 
 # Ignore executable
 nuage
@@ -90,3 +89,4 @@ nuage
 *.pro.user
 *.qmake.stash
 *.pro.user.*
+*.qrc
