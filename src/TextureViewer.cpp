@@ -29,7 +29,7 @@ void TextureViewer::init() {
     // Configurer le test de profondeur pour un rendu 3D correct
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);          // Allow writing to the depth buffer
-    glDepthFunc(GL_LESS);
+    glDepthFunc(GL_ALWAYS);
 
     // Mode de remplissage des polygones (face avant uniquement)
     glPolygonMode(GL_FRONT, GL_FILL);
@@ -57,7 +57,7 @@ void TextureViewer::init() {
 void TextureViewer::draw() {
    // camera()->setUpVector(qglviewer::Vec(0.0,1.0,0.0), true);
     // Effacer le tampon de couleur et de profondeur
-    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // Configurer la caméra
 
@@ -83,7 +83,6 @@ void TextureViewer::draw() {
     }
 
     texture->draw(light->getpos(), light->getcol(), camera());
-
     update();
 }
 
