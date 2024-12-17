@@ -150,13 +150,13 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
 
     QLabel *lightLabel = new QLabel("Paramètres de la lumière:" );
 
-    QLabel *positionLight = new QLabel("Position du solei :", lightFrame);
+    QLabel *positionLight = new QLabel("Position du soleil :", lightFrame);
     LightPosX = new QDoubleSpinBox(lightFrame);
-    setSpinBox(LightPosX,-25.0,25.0,0.1,0.0,50);
+    setSpinBox(LightPosX,-55.0,55.0,0.1,0.0,50);
     LightPosY = new QDoubleSpinBox(lightFrame);
-    setSpinBox(LightPosY,-25.0,25.0,0.1,1.0,50);
+    setSpinBox(LightPosY,-55.0,55.0,0.1,10.0,50);
     LightPosZ = new QDoubleSpinBox(lightFrame);
-    setSpinBox(LightPosZ,-25.0,25.0,0.1,0.0,50);
+    setSpinBox(LightPosZ,-55.0,55.0,0.1,-10.0,50);
 
     QLabel *colorLight = new QLabel("Couleur du soleil (R, G, B):", lightFrame);
     LightColorR = new QDoubleSpinBox(lightFrame);

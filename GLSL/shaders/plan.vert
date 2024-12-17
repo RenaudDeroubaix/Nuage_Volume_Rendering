@@ -11,7 +11,22 @@ out vec3 fragNormal;      // Normal for fragment shader
 out vec2 fragTexCoord;    // UV for fragment shader
 
 void main() {
-    fragNormal = mat3(mv_matrix) * normal;  // Transform normal to view space
+    vec3 scale = vec3(20. , 10. , 20. );
+    vec3 translation = vec3(0 ,-10 , 0 );
+
+    fragNormal = vec3(mv_matrix * vec4(normal,0.0));  // Transform normal to view space
+
     fragTexCoord = texCoord;               // Pass UV to fragment shader
-    gl_Position = proj_matrix * mv_matrix * vec4(position, 1.0);
+
+    mat4 modelmat = transpose(
+                 mat4(scale.x,   0   ,   0   ,translation.x,
+                          0  ,scale.y,   0   ,translation.y,
+                          0  ,   0   ,scale.z,translation.z,
+                          0  ,   0   ,   0   ,     1.        )
+                    );
+
+    vec4 POS = modelmat * vec4(position, 1.0);
+
+
+    gl_Position = proj_matrix * mv_matrix * POS;
 }

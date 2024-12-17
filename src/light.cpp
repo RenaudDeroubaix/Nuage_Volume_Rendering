@@ -10,7 +10,7 @@ Light::Light(QOpenGLContext* context)
 }
 void Light::init(){
 
-    LightPos =  QVector3D(0.0,1.0,0.0);
+    LightPos =  QVector3D(0.0,20.0,-5.0);
     LightColor =  QVector3D(1.0,1.0,1.0);
     LightDir = -LightPos.normalized();
     rayon = 1.f;
@@ -51,7 +51,7 @@ void Light::initLightShader(){
         glFunctions->glAttachShader(this->LightID, this->fShader);
         printShaderErrors(glFunctions ,this->fShader);
     }
-
+    std::cout<< "Light Program : " <<  LightID << std::endl;
     glFunctions->glLinkProgram(this->LightID);
     printProgramErrors(glFunctions ,LightID);
     checkOpenGLError();

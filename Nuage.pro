@@ -39,7 +39,6 @@ RESOURCES += \
     GLSL/shaders/skybox.vert \
     Ressources/mountain/Mountain.obj \
     Ressources/mountain/textures/aerial_grass_rock_diff_4k.jpg\
-    Ressources/sphere.obj \
 
 INCLUDEPATH = ./GLSL
 EXT_DIR = external

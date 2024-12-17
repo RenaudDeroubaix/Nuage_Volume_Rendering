@@ -13,7 +13,6 @@
 #include "Texture.h"
 #include "mesh.h"
 
-
 #include "skybox.h"
 
 class TextureViewer : public QGLViewer
@@ -45,7 +44,7 @@ protected :
 
     void drawMesh();
     void clear();
-    void updateCamera(const qglviewer::Vec & center, float radius);
+    void updateCamera();
 
     std::vector<qglviewer::Vec> vertices;
     std::vector<std::array<size_t,3>> triangles;
