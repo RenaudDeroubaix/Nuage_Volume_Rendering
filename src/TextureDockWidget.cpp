@@ -332,7 +332,7 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     connect(PresetButton3, &QPushButton::clicked, this, &TextureDockWidget::presetButton3ClickedSlot);
     connect(PresetButton4, &QPushButton::clicked, this, &TextureDockWidget::presetButton4ClickedSlot);
     connect(PresetButton5, &QPushButton::clicked, this, &TextureDockWidget::presetButton5ClickedSlot);
-    connect(PresetButton6, &QPushButton::clicked, this, &TextureDockWidget::presetButton5ClickedSlot);
+    connect(PresetButton6, &QPushButton::clicked, this, &TextureDockWidget::presetButton6ClickedSlot);
 
     connect(vitesseSlider, &QSlider::valueChanged, this, &TextureDockWidget::vitesseSliderChangedSlot);
 
@@ -527,6 +527,193 @@ void TextureDockWidget::presetButton2ClickedSlot(){
 }
 
 void TextureDockWidget::presetButton3ClickedSlot(){;}
-void TextureDockWidget::presetButton4ClickedSlot(){;}
-void TextureDockWidget::presetButton5ClickedSlot(){;}
-void TextureDockWidget::presetButton6ClickedSlot(){;}
+void TextureDockWidget::presetButton4ClickedSlot(){
+    // Résolutions du bruit
+
+    xBBminSpinBox->setValue(-25.0f);
+    yBBminSpinBox->setValue(-25.0f);
+    zBBminSpinBox->setValue(-25.0f);
+
+    xBBmaxSpinBox->setValue(25.0f);
+    yBBmaxSpinBox->setValue(25.0f);
+    zBBmaxSpinBox->setValue(25.0f);
+    //ATTENTION DONNEE LA PUISSANCE DE DEUX PAS LA VALEUR DIRECT EX 2^7=128 donc donne 7
+    xbruitworleySpinBox->setValue(7.0f);
+    ybruitworleySpinBox->setValue(7.0f);
+    zbruitworleySpinBox->setValue(7.0f);
+
+    // Fréquences du bruit
+    rfreqWorleySpinBox->setValue(2.0f);
+    gfreqWorleySpinBox->setValue(6.0f);
+    bfreqWorleySpinBox->setValue(12.0f);
+    afreqWorleySpinBox->setValue(24.0f);
+
+    // Facteurs du bruit
+    rfacteurWorleySpinBox->setValue(4.25f);
+    gfacteurWorleySpinBox->setValue(4.25f);
+    bfacteurWorleySpinBox->setValue(4.25f);
+    afacteurWorleySpinBox->setValue(4.25f);
+
+    // Résolutions du bruit Curl (puissance de 2)
+    xbruitCurlSpinBox->setValue(7.0f);
+    ybruitCurlSpinBox->setValue(7.0f);
+
+    // Fréquences du bruit Curl
+    rfreqCurlSpinBox->setValue(0.8f);
+    gfreqCurlSpinBox->setValue(0.8f);
+    bfreqCurlSpinBox->setValue(0.8f);
+
+    // Lumière - Nuages
+    redColorNuageSpinBox->setValue(1.0f);
+    greenColorNuageSpinBox->setValue(1.0f);
+    blueColorNuageSpinBox->setValue(1.0f);
+
+    absorptionSpinBox->setValue(9.0f);
+    absorptionLightSpinBox->setValue(1.0f);
+
+    // Position et couleur de la lumière
+    LightPosX->setValue(0.0f);
+    LightPosY->setValue(0.0f);
+    LightPosZ->setValue(0.0f);
+
+    LightColorR->setValue(1.0f);
+    LightColorG->setValue(1.0f);
+    LightColorB->setValue(1.0f);
+
+    // Soleil
+    rayonSoleilSlider->setValue(1.0f);
+
+    // Autres paramètres
+    NuageSampleBox->setValue(100);
+
+    LightSampleBox->setValue(33);
+
+    vitesseSlider->setValue(9000);
+
+}
+void TextureDockWidget::presetButton5ClickedSlot(){
+    // Résolutions du bruit
+
+    xBBminSpinBox->setValue(-25.0f);
+    yBBminSpinBox->setValue(-25.0f);
+    zBBminSpinBox->setValue(-25.0f);
+
+    xBBmaxSpinBox->setValue(25.0f);
+    yBBmaxSpinBox->setValue(25.0f);
+    zBBmaxSpinBox->setValue(25.0f);
+    //ATTENTION DONNEE LA PUISSANCE DE DEUX PAS LA VALEUR DIRECT EX 2^7=128 donc donne 7
+    xbruitworleySpinBox->setValue(7.0f);
+    ybruitworleySpinBox->setValue(7.0f);
+    zbruitworleySpinBox->setValue(7.0f);
+
+    // Fréquences du bruit
+    rfreqWorleySpinBox->setValue(2.0f);
+    gfreqWorleySpinBox->setValue(6.0f);
+    bfreqWorleySpinBox->setValue(12.0f);
+    afreqWorleySpinBox->setValue(24.0f);
+
+    // Facteurs du bruit
+    rfacteurWorleySpinBox->setValue(-2.0f);
+    gfacteurWorleySpinBox->setValue(1.33f);
+    bfacteurWorleySpinBox->setValue(1.33f);
+    afacteurWorleySpinBox->setValue(1.33f);
+
+    // Résolutions du bruit Curl (puissance de 2)
+    xbruitCurlSpinBox->setValue(7.0f);
+    ybruitCurlSpinBox->setValue(7.0f);
+
+    // Fréquences du bruit Curl
+    rfreqCurlSpinBox->setValue(0.8f);
+    gfreqCurlSpinBox->setValue(0.8f);
+    bfreqCurlSpinBox->setValue(0.8f);
+
+    // Lumière - Nuages
+    redColorNuageSpinBox->setValue(1.0f);
+    greenColorNuageSpinBox->setValue(1.0f);
+    blueColorNuageSpinBox->setValue(1.0f);
+
+    absorptionSpinBox->setValue(9.0f);
+    absorptionLightSpinBox->setValue(1.0f);
+
+    // Position et couleur de la lumière
+    LightPosX->setValue(0.0f);
+    LightPosY->setValue(0.0f);
+    LightPosZ->setValue(0.0f);
+
+    LightColorR->setValue(1.0f);
+    LightColorG->setValue(1.0f);
+    LightColorB->setValue(1.0f);
+
+    // Soleil
+    rayonSoleilSlider->setValue(1.0f);
+
+    // Autres paramètres
+    NuageSampleBox->setValue(80);
+
+    LightSampleBox->setValue(20);
+
+    vitesseSlider->setValue(7000);
+}
+void TextureDockWidget::presetButton6ClickedSlot(){
+    // Résolutions du bruit
+
+    xBBminSpinBox->setValue(-25.0f);
+    yBBminSpinBox->setValue(-25.0f);
+    zBBminSpinBox->setValue(-25.0f);
+
+    xBBmaxSpinBox->setValue(25.0f);
+    yBBmaxSpinBox->setValue(25.0f);
+    zBBmaxSpinBox->setValue(25.0f);
+    //ATTENTION DONNEE LA PUISSANCE DE DEUX PAS LA VALEUR DIRECT EX 2^7=128 donc donne 7
+    xbruitworleySpinBox->setValue(7.0f);
+    ybruitworleySpinBox->setValue(7.0f);
+    zbruitworleySpinBox->setValue(7.0f);
+
+    // Fréquences du bruit
+    rfreqWorleySpinBox->setValue(2.0f);
+    gfreqWorleySpinBox->setValue(6.0f);
+    bfreqWorleySpinBox->setValue(12.0f);
+    afreqWorleySpinBox->setValue(24.0f);
+
+    // Facteurs du bruit
+    rfacteurWorleySpinBox->setValue(5.0f);
+    gfacteurWorleySpinBox->setValue(-1.33f);
+    bfacteurWorleySpinBox->setValue(2.0f);
+    afacteurWorleySpinBox->setValue(-0.9f);
+
+    // Résolutions du bruit Curl (puissance de 2)
+    xbruitCurlSpinBox->setValue(7.0f);
+    ybruitCurlSpinBox->setValue(7.0f);
+
+    // Fréquences du bruit Curl
+    rfreqCurlSpinBox->setValue(0.8f);
+    gfreqCurlSpinBox->setValue(0.8f);
+    bfreqCurlSpinBox->setValue(0.8f);
+
+    // Lumière - Nuages
+    redColorNuageSpinBox->setValue(1.0f);
+    greenColorNuageSpinBox->setValue(1.0f);
+    blueColorNuageSpinBox->setValue(1.0f);
+
+    absorptionSpinBox->setValue(9.0f);
+    absorptionLightSpinBox->setValue(1.0f);
+
+    // Position et couleur de la lumière
+    LightPosX->setValue(0.0f);
+    LightPosY->setValue(0.0f);
+    LightPosZ->setValue(0.0f);
+
+    LightColorR->setValue(1.0f);
+    LightColorG->setValue(1.0f);
+    LightColorB->setValue(1.0f);
+
+    // Soleil
+    rayonSoleilSlider->setValue(1.0f);
+
+    // Autres paramètres
+    NuageSampleBox->setValue(100);
+
+    LightSampleBox->setValue(33);
+
+    vitesseSlider->setValue(4500);
+}
