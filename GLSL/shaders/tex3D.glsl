@@ -280,7 +280,7 @@ float perlin_worley(vec3 p){
 #endif
 
 float smooth_edge(float distance){
-    return distance*distance*distance * (distance * (distance *6 -15)+10) + 0.01 *sin(6.28 * 64 * distance);
+    return 1*(distance*distance*distance * (distance * (distance *6 -15)+10) );//+ 0.01 *sin(6.28 * 64 * distance);
 }
 void main() {
     // Coordonnées globales dans la texture
@@ -294,9 +294,28 @@ void main() {
 
 
     vec3 to_edge = min(st, 1.0 - st);
+    //float edge_distance_1 = min(min(to_edge.x, to_edge.y), to_edge.z);
+    //float edge_distance_2 = min(min(to_edge.x, to_edge.y), to_edge.z);
+    //float edge_distance = (to_edge.x+to_edge.y+to_edge.z)/3.0;//(edge_distance_1 + edge_distance_2) /2.0;
+    //float edge_distance = (to_edge.x+to_edge.y+to_edge.z - max(max(to_edge.x, to_edge.y), to_edge.z) )/2.0;
     float edge_distance = min(min(to_edge.x, to_edge.y), to_edge.z);
 
-    float attenuation_zone = 0.5;
+    /*float edge_distance;
+    float min_distance = min(min(to_edge.x, to_edge.y), to_edge.z);
+    float max_distance = max(max(to_edge.x, to_edge.y), to_edge.z);
+    float moy_distance = (to_edge.x + to_edge.y + to_edge.z ) / 3.0;
+
+    // Déterminer si c'est un coin
+    if (max_distance - moy_distance < 0.04) { //coin
+        edge_distance =(moy_distance*0.25 +min_distance*0.75);
+    } else if (max_distance - moy_distance < 0.08) { //coin
+        edge_distance =(moy_distance*0.1 +min_distance*0.9);
+    } else{
+        edge_distance = min_distance;
+    }*/
+
+
+    float attenuation_zone = 0.2;
     float attenuation = smooth_edge(clamp(edge_distance / attenuation_zone, 0.0, 1.0));
 
     // Calcul du bruit de Worley en 3D

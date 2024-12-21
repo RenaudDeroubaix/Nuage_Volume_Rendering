@@ -217,6 +217,7 @@ void Texture::initGLSL(){
 
     // Create programs and link shaders
     this->computeID = glFunctions->glCreateProgram();
+    this->computeID_tex2D = glFunctions->glCreateProgram();
     this->programID = glFunctions->glCreateProgram();
 
     std::string content = readShaderSource(cShader3DPath);
@@ -258,18 +259,18 @@ void Texture::initGLSL(){
         glFunctions->glAttachShader(this->programID, this->fShader);
         printShaderErrors(glFunctions,this->fShader);
     }
-
-    glFunctions->glLinkProgram(this->programID);
     std::cout << "ERROR SHADER programID" << std::endl;
+    glFunctions->glLinkProgram(this->programID);
     printProgramErrors(glFunctions,programID);
 
-    glFunctions->glLinkProgram(this->computeID);
     std::cout << "ERROR SHADER computeID" << std::endl;
+    glFunctions->glLinkProgram(this->computeID);
     printProgramErrors(glFunctions,computeID);
 
-    glFunctions->glLinkProgram(this->computeID_tex2D);
     std::cout << "ERROR SHADER computeID_tex2D" << std::endl;
+    glFunctions->glLinkProgram(this->computeID_tex2D);
     printProgramErrors(glFunctions,computeID_tex2D);
+
     std::cout << "Fin error init GLSL nuage" << std::endl;
 
     checkOpenGLError();
@@ -302,14 +303,14 @@ void Texture::initTexture(){
     // Charger les données de la texture dans OpenGL
     glFunctions->glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA32F, resolutionBruit[0], resolutionBruit[1], resolutionBruit[2], 0, GL_RGBA, GL_FLOAT, nullptr);
 
-//    glGenTextures(1, &textureId_2);
-//    glFunctions->glBindTexture(GL_TEXTURE_2D, textureId_2);
-//    glFunctions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-//    glFunctions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-//    glFunctions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-//    glFunctions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-//    glFunctions->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB32F, resolutionBruitCurl[0], resolutionBruitCurl[1], 0, GL_RGB,
-//                 GL_FLOAT, nullptr);
+   glGenTextures(1, &textureId_2);
+   glFunctions->glBindTexture(GL_TEXTURE_2D, textureId_2);
+   glFunctions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+   glFunctions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+   glFunctions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+   glFunctions->glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+   glFunctions->glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA32F, resolutionBruitCurl[0], resolutionBruitCurl[1], 0, GL_RGBA,
+                GL_FLOAT, nullptr);
 
     textureCreated = true;
     computePass();
@@ -341,11 +342,22 @@ void Texture::computePass() {
     glFunctions->glBindImageTexture (0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
     glFunctions->glBindTexture(GL_TEXTURE_3D, 0);
 
-//    glFunctions->glUseProgram(0);
-//    glFunctions->glUseProgram(computeID_tex2D);
-//    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(computeID_tex2D, "u_time"), timer.elapsed()/vitesse);
-//    glFunctions->glUniform2fv(glFunctions->glGetUniformLocation(computeID_tex2D, "resolution"),1, &resolutionBruitCurl[0]);
-//    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(computeID_tex2D, "frequenceCurl"),1, &freqBruitCurl[0]);
+   // std::cout << "compute tex2d" << std::endl;
+   glFunctions->glUseProgram(0);
+   glFunctions->glUseProgram(computeID_tex2D);
+   glFunctions->glUniform1f(glFunctions->glGetUniformLocation(computeID_tex2D, "u_time"), timer.elapsed()/vitesse);
+   glFunctions->glUniform2fv(glFunctions->glGetUniformLocation(computeID_tex2D, "resolution"),1, &resolutionBruitCurl[0]);
+   glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(computeID_tex2D, "frequenceCurl"),1, &freqBruitCurl[0]);
+
+   glFunctions->glBindTexture(GL_TEXTURE_2D, textureId_2);
+   glFunctions->glBindImageTexture (1, textureId_2, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+   QVector2D reso2D=QVector2D(ceil(resolutionBruitCurl[0]/8),ceil(resolutionBruitCurl[1]/8));
+   glFunctions->glDispatchCompute(reso2D[0],reso2D[1],1);
+   glFunctions->glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
+   glFunctions->glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
+   glFunctions->glBindImageTexture (0, 0, 0, GL_FALSE, 0, GL_WRITE_ONLY, GL_RGBA32F);
+   glFunctions->glBindTexture(GL_TEXTURE_2D, 0);
+  // std::cout << "over" << std::endl;
 
 
 }
@@ -400,9 +412,12 @@ void Texture::draw( QVector3D & LightPos ,  QVector3D & LightCol  , const qglvie
         glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(programID, (std::string("plans[") + std::to_string(i) + std::string("].right_vect")).c_str() ), 1, &plans[i].right_vect[0]);
     }
 
-    glFunctions->glActiveTexture(GL_TEXTURE0 + textureId);
+    glFunctions->glActiveTexture(GL_TEXTURE0 );
     glFunctions->glBindTexture(GL_TEXTURE_3D, textureId);
-    glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "tex"), textureId);
+    glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "tex"), 0);
+    glFunctions->glActiveTexture(GL_TEXTURE1);
+    glFunctions->glBindTexture(GL_TEXTURE_2D, textureId_2);
+    glFunctions->glUniform1i(glFunctions->glGetUniformLocation(programID, "tex2D"), 1);
     drawPlaneInFrontOfCamera(camera,0.1);
     //drawCube();
 

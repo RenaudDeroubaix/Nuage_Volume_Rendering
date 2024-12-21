@@ -12,7 +12,7 @@ struct Plan{
 // Uniforms
 // --------------------------------------------------
 uniform sampler3D tex;
-
+uniform sampler2D tex2D;
 
 uniform int NuageSample;
 uniform int LightSample;
@@ -140,10 +140,6 @@ float anisotropic_scatering(float g , vec3 point_j,  vec3 dir){
 }
 
 
-
-
-
-
 // --------------------------------------------------
 // Main Shader Logic
 // --------------------------------------------------
@@ -246,5 +242,10 @@ void main() {
     fragColor = vec4(couleurNuage * LightColor * LightEnergy  ,  a /** LightEnergy */); // Visualisation distance
     //fragColor = vec4(couleurNuage * LightColor * LightEnergy  ,  1.0);
     //fragColor = vec4(couleurNuage,1.0);
+    //test texture2D
+    vec3 point_a = point_i_in_tex3D(entryPoint, dist * NuageStepSize , dir  , 0 );
+    vec3 point_a_tex_coord = translate_in_tex_coord(point_a);
+    vec2 ppp=vec2(0.5,0.5);
+    fragColor = vec4(texture(tex2D, point_a_tex_coord.xy).rgb, 1.0);
 }
 
