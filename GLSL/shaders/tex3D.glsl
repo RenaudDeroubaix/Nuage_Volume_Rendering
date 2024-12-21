@@ -280,6 +280,7 @@ float perlin_worley(vec3 p){
 #endif
 
 float smooth_edge(float distance){
+    return smoothstep (0,0.6,distance);
     return 1*(distance*distance*distance * (distance * (distance *6 -15)+10) );//+ 0.01 *sin(6.28 * 64 * distance);
 }
 void main() {
