@@ -213,7 +213,8 @@ void main() {
                 }
                 vec3 point_light_j_tex_coord = translate_in_tex_coord(Ipos);
 
-                textureValueLight = dist_J * LightStepSize * texture(tex,  point_light_j_tex_coord);
+                textureValueLight = dist_light_point * LightStepSize * texture(tex,  point_light_j_tex_coord);
+                //textureValueLight = dist_J * LightStepSize * texture(tex,  point_light_j_tex_coord);//soit l'un soit l autre je sais pas
 
                 //float luminance = ((textureValueLight.g + textureValueLight.b + textureValueLight.a)/3.0 - textureValueLight.r*3);
                 float luminance = (textureValueLight.r * facteurWorley[0] + textureValueLight.g * facteurWorley[1] + textureValueLight.b * facteurWorley[2] + textureValueLight.a * facteurWorley[3]);

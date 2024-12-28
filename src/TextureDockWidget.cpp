@@ -152,11 +152,11 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
 
     QLabel *positionLight = new QLabel("Position du solei :", lightFrame);
     LightPosX = new QDoubleSpinBox(lightFrame);
-    setSpinBox(LightPosX,-25.0,25.0,0.1,0.0,50);
+    setSpinBox(LightPosX,-250.0,250.0,0.1,0.0,50);
     LightPosY = new QDoubleSpinBox(lightFrame);
-    setSpinBox(LightPosY,-25.0,25.0,0.1,1.0,50);
+    setSpinBox(LightPosY,-250.0,250.0,0.1,1.0,50);
     LightPosZ = new QDoubleSpinBox(lightFrame);
-    setSpinBox(LightPosZ,-25.0,25.0,0.1,0.0,50);
+    setSpinBox(LightPosZ,-250.0,250.0,0.1,0.0,50);
 
     QLabel *colorLight = new QLabel("Couleur du soleil (R, G, B):", lightFrame);
     LightColorR = new QDoubleSpinBox(lightFrame);
@@ -573,7 +573,7 @@ void TextureDockWidget::presetButton4ClickedSlot(){
 
     // Position et couleur de la lumière
     LightPosX->setValue(0.0f);
-    LightPosY->setValue(0.0f);
+    LightPosY->setValue(-200.0f);
     LightPosZ->setValue(0.0f);
 
     LightColorR->setValue(1.0f);
@@ -637,7 +637,7 @@ void TextureDockWidget::presetButton5ClickedSlot(){
 
     // Position et couleur de la lumière
     LightPosX->setValue(0.0f);
-    LightPosY->setValue(0.0f);
+    LightPosY->setValue(-200.0f);
     LightPosZ->setValue(0.0f);
 
     LightColorR->setValue(1.0f);
@@ -700,7 +700,7 @@ void TextureDockWidget::presetButton6ClickedSlot(){
 
     // Position et couleur de la lumière
     LightPosX->setValue(0.0f);
-    LightPosY->setValue(0.0f);
+    LightPosY->setValue(-200.0f);
     LightPosZ->setValue(0.0f);
 
     LightColorR->setValue(1.0f);
