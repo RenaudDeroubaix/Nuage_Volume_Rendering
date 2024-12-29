@@ -239,7 +239,7 @@ signals:
     void setcamerapos(QVector3D pos , QVector3D targ);
     void setIsLightUtime(bool b);
     void setboolOnlyCloud(bool b);
-
+    void setboolCameraOrbital(bool b);
 };
 
 #endif // TEXTUREDOCKWINDOW_H

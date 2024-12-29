@@ -98,6 +98,7 @@ Window::Window()
     connect(madDockWidget, &TextureDockWidget::setcamerapos, viewer, &TextureViewer::setcamerapos);
     connect(madDockWidget, &TextureDockWidget::setIsLightUtime, viewer, &TextureViewer::setIsLightUTime);
     connect(madDockWidget, &TextureDockWidget::setboolOnlyCloud, viewer, &TextureViewer::setboolOnlyCloud);
+    connect(madDockWidget, &TextureDockWidget::setboolCameraOrbital, viewer, &TextureViewer::setboolCameraOrbital);
 
     connect(madDockWidget, &TextureDockWidget::formeSelectionChanged,viewer, &TextureViewer::setFormeNuage);
     connect(madDockWidget, &TextureDockWidget::attenuationSliderChanged,viewer, &TextureViewer::setAttenuationBord);

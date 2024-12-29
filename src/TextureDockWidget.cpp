@@ -478,6 +478,7 @@ void TextureDockWidget::onLightSliderChangedSlot(int value){emit onLightSliderCh
 void TextureDockWidget::onLightSpinBoxChangedSlot(int value){emit onLightSpinBoxChanged(value);}
 
 void TextureDockWidget::presetButton1ClickedSlot(){
+    emit (setboolCameraOrbital(true)); //la camera devient orbital autour (0,0,0)
     // Résolutions du bruit
     xBBminSpinBox->setValue(-5.0f);
     yBBminSpinBox->setValue(-5.0f);
@@ -547,6 +548,7 @@ void TextureDockWidget::presetButton1ClickedSlot(){
 }
 
 void TextureDockWidget::presetButton2ClickedSlot(){
+    emit (setboolCameraOrbital(true)); //la camera devient orbital autour (0,0,0)
     // Résolutions du bruit
 
     xBBminSpinBox->setValue(-5.0f);
@@ -614,6 +616,7 @@ void TextureDockWidget::presetButton2ClickedSlot(){
 }
 
 void TextureDockWidget::presetButton3ClickedSlot()
+
 {
     xBBminSpinBox->setValue(-7.0f);
     yBBminSpinBox->setValue(1.0f);
@@ -626,6 +629,7 @@ void TextureDockWidget::presetButton3ClickedSlot()
     LightPosX->setValue(0.0f);
     LightPosY->setValue(5.0f);
     LightPosZ->setValue(-3.0f);
+    emit (setboolCameraOrbital(true));
     emit(setboolOnlyCloud(false));
     emit(setIsLightUtime(true));
     emit(setcamerapos(QVector3D(-15 , 5 , -10) , QVector3D  (-2 , 4 , 0) ) );
@@ -643,11 +647,13 @@ void TextureDockWidget::presetButton4ClickedSlot()
     LightPosX->setValue(0.0f);
     LightPosY->setValue(5.0f);
     LightPosZ->setValue(-3.0f);
+    emit (setboolCameraOrbital(false));
     emit(setboolOnlyCloud(false));
     emit(setIsLightUtime(true));
     emit(setcamerapos(QVector3D(-2 , 1 , -3) , QVector3D  (-1 , 1 , 0) ) );
 }
 void TextureDockWidget::presetButton5ClickedSlot(){
+     emit (setboolCameraOrbital(true)); //la camera devient orbital autour (0,0,0)
     // Résolutions du bruit
 
     xBBminSpinBox->setValue(-25.0f);
@@ -711,6 +717,7 @@ void TextureDockWidget::presetButton5ClickedSlot(){
     vitesseSlider->setValue(7000);
 }
 void TextureDockWidget::presetButton6ClickedSlot(){
+    emit (setboolCameraOrbital(true)); //la camera devient orbital autour (0,0,0)
     // Résolutions du bruit
 
     xBBminSpinBox->setValue(-25.0f);

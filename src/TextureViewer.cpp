@@ -60,19 +60,15 @@ void TextureViewer::draw() {
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
     glDepthFunc(GL_LESS);
-
-
     glCullFace(GL_BACK);
+
     skybox->draw(light->getpos(), light->getcol(), light->getdir() , camera());
 
-    if(isOnlyCloud)
+    if (iscameraorbital) camera()->setSceneCenter(qglviewer::Vec(0,0,0));
+    else updateCamera();
+
+    if(!isOnlyCloud)
     {
-        camera()->setSceneCenter(qglviewer::Vec(0,0,0));
-    }
-    else
-    {
-        camera()->setSceneCenter(qglviewer::Vec(0,0,0));
-        //updateCamera();
         if(plan != nullptr)
             plan->draw(light->getpos(), light->getcol(),camera());
     }
@@ -81,17 +77,6 @@ void TextureViewer::draw() {
     glCullFace(GL_BACK);
     glDisable(GL_DEPTH_TEST);
     texture->draw(light->getpos(), light->getcol(), camera());
-
-
-
-
-
-
-
-
-
-
-
 
     update();
 }
@@ -522,6 +507,10 @@ void TextureViewer::setTailleBarre(float t){
     update();
 }
 
+void TextureViewer::setboolCameraOrbital(bool b){
+    iscameraorbital = b ;
+    update();
+}
 
 void TextureViewer::keyPressEvent(QKeyEvent *e)
 {

@@ -50,6 +50,7 @@ protected :
     std::vector<std::array<size_t,3>> triangles;
     bool isLightUtime = false;
     bool isOnlyCloud = true;
+    bool iscameraorbital= true;
 
 public slots:
     void onNuageSliderChanged(int value);
@@ -103,6 +104,7 @@ public slots:
     void setLongueurCapsule(float l);
     void setRayonCapsule(float r);
     void setTailleBarre(float t);
+    void setboolCameraOrbital(bool b);
 signals:
 
 };
