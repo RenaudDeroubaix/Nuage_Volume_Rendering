@@ -86,6 +86,11 @@ Window::Window()
 
     connect(madDockWidget, &TextureDockWidget::vitesseSliderChanged, viewer, &TextureViewer::setVitesse);
 
+
+    connect(madDockWidget, &TextureDockWidget::setlightposXValueChanged, viewer, &TextureViewer::setXlightpos);
+    connect(madDockWidget, &TextureDockWidget::setlightposYValueChanged, viewer, &TextureViewer::setYlightpos);
+    connect(madDockWidget, &TextureDockWidget::setlightposZValueChanged, viewer, &TextureViewer::setZlightpos);
+
     connect(madDockWidget, &TextureDockWidget::setlightcolRValueChanged, viewer, &TextureViewer::setRlightcol);
     connect(madDockWidget, &TextureDockWidget::setlightcolGValueChanged, viewer, &TextureViewer::setGlightcol);
     connect(madDockWidget, &TextureDockWidget::setlightcolBValueChanged, viewer, &TextureViewer::setBlightcol);
@@ -93,6 +98,7 @@ Window::Window()
     connect(madDockWidget, &TextureDockWidget::setcamerapos, viewer, &TextureViewer::setcamerapos);
     connect(madDockWidget, &TextureDockWidget::setIsLightUtime, viewer, &TextureViewer::setIsLightUTime);
     connect(madDockWidget, &TextureDockWidget::setboolOnlyCloud, viewer, &TextureViewer::setboolOnlyCloud);
+    connect(madDockWidget, &TextureDockWidget::setboolCameraOrbital, viewer, &TextureViewer::setboolCameraOrbital);
 
     connect(madDockWidget, &TextureDockWidget::formeSelectionChanged,viewer, &TextureViewer::setFormeNuage);
     connect(madDockWidget, &TextureDockWidget::attenuationSliderChanged,viewer, &TextureViewer::setAttenuationBord);
