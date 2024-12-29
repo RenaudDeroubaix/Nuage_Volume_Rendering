@@ -51,9 +51,6 @@ Window::Window()
     connect(madDockWidget, &TextureDockWidget::blueNuageValueChanged, viewer, &TextureViewer::setBlueNuage);
     connect(madDockWidget, &TextureDockWidget::greenNuageValueChanged, viewer, &TextureViewer::setGreenNuage);
 
-    connect(madDockWidget, &TextureDockWidget::setlightposXValueChanged, viewer, &TextureViewer::setXlightpos);
-    connect(madDockWidget, &TextureDockWidget::setlightposYValueChanged, viewer, &TextureViewer::setYlightpos);
-    connect(madDockWidget, &TextureDockWidget::setlightposZValueChanged, viewer, &TextureViewer::setZlightpos);
 
     connect(madDockWidget, &TextureDockWidget::absorptionValueChanged, viewer, &TextureViewer::setAbsorptionNuage);
 
@@ -93,6 +90,9 @@ Window::Window()
     connect(madDockWidget, &TextureDockWidget::setlightcolGValueChanged, viewer, &TextureViewer::setGlightcol);
     connect(madDockWidget, &TextureDockWidget::setlightcolBValueChanged, viewer, &TextureViewer::setBlightcol);
 
+    connect(madDockWidget, &TextureDockWidget::setcamerapos, viewer, &TextureViewer::setcamerapos);
+    connect(madDockWidget, &TextureDockWidget::setIsLightUtime, viewer, &TextureViewer::setIsLightUTime);
+    connect(madDockWidget, &TextureDockWidget::setboolOnlyCloud, viewer, &TextureViewer::setboolOnlyCloud);
 
     this->setCentralWidget(viewerGroupBox);
 

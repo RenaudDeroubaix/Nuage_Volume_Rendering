@@ -80,7 +80,8 @@ moc/
 
 # Ignore build artifacts
 obj/
-*.o
+obj/*.o
+obj/*.obj
 
 # Ignore executable
 nuage

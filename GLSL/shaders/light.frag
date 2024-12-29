@@ -10,7 +10,7 @@ in vec3 frag_pos;         // Position du fragment dans l'espace monde
 // Sortie
 out vec4 fragColor;       // Couleur finale du fragment
 
-void main(void)
+void main()
 {
     // Distance entre le fragment et la position de la lumière
     float dist = length(frag_pos - lightposition);

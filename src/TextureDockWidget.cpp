@@ -150,7 +150,7 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
 
     QLabel *lightLabel = new QLabel("Paramètres de la lumière:" );
 
-    QLabel *positionLight = new QLabel("Position du solei :", lightFrame);
+    QLabel *positionLight = new QLabel("Position du soleil :", lightFrame);
     LightPosX = new QDoubleSpinBox(lightFrame);
     setSpinBox(LightPosX,-250.0,250.0,0.1,0.0,50);
     LightPosY = new QDoubleSpinBox(lightFrame);
@@ -231,8 +231,8 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     QLabel *PresetGeneralLabel = new QLabel("Preset de nuage:");
     QPushButton *PresetButton1 = new QPushButton("Nuage 1",presetFrame);
     QPushButton *PresetButton2 = new QPushButton("Nuage 2",presetFrame);
-    QPushButton *PresetButton3 = new QPushButton("Nuage 3",presetFrame);
-    QPushButton *PresetButton4 = new QPushButton("Nuage 4",presetFrame);
+    QPushButton *PresetButton3 = new QPushButton("Scene 1",presetFrame);
+    QPushButton *PresetButton4 = new QPushButton("Scene 2",presetFrame);
     QPushButton *PresetButton5 = new QPushButton("Nuage 5",presetFrame);
     QPushButton *PresetButton6 = new QPushButton("Nuage 6",presetFrame);
 
@@ -443,7 +443,7 @@ void TextureDockWidget::presetButton1ClickedSlot(){
     // Position et couleur de la lumière
     LightPosX->setValue(0.0f);
     LightPosY->setValue(5.0f);
-    LightPosZ->setValue(0.0f);
+    LightPosZ->setValue(5.0f);
 
     LightColorR->setValue(1.0f);
     LightColorG->setValue(1.0f);
@@ -458,6 +458,10 @@ void TextureDockWidget::presetButton1ClickedSlot(){
     LightSampleBox->setValue(20);
 
     vitesseSlider->setValue(5000);
+    emit(setboolOnlyCloud(true));
+    emit(setIsLightUtime(false));
+    emit(setcamerapos(QVector3D(0 , 0 , -20) , QVector3D  (0 , 0 , 0)));
+
 
 }
 
@@ -523,73 +527,44 @@ void TextureDockWidget::presetButton2ClickedSlot(){
     LightSampleBox->setValue(20);
 
     vitesseSlider->setValue(1000);
-
+    emit(setboolOnlyCloud(true));
+    emit(setIsLightUtime(false));
+    emit(setcamerapos(QVector3D(0 , 0 , -20) , QVector3D  (0 , 0 , 0)));
 }
 
-void TextureDockWidget::presetButton3ClickedSlot(){;}
-void TextureDockWidget::presetButton4ClickedSlot(){
-    // Résolutions du bruit
+void TextureDockWidget::presetButton3ClickedSlot()
+{
+    xBBminSpinBox->setValue(-7.0f);
+    yBBminSpinBox->setValue(1.0f);
+    zBBminSpinBox->setValue(-7.0f);
 
-    xBBminSpinBox->setValue(-25.0f);
-    yBBminSpinBox->setValue(-25.0f);
-    zBBminSpinBox->setValue(-25.0f);
+    xBBmaxSpinBox->setValue(7.0f);
+    yBBmaxSpinBox->setValue(11.0f);
+    zBBmaxSpinBox->setValue(7.0f);
 
-    xBBmaxSpinBox->setValue(25.0f);
-    yBBmaxSpinBox->setValue(25.0f);
-    zBBmaxSpinBox->setValue(25.0f);
-    //ATTENTION DONNEE LA PUISSANCE DE DEUX PAS LA VALEUR DIRECT EX 2^7=128 donc donne 7
-    xbruitworleySpinBox->setValue(7.0f);
-    ybruitworleySpinBox->setValue(7.0f);
-    zbruitworleySpinBox->setValue(7.0f);
-
-    // Fréquences du bruit
-    rfreqWorleySpinBox->setValue(2.0f);
-    gfreqWorleySpinBox->setValue(6.0f);
-    bfreqWorleySpinBox->setValue(12.0f);
-    afreqWorleySpinBox->setValue(24.0f);
-
-    // Facteurs du bruit
-    rfacteurWorleySpinBox->setValue(4.25f);
-    gfacteurWorleySpinBox->setValue(4.25f);
-    bfacteurWorleySpinBox->setValue(4.25f);
-    afacteurWorleySpinBox->setValue(4.25f);
-
-    // Résolutions du bruit Curl (puissance de 2)
-    xbruitCurlSpinBox->setValue(7.0f);
-    ybruitCurlSpinBox->setValue(7.0f);
-
-    // Fréquences du bruit Curl
-    rfreqCurlSpinBox->setValue(0.8f);
-    gfreqCurlSpinBox->setValue(0.8f);
-    bfreqCurlSpinBox->setValue(0.8f);
-
-    // Lumière - Nuages
-    redColorNuageSpinBox->setValue(1.0f);
-    greenColorNuageSpinBox->setValue(1.0f);
-    blueColorNuageSpinBox->setValue(1.0f);
-
-    absorptionSpinBox->setValue(9.0f);
-    absorptionLightSpinBox->setValue(1.0f);
-
-    // Position et couleur de la lumière
     LightPosX->setValue(0.0f);
-    LightPosY->setValue(-200.0f);
-    LightPosZ->setValue(0.0f);
+    LightPosY->setValue(5.0f);
+    LightPosZ->setValue(-3.0f);
+    emit(setboolOnlyCloud(false));
+    emit(setIsLightUtime(true));
+    emit(setcamerapos(QVector3D(-15 , 5 , -10) , QVector3D  (-2 , 4 , 0) ) );
+}
+void TextureDockWidget::presetButton4ClickedSlot()
+{
+    xBBminSpinBox->setValue(-7.0f);
+    yBBminSpinBox->setValue(0.0f);
+    zBBminSpinBox->setValue(-7.0f);
 
-    LightColorR->setValue(1.0f);
-    LightColorG->setValue(1.0f);
-    LightColorB->setValue(1.0f);
+    xBBmaxSpinBox->setValue(7.0f);
+    yBBmaxSpinBox->setValue(11.0f);
+    zBBmaxSpinBox->setValue(7.0f);
 
-    // Soleil
-    rayonSoleilSlider->setValue(1.0f);
-
-    // Autres paramètres
-    NuageSampleBox->setValue(100);
-
-    LightSampleBox->setValue(33);
-
-    vitesseSlider->setValue(9000);
-
+    LightPosX->setValue(0.0f);
+    LightPosY->setValue(5.0f);
+    LightPosZ->setValue(-3.0f);
+    emit(setboolOnlyCloud(false));
+    emit(setIsLightUtime(true));
+    emit(setcamerapos(QVector3D(-2 , 1 , -3) , QVector3D  (-1 , 1 , 0) ) );
 }
 void TextureDockWidget::presetButton5ClickedSlot(){
     // Résolutions du bruit

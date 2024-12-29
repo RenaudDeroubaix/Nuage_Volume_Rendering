@@ -58,7 +58,8 @@ SOURCES       = src/Main.cpp \
 		src/Texture.cpp \
 		src/TextureDockWidget.cpp \
 		src/light.cpp \
-		src/mesh.cpp qrc_qmake_qmake_immediate.cpp \
+		src/mesh.cpp \
+		src/skybox.cpp qrc_qmake_qmake_immediate.cpp \
 		moc/moc_Window.cpp \
 		moc/moc_PowerOfTwoSpinBox.cpp \
 		moc/moc_TextureViewer.cpp \
@@ -70,15 +71,13 @@ OBJECTS       = obj/Main.o \
 		obj/TextureDockWidget.o \
 		obj/light.o \
 		obj/mesh.o \
+		obj/skybox.o \
 		obj/qrc_qmake_qmake_immediate.o \
 		obj/moc_Window.o \
 		obj/moc_PowerOfTwoSpinBox.o \
 		obj/moc_TextureViewer.o \
 		obj/moc_TextureDockWidget.o
-DIST          = Ressources/fuji/source/Mount_Fuji.obj \
-		Ressources/fuji/source/ESRI_AERIAL_WM.tif \
-		Ressources/sphere.obj \
-		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
+DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/linux.conf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/sanitize.conf \
@@ -170,13 +169,15 @@ DIST          = Ressources/fuji/source/Mount_Fuji.obj \
 		header/Vec3D.h \
 		header/light.h \
 		header/mesh.h \
-		header/WidgetSetup.h src/Main.cpp \
+		header/WidgetSetup.h \
+		header/skybox.h src/Main.cpp \
 		src/Window.cpp \
 		src/TextureViewer.cpp \
 		src/Texture.cpp \
 		src/TextureDockWidget.cpp \
 		src/light.cpp \
-		src/mesh.cpp
+		src/mesh.cpp \
+		src/skybox.cpp
 QMAKE_TARGET  = nuage
 DESTDIR       = 
 TARGET        = nuage
@@ -377,8 +378,8 @@ distdir: FORCE
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents qmake_qmake_immediate.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents header/Window.h header/GLFunc.h header/PowerOfTwoSpinBox.h header/TextureViewer.h header/Texture.h header/TextureDockWidget.h header/Vec3D.h header/light.h header/mesh.h header/WidgetSetup.h $(DISTDIR)/
-	$(COPY_FILE) --parents src/Main.cpp src/Window.cpp src/TextureViewer.cpp src/Texture.cpp src/TextureDockWidget.cpp src/light.cpp src/mesh.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents header/Window.h header/GLFunc.h header/PowerOfTwoSpinBox.h header/TextureViewer.h header/Texture.h header/TextureDockWidget.h header/Vec3D.h header/light.h header/mesh.h header/WidgetSetup.h header/skybox.h $(DISTDIR)/
+	$(COPY_FILE) --parents src/Main.cpp src/Window.cpp src/TextureViewer.cpp src/Texture.cpp src/TextureDockWidget.cpp src/light.cpp src/mesh.cpp src/skybox.cpp $(DISTDIR)/
 
 
 clean: compiler_clean 
@@ -407,15 +408,16 @@ compiler_rcc_clean:
 	-$(DEL_FILE) qrc_qmake_qmake_immediate.cpp
 qrc_qmake_qmake_immediate.cpp: qmake_qmake_immediate.qrc \
 		/usr/lib/qt5/bin/rcc \
-		Ressources/sphere.obj \
 		Ressources/mountain/Mountain.obj \
 		Ressources/mountain/textures/aerial_grass_rock_diff_4k.jpg \
 		GLSL/shaders/plan.frag \
 		GLSL/shaders/volume.vert \
+		GLSL/shaders/skybox.vert \
 		GLSL/shaders/light.frag \
 		GLSL/shaders/plan.vert \
 		GLSL/shaders/tex3D.glsl \
 		GLSL/shaders/volume.frag \
+		GLSL/shaders/skybox.frag \
 		GLSL/shaders/light.vert \
 		GLSL/shaders/tex2D.glsl
 	/usr/lib/qt5/bin/rcc -name qmake_qmake_immediate qmake_qmake_immediate.qrc -o qrc_qmake_qmake_immediate.cpp
@@ -445,6 +447,7 @@ moc/moc_Window.cpp: header/Window.h \
 		header/Texture.h \
 		header/Vec3D.h \
 		header/mesh.h \
+		header/skybox.h \
 		header/PowerOfTwoSpinBox.h \
 		moc/moc_predefs.h \
 		/usr/lib/qt5/bin/moc
@@ -469,6 +472,7 @@ moc/moc_TextureViewer.cpp: header/TextureViewer.h \
 		header/Texture.h \
 		header/Vec3D.h \
 		header/mesh.h \
+		header/skybox.h \
 		moc/moc_predefs.h \
 		/usr/lib/qt5/bin/moc
 	/usr/lib/qt5/bin/moc $(DEFINES) --include /mnt/e/VR_UNREAL_PROJECT/Nuage_Volume_Rendering/moc/moc_predefs.h -I/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -I/mnt/e/VR_UNREAL_PROJECT/Nuage_Volume_Rendering -I/mnt/e/VR_UNREAL_PROJECT/Nuage_Volume_Rendering/GLSL -I/mnt/e/VR_UNREAL_PROJECT/Nuage_Volume_Rendering/external/libQGLViewer-2.6.1 -I/usr/include/x86_64-linux-gnu/qt5 -I/usr/include/x86_64-linux-gnu/qt5/QtOpenGL -I/usr/include/x86_64-linux-gnu/qt5/QtWidgets -I/usr/include/x86_64-linux-gnu/qt5/QtGui -I/usr/include/x86_64-linux-gnu/qt5/QtXml -I/usr/include/x86_64-linux-gnu/qt5/QtCore -I/usr/include/c++/13 -I/usr/include/x86_64-linux-gnu/c++/13 -I/usr/include/c++/13/backward -I/usr/lib/gcc/x86_64-linux-gnu/13/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include header/TextureViewer.h -o moc/moc_TextureViewer.cpp
@@ -488,6 +492,7 @@ moc/moc_TextureDockWidget.cpp: header/TextureDockWidget.h \
 		header/Texture.h \
 		header/Vec3D.h \
 		header/mesh.h \
+		header/skybox.h \
 		header/PowerOfTwoSpinBox.h \
 		moc/moc_predefs.h \
 		/usr/lib/qt5/bin/moc
@@ -525,6 +530,7 @@ obj/Main.o: src/Main.cpp header/Window.h \
 		header/Texture.h \
 		header/Vec3D.h \
 		header/mesh.h \
+		header/skybox.h \
 		header/PowerOfTwoSpinBox.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/Main.o src/Main.cpp
 
@@ -544,6 +550,7 @@ obj/Window.o: src/Window.cpp header/Window.h \
 		header/Texture.h \
 		header/Vec3D.h \
 		header/mesh.h \
+		header/skybox.h \
 		header/PowerOfTwoSpinBox.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/Window.o src/Window.cpp
 
@@ -561,6 +568,7 @@ obj/TextureViewer.o: src/TextureViewer.cpp header/TextureViewer.h \
 		header/Texture.h \
 		header/Vec3D.h \
 		header/mesh.h \
+		header/skybox.h \
 		external/libQGLViewer-2.6.1/QGLViewer/manipulatedCameraFrame.h \
 		external/libQGLViewer-2.6.1/QGLViewer/manipulatedFrame.h \
 		external/libQGLViewer-2.6.1/QGLViewer/mouseGrabber.h
@@ -593,6 +601,7 @@ obj/TextureDockWidget.o: src/TextureDockWidget.cpp header/TextureDockWidget.h \
 		header/Texture.h \
 		header/Vec3D.h \
 		header/mesh.h \
+		header/skybox.h \
 		header/PowerOfTwoSpinBox.h \
 		header/WidgetSetup.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/TextureDockWidget.o src/TextureDockWidget.cpp
@@ -619,6 +628,18 @@ obj/mesh.o: src/mesh.cpp header/mesh.h \
 		external/libQGLViewer-2.6.1/QGLViewer/constraint.h \
 		header/GLFunc.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/mesh.o src/mesh.cpp
+
+obj/skybox.o: src/skybox.cpp header/skybox.h \
+		header/Vec3D.h \
+		header/GLFunc.h \
+		external/libQGLViewer-2.6.1/QGLViewer/vec.h \
+		external/libQGLViewer-2.6.1/QGLViewer/config.h \
+		external/libQGLViewer-2.6.1/QGLViewer/camera.h \
+		external/libQGLViewer-2.6.1/QGLViewer/keyFrameInterpolator.h \
+		external/libQGLViewer-2.6.1/QGLViewer/quaternion.h \
+		external/libQGLViewer-2.6.1/QGLViewer/frame.h \
+		external/libQGLViewer-2.6.1/QGLViewer/constraint.h
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/skybox.o src/skybox.cpp
 
 obj/qrc_qmake_qmake_immediate.o: qrc_qmake_qmake_immediate.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o obj/qrc_qmake_qmake_immediate.o qrc_qmake_qmake_immediate.cpp

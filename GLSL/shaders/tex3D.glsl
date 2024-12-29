@@ -344,7 +344,7 @@ void main() {
     float max_radius = min_dimension / u_resolution.x; // Rayon max basé sur l'axe X
 
     // Appliquer la SDF en fonction de la forme_bruit
-    int forme_bruit=4;
+    int forme_bruit=0;
     if(forme_bruit ==0){
             // Aucun SDF, juste une atténuation sur les bords
         ;
