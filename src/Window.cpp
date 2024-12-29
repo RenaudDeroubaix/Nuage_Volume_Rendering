@@ -94,6 +94,15 @@ Window::Window()
     connect(madDockWidget, &TextureDockWidget::setIsLightUtime, viewer, &TextureViewer::setIsLightUTime);
     connect(madDockWidget, &TextureDockWidget::setboolOnlyCloud, viewer, &TextureViewer::setboolOnlyCloud);
 
+    connect(madDockWidget, &TextureDockWidget::formeSelectionChanged,viewer, &TextureViewer::setFormeNuage);
+    connect(madDockWidget, &TextureDockWidget::attenuationSliderChanged,viewer, &TextureViewer::setAttenuationBord);
+    connect(madDockWidget, &TextureDockWidget::rSphereSliderChanged,viewer, &TextureViewer::setRayonSphere);
+    connect(madDockWidget, &TextureDockWidget::rITorusSliderChanged,viewer, &TextureViewer::setRayonInternTorus);
+    connect(madDockWidget, &TextureDockWidget::rETorusSliderChanged,viewer, &TextureViewer::setRayonExternTorus);
+    connect(madDockWidget, &TextureDockWidget::lCapsuleSliderChanged,viewer, &TextureViewer::setLongueurCapsule);
+    connect(madDockWidget, &TextureDockWidget::rCapsuleSliderChanged,viewer, &TextureViewer::setRayonCapsule);
+    connect(madDockWidget, &TextureDockWidget::tBarreCroixSliderChanged,viewer, &TextureViewer::setTailleBarre);
+
     this->setCentralWidget(viewerGroupBox);
 
     QMenuBar * menubar = new QMenuBar(this);

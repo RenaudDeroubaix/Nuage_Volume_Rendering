@@ -10,6 +10,8 @@
 #include <QListWidget>
 #include <QDoubleSpinBox>
 #include <QPushButton>
+#include <QCheckBox>
+#include <QButtonGroup>
 #include "PowerOfTwoSpinBox.h"
 
 class TextureDockWidget : public QDockWidget
@@ -73,6 +75,21 @@ public:
     QDoubleSpinBox *yBBmaxSpinBox;
     QDoubleSpinBox *zBBmaxSpinBox;
 
+    QCheckBox *cubeCheckBox;
+    QCheckBox *sphereCheckBox ;
+    QCheckBox *torusCheckBox ;
+    QCheckBox *croixCheckBox;
+    QCheckBox *capsuleCheckBox ;
+
+    QButtonGroup *buttonGroupForme;
+
+    QSlider * attenuationSlider;
+    QSlider * rSphereSlider;
+    QSlider * rITorusSlider;
+    QSlider * rETorusSlider;
+    QSlider * lCapsuleSlider;
+    QSlider *rCapsuleSlider;
+    QSlider * tBarreCroixSlider;
 
 private slots:
 ///bruit
@@ -104,6 +121,15 @@ private slots:
     void rFreqBruitCurlSpinBoxChangedSlot(float value);
     void gFreqBruitCurlSpinBoxChangedSlot(float value);
     void bFreqBruitCurlSpinBoxChangedSlot(float value);
+
+    void formeSelectionChangedSlot(int id);
+    void attenuationSliderChangedSlot(float value);
+    void rSphereSliderChangedSlot(float value);
+    void rITorusSliderChangedSlot(float value);
+    void rETorusSliderChangedSlot(float value);
+    void lCapsuleSliderChangedSlot(float value);
+    void rCapsuleSliderChangedSlot(float value);
+    void tBarreCroixSliderChangedSlot(float value);
 
 ///Light
     void redNuageSpinBoxChangedSlot(float value);
@@ -174,6 +200,16 @@ signals:
     void rFreqBruitCurlValueChanged(float rValue);
     void gFreqBruitCurlValueChanged(float gValue);
     void bFreqBruitCurlValueChanged(float bValue);
+
+    void formeSelectionChanged(int id);
+    void attenuationSliderChanged(float value);
+    void rSphereSliderChanged(float value);
+    void rITorusSliderChanged(float value);
+    void rETorusSliderChanged(float value);
+    void lCapsuleSliderChanged(float value);
+    void rCapsuleSliderChanged(float value);
+    void tBarreCroixSliderChanged(float value);
+
 
 ///Light
     void redNuageValueChanged(float redValue);

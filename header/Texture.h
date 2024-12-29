@@ -55,6 +55,15 @@ private :
     double yMax;
     double zMax;
 
+    int idFormeSDF;
+    float attenuationBord ;
+    float rayonSphere ;
+    float rayonInternTorus ;
+    float rayonExternTorus ;
+    float longueurCapsule;
+    float rayonCapsule;
+    float tailleBarre;
+
     QElapsedTimer timer;
     float vitesse;
 
@@ -134,6 +143,15 @@ public slots:
     void setzBBmax( float _z);
 
     void updateBBplan();
+
+    void setForme(int id);
+    void setAttenuationBord(float a) ;
+    void setRayonSphere(float r) ;
+    void setRayonInternTorus(float r) ;
+    void setRayonExternTorus(float r) ;
+    void setLongueurCapsule(float l);
+    void setRayonCapsule(float r);
+    void setTailleBarre(float t);
 
 };
 
