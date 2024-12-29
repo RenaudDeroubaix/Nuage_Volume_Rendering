@@ -3,6 +3,8 @@
 #include <QFileDialog>
 #include <QGLViewer/manipulatedCameraFrame.h>
 
+#include "../header/Vec3D.h"
+
 using namespace std;
 using namespace qglviewer;
 
@@ -14,9 +16,10 @@ void TextureViewer::init() {
     // Initialisation des objets
     texture = new Texture(QOpenGLContext::currentContext(),camera());
     light = new Light(QOpenGLContext::currentContext());
+    skybox = new SkyBox(QOpenGLContext::currentContext());
     plan = initPlan();
     openOBJMesh(":/Ressources/mountain/Mountain.obj", plan);
-    //openOBJMesh(":/Ressources/sphere.obj", plan);
+
     plan->initializeGL();
     plan->initTexture(":/Ressources/mountain/textures/aerial_grass_rock_diff_4k.jpg");
 
@@ -26,10 +29,8 @@ void TextureViewer::init() {
     // Désactiver l'éclairage fixe OpenGL (non utilisé ici)
     glDisable(GL_LIGHTING);
 
-    // Configurer le test de profondeur pour un rendu 3D correct
     glEnable(GL_DEPTH_TEST);
-    glDepthMask(GL_TRUE);          // Allow writing to the depth buffer
-    glDepthFunc(GL_ALWAYS);
+    glDepthFunc(GL_LESS);
 
     // Mode de remplissage des polygones (face avant uniquement)
     glPolygonMode(GL_FRONT, GL_FILL);
@@ -37,52 +38,44 @@ void TextureViewer::init() {
     // Configurer l'ordre des faces pour le culling
     glFrontFace(GL_CCW);
 
-    // Couleur de fond (bleu ciel)
-    glClearColor(0.529f, 0.808f, 0.922f, 1.0f); // RGB: (135, 206, 235)
-
-    // Activer le face culling (par défaut, désactivé pour la lumière dans draw())
-
-    glEnable(GL_CULL_FACE); // Activer le culling pour la texture
-    glCullFace(GL_FRONT);  // Dessiner les faces avant uniquement
+    glEnable(GL_CULL_FACE);
 
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    //updateCamera(camera()->position(), .1);
-    //camera()->setSceneRadius(10);
+
     camera()->setZNearCoefficient(0.00001);
     camera()->setZClippingCoefficient(1000.0);
-    //camera()->setUpVector(qglviewer::Vec(0.0,1.0,0.0), false);
+
+    camera()->setPosition(qglviewer::Vec(-2 , 1 , -3));
+    camera()->lookAt(qglviewer::Vec(-1 , 1 , 0));
+
+
 }
 
 void TextureViewer::draw() {
-   // camera()->setUpVector(qglviewer::Vec(0.0,1.0,0.0), true);
-    // Effacer le tampon de couleur et de profondeur
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    // Configurer la caméra
-
-    glDisable(GL_DEPTH_TEST); // Désactiver le test de profondeur pour la lumière
-    light->draw(camera());
-    glEnable(GL_DEPTH_TEST);
-    // 1. Dessiner la texture 3D (opaque)
-    //glEnable(GL_DEPTH_TEST);
-    //glDepthMask(GL_TRUE); // Autoriser l'écriture dans le tampon de profondeur
-
-
-
-    // Mettre à jour la scène
-    if(plan != nullptr){
-        //glEnable(GL_DEPTH_TEST);       // Enable depth testing for the plan
-       // glDisable(GL_CULL_FACE);
-        glCullFace(GL_BACK);
-        plan->draw(light->getpos(), light->getcol(),camera());
-       // glEnable(GL_CULL_FACE);
-        //glDisable(GL_DEPTH_TEST);
+    glCullFace(GL_BACK);
+    glDepthMask(GL_TRUE);
+    if(isOnlyCloud)
+    {
+        skybox->draw(light->getpos(), light->getcol(), light->getdir() , camera());
+        texture->draw(light->getpos(), light->getcol(), camera());
         glCullFace(GL_FRONT);
-        //std::cout << "plan dessiné" <<std::endl;
+        light->draw(camera() , isLightUtime);
     }
+    else
+    {
+        updateCamera();
+        skybox->draw(light->getpos(), light->getcol(), light->getdir() , camera());
+        if(plan != nullptr)
+            plan->draw(light->getpos(), light->getcol(),camera());
 
-    texture->draw(light->getpos(), light->getcol(), camera());
+        texture->draw(light->getpos(), light->getcol(), camera());
+        glCullFace(GL_FRONT);
+        light->draw(camera() , isLightUtime);
+
+    }
     update();
 }
 
@@ -111,11 +104,17 @@ Mesh* TextureViewer::initPlan(){
     return plan;
 }
 
-void TextureViewer::updateCamera(const qglviewer::Vec & center, float radius){
-    camera()->setSceneCenter(center);
-    camera()->setSceneRadius(radius);
-    
-    camera()->showEntireScene();
+void TextureViewer::updateCamera(){
+    camera()->setSceneCenter(camera()->position());
+
+    Vec3D<float> right = Vec3D<float>::crossProduct(Vec3D<float>(camera()->viewDirection()[0] , camera()->viewDirection()[1] , camera()->viewDirection()[2]),
+                                                    Vec3D<float>(0. , 1. ,0.));
+    right.normalize();
+
+    Vec3D<float> newup = Vec3D<float>::crossProduct(right ,Vec3D<float>(camera()->viewDirection()[0] , camera()->viewDirection()[1] , camera()->viewDirection()[2]));
+
+    camera()->setUpVector(qglviewer::Vec(newup[0] , newup[1] , newup[2]) , true);
+
 }
 
 void TextureViewer::openOBJMesh(const QString &fileName, Mesh* m) {
@@ -440,6 +439,20 @@ void TextureViewer::setzBBmax( float _z){
     texture->setzBBmax(_z);
     update();
 }
+void TextureViewer::setcamerapos(QVector3D pos , QVector3D target){
+    camera()->setPosition(qglviewer::Vec(pos.x() , pos.y() , pos.z()));
+    camera()->lookAt(qglviewer::Vec(target.x() , target.y() , target.z()));
+    update();
+}
+void TextureViewer::setIsLightUTime(bool b){
+    isLightUtime = b;
+    update();
+}
+void  TextureViewer::setboolOnlyCloud(bool b){
+    isOnlyCloud = b;
+    update();
+}
+
 
 
 void TextureViewer::keyPressEvent(QKeyEvent *e)

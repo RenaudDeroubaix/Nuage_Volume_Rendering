@@ -58,6 +58,7 @@ void Mesh::draw(QVector3D &LightPos, QVector3D &LightCol, const qglviewer::Camer
     camera->getProjectionMatrix(pMatrix);
     camera->getModelViewMatrix(mvMatrix);
 
+
     glFunctions->glUniformMatrix4fv(glFunctions->glGetUniformLocation(programID, "proj_matrix"), 1, GL_FALSE, pMatrix);
     glFunctions->glUniformMatrix4fv(glFunctions->glGetUniformLocation(programID, "mv_matrix"), 1, GL_FALSE, mvMatrix);
 
@@ -84,8 +85,6 @@ void Mesh::draw(QVector3D &LightPos, QVector3D &LightCol, const qglviewer::Camer
         glFunctions->glBindTexture(GL_TEXTURE_2D, 0);
     }
 
-    // Deactivate shader program
-    glFunctions->glUseProgram(0);
 }
 
 
@@ -124,7 +123,7 @@ void Mesh::initGLSL(){
         glFunctions->glAttachShader(this->programID, this->fShader);
         printShaderErrors(glFunctions,this->fShader);
     }
-
+    std::cout<< "mesh Program : " <<  programID << std::endl;
     glFunctions->glLinkProgram(this->programID);
     std::cout << "ERROR SHADER Plan programID" << std::endl;
     printProgramErrors(glFunctions,programID);

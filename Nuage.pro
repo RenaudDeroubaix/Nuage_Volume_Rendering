@@ -12,7 +12,8 @@ SOURCES += src/Main.cpp \
     src/Texture.cpp \
     src/TextureDockWidget.cpp \
     src/light.cpp \
-    src/mesh.cpp
+    src/mesh.cpp \
+    src/skybox.cpp
 HEADERS += header/Window.h \
     header/GLFunc.h \
     header/PowerOfTwoSpinBox.h \
@@ -22,7 +23,8 @@ HEADERS += header/Window.h \
     header/Vec3D.h \
     header/light.h \
     header/mesh.h \
-    header/WidgetSetup.h
+    header/WidgetSetup.h \
+    header/skybox.h
 
 RESOURCES += \
     GLSL/shaders/tex3D.glsl \
@@ -33,9 +35,10 @@ RESOURCES += \
     GLSL/shaders/light.vert \
     GLSL/shaders/plan.frag \
     GLSL/shaders/plan.vert \
+    GLSL/shaders/skybox.frag \
+    GLSL/shaders/skybox.vert \
     Ressources/mountain/Mountain.obj \
     Ressources/mountain/textures/aerial_grass_rock_diff_4k.jpg\
-    Ressources/sphere.obj \
 
 INCLUDEPATH = ./GLSL
 EXT_DIR = external
@@ -69,9 +72,3 @@ release:QMAKE_CXXFLAGS_RELEASE += -O3 \
     -fopenmp
 release:QMAKE_CFLAGS_RELEASE += -O3 \
     -fopenmp
-
-
-DISTFILES += \
-    Ressources/fuji/source/Mount_Fuji.obj \
-    Ressources/fuji/source/ESRI_AERIAL_WM.tif \
-    Ressources/sphere.obj \

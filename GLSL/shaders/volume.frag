@@ -1,5 +1,8 @@
 #version 430 core
-#define PI 3.14159265358979
+
+float flt_max = 3.402823466e+38;
+float flt_min = 1.175494351e-38;
+float PI = 3.1415926;
 
 struct Plan{
     vec3 point;
@@ -48,9 +51,6 @@ vec3 centresphere = vec3(0.0);
 float radius = 0.490;
 
 
-float HenyeyGreenstein(float g , float costh) {
-    return (1.0 / (4.0 * PI)) * ((1.0 - g * g ) / pow(1.0 + g - 2.0 * g * costh , 1.5));
-}
 
 // --------------------------------------------------
 // Functions
@@ -60,9 +60,13 @@ float beersLaw(float distance, float absorbtion ) {
     return exp(-distance * absorbtion );
 }
 
-void IntersectionPlan(vec3 camPos, float epsilon, vec3 dir,out vec3 tEntryOut,out vec3 tExitOut) {
-    float tExit = 10000.0;  // Initialisation pour trouver le plus petit tMax
-    float tEntry = 0.0;    // Initialisation pour trouver le plus grand tMin
+float HenyeyGreenstein(float g , float costh) {
+    return (1.0 / (4.0 * PI)) * ((1.0 - g * g ) / pow(1.0 + g - 2.0 * g * costh , 1.5));
+}
+
+void IntersectionPlan(vec3 camPos, float epsilon, vec3 dir,out vec3 tEntryOut, out vec3 tExitOut) {
+    float tExit = flt_max;  // Initialisation pour trouver le plus petit tMax
+    float tEntry = 0.0;  // Initialisation pour trouver le plus grand tMin
 
     bool isInside = true;  // Pour vérifier si fragPosition est déjà dans la boîte
 
@@ -101,7 +105,7 @@ void IntersectionPlan(vec3 camPos, float epsilon, vec3 dir,out vec3 tEntryOut,ou
     if (isInside) {
         // Si le fragment est déjà dans la boîte, on considère le point d'entrée à `fragPosition`
         tEntryOut = fragPosition;
-    } else if (tEntry <= tExit && tExit < 10000.0) {
+    } else if (tEntry <= tExit && tExit < flt_max) {
         // Si on a un intervalle valide pour l'entrée et la sortie
         tEntryOut = fragPosition + tEntry * dir;
     } else {
@@ -110,7 +114,7 @@ void IntersectionPlan(vec3 camPos, float epsilon, vec3 dir,out vec3 tEntryOut,ou
     }
 
     // Calcul du point de sortie
-    if (tExit < 10000.0) {
+    if (tExit < flt_max) {
         tExitOut = fragPosition + tExit * dir;
     } else {
         tExitOut = fragPosition; // Pas de point de sortie trouvé
@@ -164,14 +168,15 @@ void main() {
     vec3 exitPoint;
     vec3 entryPoint;
     IntersectionPlan(camPos , epsilon , dir, entryPoint, exitPoint);
-    if(exitPoint ==  entryPoint ){
+    float dist = length(exitPoint - entryPoint)  ;
+
+    if(dist < 0.1){
         discard;
     }
 
     vec4 textureValue = vec4(0.0);
     float densite = 0.0;
 
-    float dist = length(exitPoint - entryPoint)  ;
 
     for (int i = 0 ; i < NuageSample; i++){
 
