@@ -29,14 +29,14 @@ void TextureViewer::init() {
     // Désactiver l'éclairage fixe OpenGL (non utilisé ici)
     glDisable(GL_LIGHTING);
 
-
+    glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LESS);
 
     // Mode de remplissage des polygones (face avant uniquement)
     glPolygonMode(GL_FRONT, GL_FILL);
 
     // Configurer l'ordre des faces pour le culling
     glFrontFace(GL_CCW);
-
 
     glEnable(GL_CULL_FACE);
 
@@ -45,33 +45,37 @@ void TextureViewer::init() {
 
     camera()->setZNearCoefficient(0.00001);
     camera()->setZClippingCoefficient(1000.0);
-    camera()->setPosition(qglviewer::Vec(-8 , -8 , 5));
+
+    camera()->setPosition(qglviewer::Vec(-2 , 1 , -3));
+    camera()->lookAt(qglviewer::Vec(-1 , 1 , 0));
+
+
 }
 
 void TextureViewer::draw() {
-    updateCamera();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-    glDepthMask(GL_TRUE);
-
-
-    glCullFace(GL_FRONT);
-    if(plan != nullptr)
-        plan->draw(light->getpos(), light->getcol(),camera());
-    light->draw(camera());
     glCullFace(GL_BACK);
-    skybox->draw(light->getpos(), light->getcol(), light->getdir() , camera());
-    //glDisable(GL_DEPTH_TEST);
-    texture->draw(light->getpos(), light->getcol(), camera());
+    glDepthMask(GL_TRUE);
+    if(isOnlyCloud)
+    {
+        skybox->draw(light->getpos(), light->getcol(), light->getdir() , camera());
+        texture->draw(light->getpos(), light->getcol(), camera());
+        glCullFace(GL_FRONT);
+        light->draw(camera() , isLightUtime);
+    }
+    else
+    {
+        updateCamera();
+        skybox->draw(light->getpos(), light->getcol(), light->getdir() , camera());
+        if(plan != nullptr)
+            plan->draw(light->getpos(), light->getcol(),camera());
 
+        texture->draw(light->getpos(), light->getcol(), camera());
+        glCullFace(GL_FRONT);
+        light->draw(camera() , isLightUtime);
 
-
-
-
+    }
     update();
 }
 
@@ -435,6 +439,20 @@ void TextureViewer::setzBBmax( float _z){
     texture->setzBBmax(_z);
     update();
 }
+void TextureViewer::setcamerapos(QVector3D pos , QVector3D target){
+    camera()->setPosition(qglviewer::Vec(pos.x() , pos.y() , pos.z()));
+    camera()->lookAt(qglviewer::Vec(target.x() , target.y() , target.z()));
+    update();
+}
+void TextureViewer::setIsLightUTime(bool b){
+    isLightUtime = b;
+    update();
+}
+void  TextureViewer::setboolOnlyCloud(bool b){
+    isOnlyCloud = b;
+    update();
+}
+
 
 
 void TextureViewer::keyPressEvent(QKeyEvent *e)

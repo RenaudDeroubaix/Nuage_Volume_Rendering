@@ -8,14 +8,37 @@ Light::Light(QOpenGLContext* context)
    init();
    initLightShader();
 }
-void Light::init(){
 
-    LightPos =  QVector3D(0.0,20.0,-5.0);
+void Light::init(){
+    time = 30000.0;
+    timer.start();
+
+    LightPos = QVector3D(0.0, 1.0 , 0.0);
     LightColor =  QVector3D(1.0,1.0,1.0);
     LightDir = -LightPos.normalized();
     rayon = 1.f;
 
+}
 
+QVector3D Light::lightposition() {
+    // Temps écoulé normalisé pour éviter de dépasser 2π
+    float t = (timer.elapsed() / time) * 2 * M_PI;
+    if (t > 2 * M_PI) {
+        timer.start();
+        t = 0.0f;
+    }
+
+    // Rayon de la sphère à partir de la position initiale
+    float SR = LightPos.length();
+
+    // Nouvelle position de la lumière sur le cercle
+    QVector3D newLightPosition = QVector3D(
+        -SR * cos(t),  // Coordonnée x (inversée pour rotation d'est en ouest)
+        SR * sin(t),   // Coordonnée y
+        LightPos.z()           // Coordonnée z (à l'origine)
+    );
+
+    return newLightPosition;
 }
 void Light::initLightShader(){
     std::string path = "GLSL/shaders/";
@@ -57,11 +80,15 @@ void Light::initLightShader(){
     checkOpenGLError();
 
 }
-void Light::draw(const qglviewer::Camera * camera )
+void Light::draw(const qglviewer::Camera * camera , bool islightUtime)
 {
-    LightDir = -LightPos.normalized();
+    if (islightUtime)lp = lightposition();
+    else lp = LightPos;
+
+    LightDir = lp.normalized();
     glFunctions->glUseProgram(0);
     glFunctions->glUseProgram(LightID);
+
 
     float pMatrix[16];
     float mvMatrix[16];
@@ -76,7 +103,7 @@ void Light::draw(const qglviewer::Camera * camera )
 
     glFunctions->glUniform1f(glFunctions->glGetUniformLocation(LightID, "rayon"), rayon);
 
-    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(LightID, "LightPos"),1, &LightPos[0]);
+    glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(LightID, "LightPos"),1, &lp[0]);
     glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(LightID, "LightColor"),1, &LightColor[0]);
 
 
@@ -86,16 +113,14 @@ void Light::draw(const qglviewer::Camera * camera )
 void Light::drawSquareForLight()
 {
 
-    float xMin = LightPos.x() - rayon, xMax = LightPos.x() + rayon;
-    float yMin = LightPos.y() - rayon, yMax = LightPos.y() + rayon;
+    float xMin = lp.x() - rayon, xMax = lp.x() + rayon;
+    float yMin = lp.y() - rayon, yMax = lp.y() + rayon;
 
     glBegin(GL_QUADS);
-    glVertex3f(xMin, yMin, LightPos.z());
-    glVertex3f(xMin, yMax, LightPos.z());
-    glVertex3f(xMax, yMax, LightPos.z());
-    glVertex3f(xMax, yMin, LightPos.z());
-
-
+    glVertex3f(xMin, yMin, lp.z());
+    glVertex3f(xMin, yMax, lp.z());
+    glVertex3f(xMax, yMax, lp.z());
+    glVertex3f(xMax, yMin, lp.z());
     glEnd();
 
 }

@@ -64,9 +64,9 @@ float HenyeyGreenstein(float g , float costh) {
     return (1.0 / (4.0 * PI)) * ((1.0 - g * g ) / pow(1.0 + g - 2.0 * g * costh , 1.5));
 }
 
-void IntersectionPlan(vec3 camPos, float epsilon, vec3 dir,out vec3 tEntryOut,out vec3 tExitOut) {
+void IntersectionPlan(vec3 camPos, float epsilon, vec3 dir,out vec3 tEntryOut, out vec3 tExitOut) {
     float tExit = flt_max;  // Initialisation pour trouver le plus petit tMax
-    float tEntry = 0.0;    // Initialisation pour trouver le plus grand tMin
+    float tEntry = 0.0;  // Initialisation pour trouver le plus grand tMin
 
     bool isInside = true;  // Pour vérifier si fragPosition est déjà dans la boîte
 

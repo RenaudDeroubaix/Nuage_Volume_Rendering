@@ -11,14 +11,19 @@
 #include <QOpenGLContext>
 #include <QOpenGLExtraFunctions>
 #include <QGLViewer/camera.h>
+#include <QElapsedTimer>
+#include <cmath>
 
 class Light
 {
 private:
     float rayon;
+    QVector3D  lp;
     QVector3D LightPos;
     QVector3D LightColor;
     QVector3D LightDir;
+    float time;
+    QElapsedTimer timer;
 public:
 
     Light( QOpenGLContext* context);
@@ -27,14 +32,14 @@ public:
     void init();
     void initLightShader();
 
-    void draw(const qglviewer::Camera * camera );
+    void draw(const qglviewer::Camera * camera , bool b);
     void drawSquareForLight();
 
     GLuint  vShader, fShader , LightID;
     QOpenGLContext* glContext;
     QOpenGLExtraFunctions* glFunctions;
-
-    QVector3D & getpos() {return LightPos;}
+    QVector3D lightposition();
+    QVector3D & getpos() {return lp;}
     QVector3D & getcol() {return LightColor;}
     QVector3D & getdir() {return LightDir;}
 

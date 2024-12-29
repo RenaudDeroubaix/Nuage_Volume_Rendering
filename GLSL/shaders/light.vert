@@ -18,10 +18,11 @@ void main()
     // Vecteurs de base pour la caméra
     vec3 right = normalize(vec3(mv_matrix[0][0], mv_matrix[1][0], mv_matrix[2][0]));
     vec3 up = normalize(vec3(mv_matrix[0][1], mv_matrix[1][1], mv_matrix[2][1]));
-    vec3 front = -normalize(vec3(mv_matrix[0][2], mv_matrix[1][2], mv_matrix[2][2]));
+    //vec3 front = -normalize(vec3(mv_matrix[0][2], mv_matrix[1][2], mv_matrix[2][2]));
+    //vec3 campos = -vec3(mv_matrix[3][0], mv_matrix[3][1], mv_matrix[3][2]);
     // Calcul de la position du plan en monde
 
-    vec3 world_position = LightPos + right * position.x + up *  position.y + front * position.z  ;
+    vec3 world_position = LightPos + right * position.x + up * position.y ;
 
     frag_pos = position;
     lightposition = LightPos;
@@ -30,5 +31,3 @@ void main()
     gl_Position = proj_matrix * mv_matrix * vec4(world_position, 1.0);
 
 }
-
-

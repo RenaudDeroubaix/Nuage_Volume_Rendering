@@ -200,6 +200,9 @@ signals:
     void onNuageSpinBoxChanged(int value);
     void onLightSliderChanged(int value);
     void onLightSpinBoxChanged(int value);
+    void setcamerapos(QVector3D pos , QVector3D targ);
+    void setIsLightUtime(bool b);
+    void setboolOnlyCloud(bool b);
 
 };
 

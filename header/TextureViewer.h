@@ -48,7 +48,8 @@ protected :
 
     std::vector<qglviewer::Vec> vertices;
     std::vector<std::array<size_t,3>> triangles;
-
+    bool isLightUtime = false;
+    bool isOnlyCloud = true;
 
 public slots:
     void onNuageSliderChanged(int value);
@@ -91,7 +92,9 @@ public slots:
     void setxBBmax( float _x);
     void setyBBmax( float _y);
     void setzBBmax( float _z);
-
+    void setcamerapos(QVector3D pos , QVector3D targ);
+    void setIsLightUTime(bool b);
+    void setboolOnlyCloud(bool b);
 signals:
 
 };

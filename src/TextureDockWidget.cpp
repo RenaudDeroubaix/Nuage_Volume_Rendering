@@ -231,8 +231,8 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     QLabel *PresetGeneralLabel = new QLabel("Preset de nuage:");
     QPushButton *PresetButton1 = new QPushButton("Nuage 1",presetFrame);
     QPushButton *PresetButton2 = new QPushButton("Nuage 2",presetFrame);
-    QPushButton *PresetButton3 = new QPushButton("Nuage 3",presetFrame);
-    QPushButton *PresetButton4 = new QPushButton("Nuage 4",presetFrame);
+    QPushButton *PresetButton3 = new QPushButton("Scene 1",presetFrame);
+    QPushButton *PresetButton4 = new QPushButton("Scene 2",presetFrame);
     QPushButton *PresetButton5 = new QPushButton("Nuage 5",presetFrame);
     QPushButton *PresetButton6 = new QPushButton("Nuage 6",presetFrame);
 
@@ -443,7 +443,7 @@ void TextureDockWidget::presetButton1ClickedSlot(){
     // Position et couleur de la lumière
     LightPosX->setValue(0.0f);
     LightPosY->setValue(5.0f);
-    LightPosZ->setValue(0.0f);
+    LightPosZ->setValue(5.0f);
 
     LightColorR->setValue(1.0f);
     LightColorG->setValue(1.0f);
@@ -458,6 +458,10 @@ void TextureDockWidget::presetButton1ClickedSlot(){
     LightSampleBox->setValue(20);
 
     vitesseSlider->setValue(5000);
+    emit(setboolOnlyCloud(true));
+    emit(setIsLightUtime(false));
+    emit(setcamerapos(QVector3D(0 , 0 , -20) , QVector3D  (0 , 0 , 0)));
+
 
 }
 
@@ -523,10 +527,44 @@ void TextureDockWidget::presetButton2ClickedSlot(){
     LightSampleBox->setValue(20);
 
     vitesseSlider->setValue(1000);
-
+    emit(setboolOnlyCloud(true));
+    emit(setIsLightUtime(false));
+    emit(setcamerapos(QVector3D(0 , 0 , -20) , QVector3D  (0 , 0 , 0)));
 }
 
-void TextureDockWidget::presetButton3ClickedSlot(){;}
-void TextureDockWidget::presetButton4ClickedSlot(){;}
+void TextureDockWidget::presetButton3ClickedSlot()
+{
+    xBBminSpinBox->setValue(-7.0f);
+    yBBminSpinBox->setValue(1.0f);
+    zBBminSpinBox->setValue(-7.0f);
+
+    xBBmaxSpinBox->setValue(7.0f);
+    yBBmaxSpinBox->setValue(11.0f);
+    zBBmaxSpinBox->setValue(7.0f);
+
+    LightPosX->setValue(0.0f);
+    LightPosY->setValue(5.0f);
+    LightPosZ->setValue(-3.0f);
+    emit(setboolOnlyCloud(false));
+    emit(setIsLightUtime(true));
+    emit(setcamerapos(QVector3D(-15 , 5 , -10) , QVector3D  (-2 , 4 , 0) ) );
+}
+void TextureDockWidget::presetButton4ClickedSlot()
+{
+    xBBminSpinBox->setValue(-7.0f);
+    yBBminSpinBox->setValue(0.0f);
+    zBBminSpinBox->setValue(-7.0f);
+
+    xBBmaxSpinBox->setValue(7.0f);
+    yBBmaxSpinBox->setValue(11.0f);
+    zBBmaxSpinBox->setValue(7.0f);
+
+    LightPosX->setValue(0.0f);
+    LightPosY->setValue(5.0f);
+    LightPosZ->setValue(-3.0f);
+    emit(setboolOnlyCloud(false));
+    emit(setIsLightUtime(true));
+    emit(setcamerapos(QVector3D(-2 , 1 , -3) , QVector3D  (-1 , 1 , 0) ) );
+}
 void TextureDockWidget::presetButton5ClickedSlot(){;}
 void TextureDockWidget::presetButton6ClickedSlot(){;}

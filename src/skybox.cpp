@@ -8,7 +8,7 @@ SkyBox::SkyBox(QOpenGLContext* context)
    initShader();
 }
 void SkyBox::init(){
-    maxy = 55.0;
+
 
     BBmin = QVector3D(-500.0,-500.0,-500.0) ;
     BBmax = QVector3D(500.0,500.0,500.0) ;
@@ -69,7 +69,6 @@ void SkyBox::draw(QVector3D & LightPos ,  QVector3D & LightCol  , QVector3D & Li
                                     1, GL_FALSE, pMatrix);
     glFunctions->glUniformMatrix4fv(glFunctions->glGetUniformLocation(ProgramID, "mv_matrix"),
                                     1, GL_FALSE, mvMatrix);
-    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(ProgramID, "maxy"), maxy);
 
 
     glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(ProgramID, "LightPos"),1, &LightPos[0]);

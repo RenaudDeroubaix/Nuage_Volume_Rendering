@@ -64,8 +64,8 @@ void Texture::init(qglviewer::Camera * camera){
     LightEch = 8;
     NuageEch = 35;
 
-    BBmin = QVector3D(-20,-5,-20) ;
-    BBmax = QVector3D(20,10,20) ;
+    BBmin = QVector3D(-5,-5,-5) ;
+    BBmax = QVector3D(5,5,5) ;
 
 
 //    BBmin = QVector3D(-5.0,-5.0,-5.0) ;
@@ -416,7 +416,7 @@ void Texture::draw( QVector3D & LightPos ,  QVector3D & LightCol  , const qglvie
 
 void Texture::drawPlaneInFrontOfCamera(const qglviewer::Camera *camera, float distance) {
     // Désactiver le culling et le Z-buffer pour éviter les problèmes
-    glDisable(GL_CULL_FACE);
+    //glDisable(GL_CULL_FACE);
 
     // Récupérer la position de la caméra
     qglviewer::Vec cameraPos = camera->position();

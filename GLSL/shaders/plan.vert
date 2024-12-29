@@ -11,8 +11,8 @@ out vec3 fragNormal;      // Normal for fragment shader
 out vec2 fragTexCoord;    // UV for fragment shader
 
 void main() {
-    vec3 scale = vec3(20. , 10. , 20. );
-    vec3 translation = vec3(0 ,-10 , 0 );
+    vec3 scale = vec3(7. , 3. , 7. );
+    vec3 translation = vec3(0 ,0 , 0 );
 
     fragNormal = vec3(mv_matrix * vec4(normal,0.0));  // Transform normal to view space
 

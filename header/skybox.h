@@ -20,7 +20,6 @@ private:
 
     QVector3D BBmin;
     QVector3D BBmax;
-    float maxy;
 
 
 public:
