@@ -11,12 +11,8 @@
 #include <algorithm>
 #include "light.h"
 #include "Texture.h"
+#include "mesh.h"
 
-struct Face {
-    QVector<int> vertexIndices;
-    QVector<int> textureIndices;
-    QVector<int> normalIndices;
-};
 
 
 class TextureViewer : public QGLViewer
@@ -28,12 +24,14 @@ public :
 
     //void open3DImage(const QString & fileName);
     //void openOffMesh(const QString & fileName);
-    void openOBJMesh(const QString & fileName);
+    Mesh* initPlan();
+    void openOBJMesh(const QString & fileName, Mesh* m);
 
 
 
 protected :
     Texture * texture;
+    Mesh* plan = nullptr;
     Light * light;
     //Mesh * mesh;
 
@@ -48,13 +46,8 @@ protected :
     void clear();
     void updateCamera(const qglviewer::Vec & center, float radius);
 
-//    std::vector<qglviewer::Vec> vertices;
-//    std::vector<std::array<size_t,3>> triangles;
-
-    QVector<QVector3D> vertices;
-    QVector<QVector3D> normals;
-    QVector<QVector3D> textureCoords;
-    QVector<Face> faces;
+    std::vector<qglviewer::Vec> vertices;
+    std::vector<std::array<size_t,3>> triangles;
 
 
 public slots:
@@ -92,6 +85,12 @@ public slots:
     void setFacteurBruitB(float _b);
     void setFacteurBruitA(float _a);
     void setVitesse(float _v);
+    void setxBBmin( float _x);
+    void setyBBmin( float _y);
+    void setzBBmin( float _z);
+    void setxBBmax( float _x);
+    void setyBBmax( float _y);
+    void setzBBmax( float _z);
 
 signals:
 

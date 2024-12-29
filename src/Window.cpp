@@ -13,7 +13,6 @@ Window::Window()
     this->resize(1280, 720);
 
     viewer = new TextureViewer(this);
-    viewer->openOBJMesh(":/Ressources/fuji/source/Mount_Fuji.obj");
 
     QWidget * textureWidget = new QWidget(this);
     QGridLayout * gridLayout = new QGridLayout(textureWidget);
@@ -39,6 +38,14 @@ Window::Window()
     this->addDockWidget(Qt::RightDockWidgetArea, madDockWidget);
 
     //TODO : Connect madDockWidget signals to viewer slots
+
+    connect(madDockWidget, &TextureDockWidget::xBBminValueChanged, viewer, &TextureViewer::setxBBmin);
+    connect(madDockWidget, &TextureDockWidget::yBBminValueChanged, viewer, &TextureViewer::setyBBmin);
+    connect(madDockWidget, &TextureDockWidget::zBBminValueChanged, viewer, &TextureViewer::setzBBmin);
+
+    connect(madDockWidget, &TextureDockWidget::xBBmaxValueChanged, viewer, &TextureViewer::setxBBmax);
+    connect(madDockWidget, &TextureDockWidget::yBBmaxValueChanged, viewer, &TextureViewer::setyBBmax);
+    connect(madDockWidget, &TextureDockWidget::zBBmaxValueChanged, viewer, &TextureViewer::setzBBmax);
 
     connect(madDockWidget, &TextureDockWidget::redNuageValueChanged, viewer, &TextureViewer::setRedNuage);
     connect(madDockWidget, &TextureDockWidget::blueNuageValueChanged, viewer, &TextureViewer::setBlueNuage);

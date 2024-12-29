@@ -12,7 +12,7 @@ struct Plan{
 // Uniforms
 // --------------------------------------------------
 uniform sampler3D tex;
-
+uniform sampler2D tex2D;
 
 uniform int NuageSample;
 uniform int LightSample;
@@ -84,8 +84,8 @@ void IntersectionPlan(vec3 camPos, float epsilon, vec3 dir,out vec3 tEntryOut,ou
         float v = dot(localCoord, plans[i].up_vect) / length(plans[i].up_vect);
 
         // Dimensions de la boîte
-        float boxWidth = BBmax.x - BBmin.x;
-        float boxHeight = BBmax.y - BBmin.y;
+        float boxWidth = length(plans[i].right_vect);// BBmax.x - BBmin.x;
+        float boxHeight = length(plans[i].up_vect) ;//BBmax.y - BBmin.y;
 
         if (u >= 0.0 && u <= boxWidth && v >= 0.0 && v <= boxHeight) {
             // Intersection valide, classifier en entrée ou sortie
@@ -138,10 +138,6 @@ float anisotropic_scatering(float g , vec3 point_j,  vec3 dir){
     float costh = max(dot(normalize(point_j - LightPos) , dir) , 0 );
     return mix(HenyeyGreenstein(g , costh) , HenyeyGreenstein(-g , costh) , 0.3);
 }
-
-
-
-
 
 
 // --------------------------------------------------
@@ -217,7 +213,8 @@ void main() {
                 }
                 vec3 point_light_j_tex_coord = translate_in_tex_coord(Ipos);
 
-                textureValueLight = dist_J * LightStepSize * texture(tex,  point_light_j_tex_coord);
+                textureValueLight = dist_light_point * LightStepSize * texture(tex,  point_light_j_tex_coord);
+                //textureValueLight = dist_J * LightStepSize * texture(tex,  point_light_j_tex_coord);//soit l'un soit l autre je sais pas
 
                 //float luminance = ((textureValueLight.g + textureValueLight.b + textureValueLight.a)/3.0 - textureValueLight.r*3);
                 float luminance = (textureValueLight.r * facteurWorley[0] + textureValueLight.g * facteurWorley[1] + textureValueLight.b * facteurWorley[2] + textureValueLight.a * facteurWorley[3]);
@@ -244,6 +241,13 @@ void main() {
 
 
     fragColor = vec4(couleurNuage * LightColor * LightEnergy  ,  a /** LightEnergy */); // Visualisation distance
+    //fragColor = vec4(couleurNuage * LightColor * LightEnergy  ,  1.0);
     //fragColor = vec4(couleurNuage,1.0);
+
+    //test texture2D
+    vec3 point_a = point_i_in_tex3D(entryPoint, dist * NuageStepSize , dir  , 0 );
+    vec3 point_a_tex_coord = translate_in_tex_coord(point_a);
+    //vec2 ppp=vec2(0.5,0.5);
+    //fragColor = vec4(texture(tex2D, point_a_tex_coord.xy).rgb, 1.0);
 }
 

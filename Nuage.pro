@@ -31,7 +31,11 @@ RESOURCES += \
     GLSL/shaders/volume.vert \
     GLSL/shaders/light.frag \
     GLSL/shaders/light.vert \
-    Ressources/fuji/source/Mount_Fuji.obj
+    GLSL/shaders/plan.frag \
+    GLSL/shaders/plan.vert \
+    Ressources/mountain/Mountain.obj \
+    Ressources/mountain/textures/aerial_grass_rock_diff_4k.jpg\
+    Ressources/sphere.obj \
 
 INCLUDEPATH = ./GLSL
 EXT_DIR = external
@@ -66,3 +70,8 @@ release:QMAKE_CXXFLAGS_RELEASE += -O3 \
 release:QMAKE_CFLAGS_RELEASE += -O3 \
     -fopenmp
 
+
+DISTFILES += \
+    Ressources/fuji/source/Mount_Fuji.obj \
+    Ressources/fuji/source/ESRI_AERIAL_WM.tif \
+    Ressources/sphere.obj \

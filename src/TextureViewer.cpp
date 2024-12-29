@@ -14,6 +14,11 @@ void TextureViewer::init() {
     // Initialisation des objets
     texture = new Texture(QOpenGLContext::currentContext(),camera());
     light = new Light(QOpenGLContext::currentContext());
+    plan = initPlan();
+    openOBJMesh(":/Ressources/mountain/Mountain.obj", plan);
+    //openOBJMesh(":/Ressources/sphere.obj", plan);
+    plan->initializeGL();
+    plan->initTexture(":/Ressources/mountain/textures/aerial_grass_rock_diff_4k.jpg");
 
     // Initialisation de la scène
     setManipulatedFrame(new ManipulatedFrame());
@@ -23,7 +28,8 @@ void TextureViewer::init() {
 
     // Configurer le test de profondeur pour un rendu 3D correct
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
+    glDepthMask(GL_TRUE);          // Allow writing to the depth buffer
+    glDepthFunc(GL_ALWAYS);
 
     // Mode de remplissage des polygones (face avant uniquement)
     glPolygonMode(GL_FRONT, GL_FILL);
@@ -42,7 +48,7 @@ void TextureViewer::init() {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     //updateCamera(camera()->position(), .1);
-    //camera()->setSceneRadius(100);
+    //camera()->setSceneRadius(10);
     camera()->setZNearCoefficient(0.00001);
     camera()->setZClippingCoefficient(1000.0);
     //camera()->setUpVector(qglviewer::Vec(0.0,1.0,0.0), false);
@@ -57,14 +63,26 @@ void TextureViewer::draw() {
 
     glDisable(GL_DEPTH_TEST); // Désactiver le test de profondeur pour la lumière
     light->draw(camera());
+    glEnable(GL_DEPTH_TEST);
     // 1. Dessiner la texture 3D (opaque)
     //glEnable(GL_DEPTH_TEST);
     //glDepthMask(GL_TRUE); // Autoriser l'écriture dans le tampon de profondeur
 
-    texture->draw(light->getpos(), light->getcol(), camera());
+
 
     // Mettre à jour la scène
-    drawMesh();
+    if(plan != nullptr){
+        //glEnable(GL_DEPTH_TEST);       // Enable depth testing for the plan
+       // glDisable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        plan->draw(light->getpos(), light->getcol(),camera());
+       // glEnable(GL_CULL_FACE);
+        //glDisable(GL_DEPTH_TEST);
+        glCullFace(GL_FRONT);
+        //std::cout << "plan dessiné" <<std::endl;
+    }
+
+    texture->draw(light->getpos(), light->getcol(), camera());
     update();
 }
 
@@ -72,19 +90,11 @@ void TextureViewer::draw() {
 
 void TextureViewer::drawMesh() {
     // Exemple de dessin d'un mesh (ajouté si nécessaire)
-//    glBegin(GL_TRIANGLES);
-//    for (const auto& triangle : triangles) {
-//        for (size_t i = 0; i < 3; ++i) {
-//            const qglviewer::Vec& vertex = vertices[triangle[i]];
-//            glVertex3f(vertex.x, vertex.y, vertex.z);
-//        }
-//    }
-//    glEnd();
     glBegin(GL_TRIANGLES);
-    for (const auto& face : faces) {
-        for (int index : face.vertexIndices) {
-            const QVector3D& vertex = vertices[index];
-            glVertex3f(vertex.x(), vertex.y(), vertex.z());
+    for (const auto& triangle : triangles) {
+        for (size_t i = 0; i < 3; ++i) {
+            const qglviewer::Vec& vertex = vertices[triangle[i]];
+            glVertex3f(vertex.x, vertex.y, vertex.z);
         }
     }
     glEnd();
@@ -95,6 +105,11 @@ void TextureViewer::clear(){
     texture->clear(camera());
 }
 
+Mesh* TextureViewer::initPlan(){
+    Mesh* plan= new Mesh(QOpenGLContext::currentContext());
+    plan->initGLSL();
+    return plan;
+}
 
 void TextureViewer::updateCamera(const qglviewer::Vec & center, float radius){
     camera()->setSceneCenter(center);
@@ -103,7 +118,7 @@ void TextureViewer::updateCamera(const qglviewer::Vec & center, float radius){
     camera()->showEntireScene();
 }
 
-void TextureViewer::openOBJMesh(const QString &fileName){
+void TextureViewer::openOBJMesh(const QString &fileName, Mesh* m) {
     std::cout << "Opening " << fileName.toStdString() << std::endl;
     QFile file(fileName);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
@@ -112,6 +127,10 @@ void TextureViewer::openOBJMesh(const QString &fileName){
     }
 
     QTextStream in(&file);
+    QVector3D minVertex(FLT_MAX, FLT_MAX, FLT_MAX);  // Initialiser à des valeurs très grandes
+    QVector3D maxVertex(-FLT_MAX, -FLT_MAX, -FLT_MAX); // Initialiser à des valeurs très petites
+
+    // Chargement des données
     while (!in.atEnd()) {
         QString line = in.readLine().trimmed();
 
@@ -125,15 +144,20 @@ void TextureViewer::openOBJMesh(const QString &fileName){
         if (parts[0] == "v") {
             // Vertex position
             if (parts.size() < 4) continue;
-            vertices.append(QVector3D(parts[1].toFloat(), parts[2].toFloat(), parts[3].toFloat()));
+            QVector3D vertex(parts[1].toFloat(), parts[2].toFloat(), parts[3].toFloat());
+            m->vertices.append(vertex);
+
+            // Mettre à jour les coordonnées min et max
+            minVertex = QVector3D(qMin(minVertex.x(), vertex.x()), qMin(minVertex.y(), vertex.y()), qMin(minVertex.z(), vertex.z()));
+            maxVertex = QVector3D(qMax(maxVertex.x(), vertex.x()), qMax(maxVertex.y(), vertex.y()), qMax(maxVertex.z(), vertex.z()));
         } else if (parts[0] == "vt") {
             // Texture coordinates
             if (parts.size() < 3) continue;
-            textureCoords.append(QVector3D(parts[1].toFloat(), parts[2].toFloat(), 0.0f));
+            m->textureCoords.append(QVector2D(parts[1].toFloat(), parts[2].toFloat()));
         } else if (parts[0] == "vn") {
             // Vertex normal
             if (parts.size() < 4) continue;
-            normals.append(QVector3D(parts[1].toFloat(), parts[2].toFloat(), parts[3].toFloat()));
+            m->normals.append(QVector3D(parts[1].toFloat(), parts[2].toFloat(), parts[3].toFloat()));
         } else if (parts[0] == "f") {
             // Face
             Face face;
@@ -146,17 +170,32 @@ void TextureViewer::openOBJMesh(const QString &fileName){
                 if (indices.size() > 2 && !indices[2].isEmpty())
                     face.normalIndices.append(indices[2].toInt() - 1);
             }
-            faces.append(face);
+            m->faces.append(face);
         }
     }
 
     file.close();
-    std::cout << "OBJ LOAD, nbVertices: " << vertices.size() <<std::endl;
-    std::cout << "          nbUVcoords: " << textureCoords.size() <<std::endl;
-    std::cout << "          nbNormales: " << normals.size() <<std::endl;
-    std::cout << "          nbFaces: " << faces.size() <<std::endl;
+
+    // Normalisation des vertices
+    QVector3D range = maxVertex - minVertex;
+    QVector3D center = minVertex + range / 2.0f;
+
+//    for (int i = 0; i < m->vertices.size(); ++i) {
+//        QVector3D& vertex = m->vertices[i];
+
+//        // Déplacer le vertex vers l'origine et le normaliser dans l'intervalle [0, 1]
+//        vertex -= center;  // Centrer le mesh
+//        vertex /= range;   // Redimensionner le mesh dans l'intervalle [0, 1]
+//    }
+
+    std::cout << "OBJ LOAD, nbVertices: " << m->vertices.size() << std::endl;
+    std::cout << "          nbUVcoords: " << m->textureCoords.size() << std::endl;
+    std::cout << "          nbNormales: " << m->normals.size() << std::endl;
+    std::cout << "          nbFaces: " << m->faces.size() << std::endl;
+
     return;
 }
+
 
 //void TextureViewer::openOffMesh(const QString &fileName) {
 //    std::cout << "Opening " << fileName.toStdString() << std::endl;
@@ -375,6 +414,30 @@ void TextureViewer::setFacteurBruitA(float _a){
 }
 void TextureViewer::setVitesse(float _v){
     texture->setVitesse(_v);
+    update();
+}
+void TextureViewer::setxBBmin( float _x){
+    texture->setxBBmin(_x);
+    update();
+}
+void TextureViewer::setyBBmin( float _y){
+    texture->setyBBmin(_y);
+    update();
+}
+void TextureViewer::setzBBmin( float _z){
+    texture->setzBBmin(_z);
+    update();
+}
+void TextureViewer::setxBBmax( float _x){
+    texture->setxBBmax(_x);
+    update();
+}
+void TextureViewer::setyBBmax( float _y){
+    texture->setyBBmax(_y);
+    update();
+}
+void TextureViewer::setzBBmax( float _z){
+    texture->setzBBmax(_z);
     update();
 }
 

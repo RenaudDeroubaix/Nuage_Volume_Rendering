@@ -6,6 +6,7 @@
 #include <QWidget>
 
 #include "TextureDockWidget.h"
+#include "mesh.h"
 
 
 class Window : public QMainWindow

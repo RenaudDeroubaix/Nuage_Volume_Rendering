@@ -279,7 +279,41 @@ float perlin_worley(vec3 p){
 
 #endif
 
+float sdCapsule(vec3 p, vec3 a, vec3 b, float r) {
+  vec3 ab = b - a;
+  vec3 ap = p - a;
 
+  float t = dot(ab, ap) / dot(ab, ab);
+  t = clamp(t, 0.0, 1.0);
+
+  vec3 c = a + t * ab;
+
+  float d = length(p - c) - r;
+
+  return d;
+}
+
+float sdSphere(vec3 p, float radius) {
+  return length(p) - radius;
+}
+
+float sdTorus(vec3 p, vec2 r) {
+  float x = length(p.xz) - r.x;
+  return length(vec2(x, p.y)) - r.y;
+}
+
+float sdCross(vec3 p, float s) {
+  float da = max(abs(p.x), abs(p.y));
+  float db = max(abs(p.y), abs(p.z));
+  float dc = max(abs(p.z), abs(p.x));
+
+  return min(da, min(db, dc)) - s;
+}
+
+float smooth_edge(float distance){
+    return smoothstep (0,0.6,distance);
+    return 1*(distance*distance*distance * (distance * (distance *6 -15)+10) );//+ 0.01 *sin(6.28 * 64 * distance);
+}
 void main() {
     // Coordonnées globales dans la texture
     ivec3 coords = ivec3(gl_GlobalInvocationID);
@@ -296,11 +330,107 @@ void main() {
     float b = worley(st * frequenceWorley[2]+ vec3(u_time));
     float a = worley(st * frequenceWorley[3]+ vec3(u_time));
 
-    // Génération de la couleur basée sur le bruit
-    vec4 color = vec4(r,g,b, a);
+    float attenuation_zone = 0.2;
+    vec3 to_edge = min(st, 1.0 - st);
+    float edge_distance = min(min(to_edge.x, to_edge.y), to_edge.z);
+    float attenuation = smooth_edge(clamp(edge_distance / attenuation_zone, 0.0, 1.0));
+
+    // Initialisation de la couleur
+    vec4 color = vec4(r, g, b, a);
+
+    // Position dans l'espace normalisé pour les SDF
+    vec3 p = (st - 0.5) * 2.0; // Centrer à l'origine et passer à [-1, 1]
+    float min_dimension = min(u_resolution.x, min(u_resolution.y, u_resolution.z));
+    float max_radius = min_dimension / u_resolution.x; // Rayon max basé sur l'axe X
+
+    // Appliquer la SDF en fonction de la forme_bruit
+    int forme_bruit=4;
+    if(forme_bruit ==0){
+            // Aucun SDF, juste une atténuation sur les bords
+        ;
+    }
+    else if (forme_bruit == 1) {
+        // Sphère
+        float sphere_radius = max_radius * 0.5; // Rayon à 50% de la texture
+        float sphere_distance = sdSphere(p, sphere_radius);
+        attenuation *= smoothstep(0.0, 0.1, -sphere_distance);
+    }
+    else if (forme_bruit == 2) {
+        // Tore
+        float major_radius = max_radius * 0.5; // Rayon majeur à 50% de la texture
+        float minor_radius = max_radius * 0.2; // Rayon mineur à 20% de la texture
+        float torus_distance = sdTorus(p, vec2(major_radius, minor_radius));
+        attenuation *= smoothstep(0.0, 0.1, -torus_distance);
+    }
+    else if (forme_bruit == 3) {
+        // Capsule
+        vec3 start = vec3(-0.5, 0.0, 0.0); // Début de la capsule
+        vec3 end = vec3(0.5, 0.0, 0.0);    // Fin de la capsule
+        float capsule_radius = max_radius * 0.2; // Rayon à 20% de la texture
+        float capsule_distance = sdCapsule(p, start, end, capsule_radius);
+        attenuation *= smoothstep(0.0, 0.1, -capsule_distance);
+    }
+    else if (forme_bruit == 4) {
+        // Croix
+        float cross_size = max_radius * 0.3; // Taille des barres
+        float cross_distance = sdCross(p, cross_size);
+        attenuation *= smoothstep(0.0, 0.1, -cross_distance);
+    }
 
 
+    // Appliquer l'atténuation au bruit
+    color *= attenuation;
 
     // Stocker la couleur dans l'image 3D
     imageStore(img_out, coords, color);
 }
+
+/* ancien test a suppr si on y reviens pas
+    vec3 to_edge = min(st, 1.0 - st);
+    //float edge_distance_1 = min(min(to_edge.x, to_edge.y), to_edge.z);
+    //float edge_distance_2 = min(min(to_edge.x, to_edge.y), to_edge.z);
+    //float edge_distance = (to_edge.x+to_edge.y+to_edge.z)/3.0;//(edge_distance_1 + edge_distance_2) /2.0;
+    //float edge_distance = (to_edge.x+to_edge.y+to_edge.z - max(max(to_edge.x, to_edge.y), to_edge.z) )/2.0;
+    float edge_distance = min(min(to_edge.x, to_edge.y), to_edge.z);
+
+    float edge_distance;
+    float min_distance = min(min(to_edge.x, to_edge.y), to_edge.z);
+    float max_distance = max(max(to_edge.x, to_edge.y), to_edge.z);
+    float moy_distance = (to_edge.x + to_edge.y + to_edge.z ) / 3.0;
+
+    // Déterminer si c'est un coin
+    if (max_distance - moy_distance < 0.04) { //coin
+        edge_distance =(moy_distance*0.25 +min_distance*0.75);
+    } else if (max_distance - moy_distance < 0.08) { //coin
+        edge_distance =(moy_distance*0.1 +min_distance*0.9);
+    } else{
+        edge_distance = min_distance;
+    }
+
+    int forme_bruit=0;
+    if(forme_bruit ==0){
+            // Aucun SDF, juste une atténuation sur les bords
+        ;
+    }
+    else if(forme_bruit ==1){
+        // Sphère
+        float sphere_distance = sdSphere(p, 0.5); // Rayon 0.5
+        attenuation *= smoothstep(-0.1, 0.0, sphere_distance); // Transition douce
+        }
+    else if(forme_bruit ==2){
+            // Tore
+            float torus_distance = sdTorus(p, vec2(0.6, 0.2)); // Rayon majeur 0.6, mineur 0.2
+            attenuation *= smoothstep(-0.1, 0.0, torus_distance);
+    }
+    else if(forme_bruit ==3){
+            // Capsule
+            float capsule_distance = sdCapsule(p, vec3(-0.3, 0.0, 0.0), vec3(0.3, 0.0, 0.0), 0.2);
+            attenuation *= smoothstep(-0.1, 0.0, capsule_distance);
+    }
+    else if(forme_bruit ==4){
+        // Croix
+        float cross_distance = sdCross(p, 0.3); // Taille des barres : 0.3
+        attenuation *= smoothstep(-0.1, 0.0, cross_distance);
+    }
+
+*/

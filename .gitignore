@@ -7,7 +7,7 @@
 *.core
 *.moc
 *.o
-*.obj
+#*.obj
 *.orig
 *.rej
 *.so
@@ -81,7 +81,6 @@ moc/
 # Ignore build artifacts
 obj/
 *.o
-*.obj
 
 # Ignore executable
 nuage
@@ -90,4 +89,4 @@ nuage
 *.pro.user
 *.qmake.stash
 *.pro.user.*
-qmake_qmake_immediate.qrc
+*.qrc
