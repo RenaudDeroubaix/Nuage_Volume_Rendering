@@ -19,5 +19,5 @@ void main()
     float smoothtransition = smoothstep(0.2, 0.7, dist);
 
     // Calcul de la couleur finale avec une transparence basée sur la distance
-    fragColor = vec4(LightColor,1.0 - smoothtransition); // Couleur RGB et alpha
+    fragColor = vec4(LightColor, 1.0 - smoothtransition); // Couleur RGB et alpha
 }

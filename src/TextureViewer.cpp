@@ -29,8 +29,8 @@ void TextureViewer::init() {
     // Désactiver l'éclairage fixe OpenGL (non utilisé ici)
     glDisable(GL_LIGHTING);
 
-    glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
+//    glEnable(GL_DEPTH_TEST);
+//    glDepthFunc(GL_LESS);
 
     // Mode de remplissage des polygones (face avant uniquement)
     glPolygonMode(GL_FRONT, GL_FILL);
@@ -55,27 +55,44 @@ void TextureViewer::init() {
 void TextureViewer::draw() {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glCullFace(GL_BACK);
+
+
+    glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
+    glDepthFunc(GL_LESS);
+
+
+    glCullFace(GL_BACK);
+    skybox->draw(light->getpos(), light->getcol(), light->getdir() , camera());
+
     if(isOnlyCloud)
     {
-        skybox->draw(light->getpos(), light->getcol(), light->getdir() , camera());
-        texture->draw(light->getpos(), light->getcol(), camera());
-        glCullFace(GL_FRONT);
-        light->draw(camera() , isLightUtime);
+        camera()->setSceneCenter(qglviewer::Vec(0,0,0));
     }
     else
     {
-        updateCamera();
-        skybox->draw(light->getpos(), light->getcol(), light->getdir() , camera());
+        camera()->setSceneCenter(qglviewer::Vec(0,0,0));
+        //updateCamera();
         if(plan != nullptr)
             plan->draw(light->getpos(), light->getcol(),camera());
-
-        texture->draw(light->getpos(), light->getcol(), camera());
-        glCullFace(GL_FRONT);
-        light->draw(camera() , isLightUtime);
-
     }
+    glCullFace(GL_FRONT);
+    light->draw(camera() , isLightUtime);
+    glCullFace(GL_BACK);
+    glDisable(GL_DEPTH_TEST);
+    texture->draw(light->getpos(), light->getcol(), camera());
+
+
+
+
+
+
+
+
+
+
+
+
     update();
 }
 
