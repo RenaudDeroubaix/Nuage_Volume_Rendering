@@ -208,7 +208,7 @@ void Texture::initGLSL(){
     std::string vShaderPath = path + "volume.vert";
     std::string fShaderPath = path + "volume.frag";
     std::string cShader3DPath = path + "tex3D.glsl";
-    //std::string cShader2DPath = path + "tex2D.glsl";
+    std::string cShader2DPath = path + "tex2D.glsl";
 
     glFunctions = glContext->extraFunctions();
     glEnable( GL_DEBUG_OUTPUT );
@@ -230,15 +230,15 @@ void Texture::initGLSL(){
         printShaderErrors(glFunctions,this->cShader3D);
     }
 
-//    content = readShaderSource(cShader2DPath);
-//        if (!content.empty()) {
-//            this->cShader2D = glFunctions->glCreateShader(GL_COMPUTE_SHADER);
-//            const char* src = content.c_str();
-//            glFunctions->glShaderSource(this->cShader2D, 1, &src, NULL);
-//            glFunctions->glCompileShader(this->cShader2D);
-//            glFunctions->glAttachShader(this->computeID_tex2D, this->cShader2D);
-//            printShaderErrors(glFunctions,this->cShader2D);
-//        }
+    content = readShaderSource(cShader2DPath);
+    if (!content.empty()) {
+        this->cShader2D = glFunctions->glCreateShader(GL_COMPUTE_SHADER);
+        const char* src = content.c_str();
+        glFunctions->glShaderSource(this->cShader2D, 1, &src, NULL);
+        glFunctions->glCompileShader(this->cShader2D);
+        glFunctions->glAttachShader(this->computeID_tex2D, this->cShader2D);
+        printShaderErrors(glFunctions,this->cShader2D);
+    }
 
     content = readShaderSource(vShaderPath);
     if (!content.empty()) {

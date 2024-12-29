@@ -8,8 +8,9 @@
 <file alias="GLSL/shaders/light.vert">/mnt/e/VR_UNREAL_PROJECT/Nuage_Volume_Rendering/GLSL/shaders/light.vert</file>
 <file alias="GLSL/shaders/plan.frag">/mnt/e/VR_UNREAL_PROJECT/Nuage_Volume_Rendering/GLSL/shaders/plan.frag</file>
 <file alias="GLSL/shaders/plan.vert">/mnt/e/VR_UNREAL_PROJECT/Nuage_Volume_Rendering/GLSL/shaders/plan.vert</file>
+<file alias="GLSL/shaders/skybox.frag">/mnt/e/VR_UNREAL_PROJECT/Nuage_Volume_Rendering/GLSL/shaders/skybox.frag</file>
+<file alias="GLSL/shaders/skybox.vert">/mnt/e/VR_UNREAL_PROJECT/Nuage_Volume_Rendering/GLSL/shaders/skybox.vert</file>
 <file alias="Ressources/mountain/Mountain.obj">/mnt/e/VR_UNREAL_PROJECT/Nuage_Volume_Rendering/Ressources/mountain/Mountain.obj</file>
 <file alias="Ressources/mountain/textures/aerial_grass_rock_diff_4k.jpg">/mnt/e/VR_UNREAL_PROJECT/Nuage_Volume_Rendering/Ressources/mountain/textures/aerial_grass_rock_diff_4k.jpg</file>
-<file alias="Ressources/sphere.obj">/mnt/e/VR_UNREAL_PROJECT/Nuage_Volume_Rendering/Ressources/sphere.obj</file>
 </qresource>
 </RCC>
