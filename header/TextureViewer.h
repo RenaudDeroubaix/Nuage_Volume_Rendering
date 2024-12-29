@@ -95,6 +95,14 @@ public slots:
     void setcamerapos(QVector3D pos , QVector3D targ);
     void setIsLightUTime(bool b);
     void setboolOnlyCloud(bool b);
+    void setFormeNuage(int id);
+    void setAttenuationBord(float a) ;
+    void setRayonSphere(float r) ;
+    void setRayonInternTorus(float r) ;
+    void setRayonExternTorus(float r) ;
+    void setLongueurCapsule(float l);
+    void setRayonCapsule(float r);
+    void setTailleBarre(float t);
 signals:
 
 };

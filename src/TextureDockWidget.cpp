@@ -108,7 +108,67 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     QBoxLayout *freqbruitCurlLayout = createLayout(NULL,false,{freqCurlLabel,rfreqCurlSpinBox,gfreqCurlSpinBox,bfreqCurlSpinBox},{});
     QBoxLayout *bruitCurlParamLayout = createLayout(bruitCurlFrame,true,{},{bruitCurlLayout,freqbruitCurlLayout});
 
-    QBoxLayout *noiseLayout = createLayout(noiseTab,true,{paramNuageLabel,paramNuageFrame,bruitLabel,bruitFrame,bruitCurlParamLabel,bruitCurlFrame},{});
+    QFrame *formeNuageFrame = new QFrame();
+    formeNuageFrame->setFrameShape(QFrame::StyledPanel);
+    formeNuageFrame->setFrameShadow(QFrame::Sunken);
+    QLabel *formeLabel = new QLabel("Forme du nuage (SDF):", formeNuageFrame);
+
+    // Créer des QCheckBox
+    cubeCheckBox = new QCheckBox("Cube", formeNuageFrame);
+    cubeCheckBox->setChecked(true);
+    sphereCheckBox = new QCheckBox("Sphère", formeNuageFrame);
+    torusCheckBox = new QCheckBox("Torus", formeNuageFrame);
+    croixCheckBox = new QCheckBox("Croix", formeNuageFrame);
+    capsuleCheckBox = new QCheckBox("Capsule", formeNuageFrame);
+
+    // Grouper les QCheckBox pour permettre une seule sélection
+    buttonGroupForme = new QButtonGroup(formeNuageFrame);
+    buttonGroupForme->setExclusive(true);
+    buttonGroupForme->addButton(cubeCheckBox,0);
+    buttonGroupForme->addButton(sphereCheckBox,1);
+    buttonGroupForme->addButton(torusCheckBox,2);
+    buttonGroupForme->addButton(capsuleCheckBox,3);
+    buttonGroupForme->addButton(croixCheckBox,4);
+
+    QLabel *attenuationLabel = new QLabel("Attenuation des bords:", formeNuageFrame);
+    attenuationSlider = new QSlider(Qt::Horizontal,formeNuageFrame);
+    setSlider(attenuationSlider,0,100,20,150);
+    QBoxLayout *attenuationLayout = createLayout(NULL,false,{attenuationLabel,attenuationSlider},{});
+
+    QLabel *rSphereLabel = new QLabel("Rayon Sphère:", formeNuageFrame);
+    rSphereSlider = new QSlider(Qt::Horizontal,formeNuageFrame);
+    setSlider(rSphereSlider,0,100,80,150);
+    QBoxLayout *rSphereLayout = createLayout(NULL,false,{rSphereLabel,rSphereSlider},{});
+
+    QLabel *rITorusLabel = new QLabel("Epaisseur Torus:", formeNuageFrame);
+    rITorusSlider = new QSlider(Qt::Horizontal,formeNuageFrame);
+    setSlider(rITorusSlider,0,100,20,150);
+    QBoxLayout *rITorusLayout = createLayout(NULL,false,{rITorusLabel,rITorusSlider},{});
+
+    QLabel *rETorusLabel = new QLabel("Trou Torus:", formeNuageFrame);
+    rETorusSlider = new QSlider(Qt::Horizontal,formeNuageFrame);
+    setSlider(rETorusSlider,0,100,50,150);
+    QBoxLayout *rETorusLayout = createLayout(NULL,false,{rETorusLabel,rETorusSlider},{});
+
+    QLabel *lCapsuleLabel = new QLabel("Longueur Capsule:", formeNuageFrame);
+    lCapsuleSlider = new QSlider(Qt::Horizontal,formeNuageFrame);
+    setSlider(lCapsuleSlider,0,100,100,150);
+    QBoxLayout *lCapsuleLayout = createLayout(NULL,false,{lCapsuleLabel,lCapsuleSlider},{});
+
+    QLabel *rCapsuleLabel = new QLabel("Rayon Capsule:", formeNuageFrame);
+    rCapsuleSlider = new QSlider(Qt::Horizontal,formeNuageFrame);
+    setSlider(rCapsuleSlider,0,100,20,150);
+    QBoxLayout *rCapsuleLayout = createLayout(NULL,false,{rCapsuleLabel,rCapsuleSlider},{});
+
+    QLabel *tBarreCroixLabel = new QLabel("Taille des barres Croix:", formeNuageFrame);
+    tBarreCroixSlider = new QSlider(Qt::Horizontal,formeNuageFrame);
+    setSlider(tBarreCroixSlider,0,100,30,150);
+    QBoxLayout *tBarreCroixLayout = createLayout(NULL,false,{tBarreCroixLabel,tBarreCroixSlider},{});
+
+    QBoxLayout *formeLayout = createLayout(NULL,false,{cubeCheckBox,sphereCheckBox,torusCheckBox,capsuleCheckBox,croixCheckBox},{});
+    QBoxLayout *formeframeLayout = createLayout(formeNuageFrame,true,{},{formeLayout,attenuationLayout,rSphereLayout,rITorusLayout,rETorusLayout,lCapsuleLayout,rCapsuleLayout,tBarreCroixLayout});
+
+    QBoxLayout *noiseLayout = createLayout(noiseTab,true,{paramNuageLabel,paramNuageFrame,bruitLabel,bruitFrame,bruitCurlParamLabel,bruitCurlFrame,formeLabel,formeNuageFrame},{});
     noiseLayout->setAlignment(Qt::AlignLeft | Qt::AlignTop);
     // Add the noise tab to the tab widget
     tabWidget->addTab(noiseTab, "Bruit");
@@ -282,6 +342,16 @@ TextureDockWidget::TextureDockWidget(QWidget * parent ):QDockWidget(parent)
     connect(gfreqCurlSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::gFreqBruitCurlValueChanged);
     connect(bfreqCurlSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::bFreqBruitCurlValueChanged);
 
+    connect(buttonGroupForme, QOverload<int>::of(&QButtonGroup::buttonClicked), this, &TextureDockWidget::formeSelectionChanged);
+
+    connect(attenuationSlider, &QSlider::valueChanged, this, &TextureDockWidget::attenuationSliderChangedSlot);
+    connect(rSphereSlider, &QSlider::valueChanged, this, &TextureDockWidget::rSphereSliderChangedSlot);
+    connect(rITorusSlider, &QSlider::valueChanged, this, &TextureDockWidget::rITorusSliderChangedSlot);
+    connect(rETorusSlider, &QSlider::valueChanged, this, &TextureDockWidget::rETorusSliderChangedSlot);
+    connect(lCapsuleSlider, &QSlider::valueChanged, this, &TextureDockWidget::lCapsuleSliderChangedSlot);
+    connect(rCapsuleSlider, &QSlider::valueChanged, this, &TextureDockWidget::rCapsuleSliderChangedSlot);
+    connect(tBarreCroixSlider, &QSlider::valueChanged, this, &TextureDockWidget::tBarreCroixSliderChangedSlot);
+
     //light tab
     connect(redColorNuageSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::redNuageValueChanged);
     connect(greenColorNuageSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged), this, &TextureDockWidget::greenNuageValueChanged);
@@ -367,6 +437,16 @@ void TextureDockWidget::yResolutionBruitCurlSpinBoxChangedSlot(float value){emit
 void TextureDockWidget::rFreqBruitCurlSpinBoxChangedSlot(float value){emit rFreqBruitCurlValueChanged(value) ;}
 void TextureDockWidget::gFreqBruitCurlSpinBoxChangedSlot(float value){emit gFreqBruitCurlValueChanged(value) ;}
 void TextureDockWidget::bFreqBruitCurlSpinBoxChangedSlot(float value){emit bFreqBruitCurlValueChanged(value);}
+
+void TextureDockWidget::formeSelectionChangedSlot(int id){emit formeSelectionChanged(id);}
+
+void TextureDockWidget::attenuationSliderChangedSlot(float value){emit attenuationSliderChanged(value/100.0) ;}
+void TextureDockWidget::rSphereSliderChangedSlot(float value){emit rSphereSliderChanged(value/100.0) ;}
+void TextureDockWidget::rITorusSliderChangedSlot(float value){emit rITorusSliderChanged(value/100.0) ;}
+void TextureDockWidget::rETorusSliderChangedSlot(float value){emit rETorusSliderChanged(value/100.0) ;}
+void TextureDockWidget::lCapsuleSliderChangedSlot(float value){emit lCapsuleSliderChanged(value/100.0) ;}
+void TextureDockWidget::rCapsuleSliderChangedSlot(float value){emit rCapsuleSliderChanged(value/100.0) ;}
+void TextureDockWidget::tBarreCroixSliderChangedSlot(float value){emit tBarreCroixSliderChanged(value/100.0) ;}
 
 ///Light
 void TextureDockWidget::redNuageSpinBoxChangedSlot(float value){emit redNuageValueChanged(value) ;}

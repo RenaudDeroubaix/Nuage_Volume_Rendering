@@ -452,7 +452,58 @@ void  TextureViewer::setboolOnlyCloud(bool b){
     isOnlyCloud = b;
     update();
 }
-
+void TextureViewer::setFormeNuage(int id){
+    switch (id) {
+    case 0:
+        qDebug() << "Forme sélectionnée : Cube";
+        break;
+    case 1:
+        qDebug() << "Forme sélectionnée : Sphère";
+        break;
+    case 2:
+        qDebug() << "Forme sélectionnée : Torus";
+        break;
+    case 3:
+        qDebug() << "Forme sélectionnée : Croix";
+        break;
+    case 4:
+        qDebug() << "Forme sélectionnée : Capsule";
+        break;
+    default:
+        qDebug() << "Forme inconnue";
+        break;
+    }
+    texture->setForme(id);
+    update();
+}
+void TextureViewer::setAttenuationBord(float a){
+    texture->setAttenuationBord(a);
+    update();
+}
+void TextureViewer::setRayonSphere(float r){
+    texture->setRayonSphere(r);
+    update();
+}
+void TextureViewer::setRayonInternTorus(float r){
+    texture->setRayonInternTorus(r);
+    update();
+}
+void TextureViewer::setRayonExternTorus(float r){
+    texture->setRayonExternTorus(r);
+    update();
+}
+void TextureViewer::setLongueurCapsule(float l){
+    texture->setLongueurCapsule(l);
+    update();
+}
+void TextureViewer::setRayonCapsule(float r){
+    texture->setRayonCapsule(r);
+    update();
+}
+void TextureViewer::setTailleBarre(float t){
+    texture->setTailleBarre(t);
+    update();
+}
 
 
 void TextureViewer::keyPressEvent(QKeyEvent *e)

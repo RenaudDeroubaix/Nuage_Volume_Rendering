@@ -61,6 +61,15 @@ void Texture::init(qglviewer::Camera * camera){
     resolutionBruitCurl = QVector2D(128.0,128.0);
     freqBruitCurl =QVector3D(2.0,6.0,12.0);
 
+    idFormeSDF=0;
+    attenuationBord =0.2;
+    rayonSphere =0.8;
+    rayonInternTorus =0.2;
+    rayonExternTorus =0.5;
+    longueurCapsule=1.0;
+    rayonCapsule=0.2;
+    tailleBarre=0.3;
+
     LightEch = 8;
     NuageEch = 35;
 
@@ -332,6 +341,15 @@ void Texture::computePass() {
     glFunctions->glUniform1f(glFunctions->glGetUniformLocation(computeID, "u_time"), timer.elapsed()/vitesse);
     glFunctions->glUniform3fv(glFunctions->glGetUniformLocation(computeID, "resolution"),1, &resolutionBruit[0]);
     glFunctions->glUniform4fv(glFunctions->glGetUniformLocation(computeID, "frequenceWorley"),1, &freqBruit[0]);
+    glFunctions->glUniform1i(glFunctions->glGetUniformLocation(computeID, "forme_bruit"), idFormeSDF);
+
+    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(computeID, "attenuationBord"), attenuationBord);
+    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(computeID, "rayonSphere"),rayonSphere);
+    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(computeID, "rayonInternTorus"), rayonInternTorus);
+    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(computeID, "rayonExternTorus"), rayonExternTorus);
+    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(computeID, "longueurCapsule"),longueurCapsule);
+    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(computeID, "rayonCapsule"), rayonCapsule);
+    glFunctions->glUniform1f(glFunctions->glGetUniformLocation(computeID, "tailleBarre"), tailleBarre);
 
     glFunctions->glBindTexture(GL_TEXTURE_3D, textureId);
     glFunctions->glBindImageTexture (0, textureId, 0, GL_TRUE, 0, GL_WRITE_ONLY, GL_RGBA32F);
@@ -659,6 +677,17 @@ void Texture::setzBBmax( float _z){
     BBmax[2]=_z;
     updateBBplan();
 }
+void Texture::setForme(int id){
+    idFormeSDF =id;
+    //std::cout<<id<<std::endl;
+}
+void Texture::setAttenuationBord(float a){attenuationBord=a;}
+void Texture::setRayonSphere(float r){ rayonSphere=r;}
+void Texture::setRayonInternTorus(float r){rayonInternTorus=r;}
+void Texture::setRayonExternTorus(float r){ rayonExternTorus=r;}
+void Texture::setLongueurCapsule(float l){longueurCapsule=l;}
+void Texture::setRayonCapsule(float r){rayonCapsule=r;}
+void Texture::setTailleBarre(float t){tailleBarre=t;}
 
 void Texture::clear(qglviewer::Camera * camera){
 
