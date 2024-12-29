@@ -245,7 +245,7 @@ void main() {
 
 
 
-    fragColor = vec4(couleurNuage * LightColor * LightEnergy  ,  a /** LightEnergy */); // Visualisation distance
+    fragColor = vec4(couleurNuage * LightColor * LightEnergy  ,  a /** LightEnergy*/); // Visualisation distance
     //fragColor = vec4(couleurNuage * LightColor * LightEnergy  ,  1.0);
     //fragColor = vec4(couleurNuage,1.0);
 

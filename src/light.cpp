@@ -13,7 +13,7 @@ void Light::init(){
     time = 30000.0;
     timer.start();
 
-    LightPos = QVector3D(0.0, 1.0 , 0.0);
+    LightPos = QVector3D(0.0, 5.0 , 0.0);
     LightColor =  QVector3D(1.0,1.0,1.0);
     LightDir = -LightPos.normalized();
     rayon = 1.f;

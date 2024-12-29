@@ -379,6 +379,7 @@ void TextureDockWidget::absorptionSliderChangedSlot(int i){emit absorptionValueC
 void TextureDockWidget::setlightposXSlot(float value){emit setlightposXValueChanged(value) ;}
 void TextureDockWidget::setlightposYSlot(float value){emit setlightposYValueChanged(value) ;}
 void TextureDockWidget::setlightposZSlot(float value){emit setlightposZValueChanged(value);}
+
 void TextureDockWidget::setlightcolRSlot(float value){emit setlightcolRValueChanged(value) ;}
 void TextureDockWidget::setlightcolGSlot(float value){emit setlightcolGValueChanged(value) ;}
 void TextureDockWidget::setlightcolBSlot(float value){emit setlightcolBValueChanged(value);}
