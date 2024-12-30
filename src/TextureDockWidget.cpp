@@ -616,7 +616,6 @@ void TextureDockWidget::presetButton2ClickedSlot(){
 }
 
 void TextureDockWidget::presetButton3ClickedSlot()
-
 {
     xBBminSpinBox->setValue(-7.0f);
     yBBminSpinBox->setValue(1.0f);
@@ -627,7 +626,7 @@ void TextureDockWidget::presetButton3ClickedSlot()
     zBBmaxSpinBox->setValue(7.0f);
 
     LightPosX->setValue(0.0f);
-    LightPosY->setValue(5.0f);
+    LightPosY->setValue(8.0f);
     LightPosZ->setValue(-3.0f);
     emit (setboolCameraOrbital(true));
     emit(setboolOnlyCloud(false));
@@ -645,7 +644,7 @@ void TextureDockWidget::presetButton4ClickedSlot()
     zBBmaxSpinBox->setValue(7.0f);
 
     LightPosX->setValue(0.0f);
-    LightPosY->setValue(5.0f);
+    LightPosY->setValue(8.0f);
     LightPosZ->setValue(-3.0f);
     emit (setboolCameraOrbital(false));
     emit(setboolOnlyCloud(false));

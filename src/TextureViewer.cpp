@@ -59,7 +59,8 @@ void TextureViewer::draw() {
 
     glEnable(GL_DEPTH_TEST);
     glDepthMask(GL_TRUE);
-    glDepthFunc(GL_LESS);
+    glDepthFunc(GL_ALWAYS);
+
     glCullFace(GL_BACK);
 
     skybox->draw(light->getpos(), light->getcol(), light->getdir() , camera());
@@ -75,7 +76,7 @@ void TextureViewer::draw() {
     glCullFace(GL_FRONT);
     light->draw(camera() , isLightUtime);
     glCullFace(GL_BACK);
-    glDisable(GL_DEPTH_TEST);
+    //glDepthMask(GL_FALSE);
     texture->draw(light->getpos(), light->getcol(), camera());
 
     update();
