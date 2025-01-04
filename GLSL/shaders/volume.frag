@@ -174,13 +174,20 @@ void main() {
         discard;
     }
 
+    // Taille d'une cellule de la texture 3D
+    vec3 texResolution = vec3(textureSize(tex, 0)); // Résolution de la texture 3D
+    vec3 cellSize = 1.0 / texResolution;
+
+    // Aligner entryPoint sur la grille
+    vec3 alignedEntryPoint = floor((entryPoint - BBmin) / cellSize) * cellSize + BBmin;
+
     vec4 textureValue = vec4(0.0);
     float densite = 0.0;
 
 
     for (int i = 0 ; i < NuageSample; i++){
 
-        vec3 point_i = point_i_in_tex3D(entryPoint, dist * NuageStepSize , dir  , i );
+        vec3 point_i = point_i_in_tex3D(alignedEntryPoint , dist * NuageStepSize , dir  , i );
         vec3 point_i_tex_coord = translate_in_tex_coord(point_i);
 
 
