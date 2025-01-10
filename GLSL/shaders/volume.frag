@@ -50,7 +50,7 @@ void IntersectionPlan(vec3 camPos, float epsilon, vec3 dir, out vec3 tEntryOut, 
         vec3 planPoint = plans[i].point;
         float denom = dot(planNormal, dir);
 
-        if (abs(denom) < epsilon) continue; // Skip parallel planes
+        if (abs(denom) < epsilon) continue; // Skip plan parralele
 
         float t = dot(planPoint - fragPosition, planNormal) / denom;
         vec3 intersection = fragPosition + t * dir;
@@ -90,7 +90,7 @@ float anisotropic_scattering(float g, vec3 point_j, vec3 dir) {
 
 float powder_effect(vec3 lightDir, vec3 viewDir) {
     float dotLV = dot(normalize(lightDir), normalize(viewDir));
-    return pow(max(dotLV, 0.0), 4.0); // Adjust exponent for intensity
+    return pow(max(dotLV, 0.0), 4.0);
 }
 
 // ------------------------------ Main Shader Logic ------------------------------
@@ -107,7 +107,7 @@ void main() {
     IntersectionPlan(camPos, epsilon, dir, entryPoint, exitPoint);
     float dist = length(exitPoint - entryPoint);
 
-    if (dist < 0.1) discard;
+    if (dist < 0.1) discard;//skip frag qui qui n'affiche pas de nuage
 
     vec3 LightEnergy = vec3(0.0);
     vec4 textureValue;
@@ -143,7 +143,7 @@ void main() {
 
     float alpha = 1.0 - transparence;
 
-    // Add ambient light for regions not directly lit
+
     vec3 finalColor = couleurNuage * LightEnergy + 0.2 * (alpha);
 
     fragColor = vec4(finalColor, alpha);
