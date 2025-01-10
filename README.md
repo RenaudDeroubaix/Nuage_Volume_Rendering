@@ -14,10 +14,14 @@ Nuage est une application basée sur Qt pour visualiser un rendu volumique de nu
 ## Installation et utilisation
 
 1. Clonez le dépôt :
+ ```
    git clone https://github.com/votre-utilisateur/nuage.git
    cd nuage
+```
 
-2. Soit utiliser QT Creator pour run le projet ou alors :
+3. Soit utiliser QT Creator pour run le projet ou alors :
+ ```
    qmake
    make -j
    ./nuage
+ ```
