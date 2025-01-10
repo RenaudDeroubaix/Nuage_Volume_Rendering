@@ -122,7 +122,7 @@ void main() {
 
     for (int i = 0 ; i < NuageSample; i++){
 
-        vec3 point_i = point_i_in_tex3D(alignedEntryPoint , dist * NuageStepSize , dir  , i );
+        vec3 point_i = point_i_in_tex3D(alignedEntryPoint , dist * NuageDensity , dir  , i );
         vec3 point_i_tex_coord = translate_in_tex_coord(point_i);
 
         textureValue = texture(tex, point_i_tex_coord);
