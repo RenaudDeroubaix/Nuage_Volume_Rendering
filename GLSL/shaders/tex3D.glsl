@@ -274,7 +274,8 @@ float worley(vec3 p) {
     return 1.0 - worley3(p).x;
 }
 float perlin(vec3 p) {
-    return cnoise(p);
+    vec3 rep=vec3(1.0,1.0,1.0);
+    return pnoise(p,rep);
 }
 float perlin_worley(vec3 p){
     float perlinNoise=perlin(p);
