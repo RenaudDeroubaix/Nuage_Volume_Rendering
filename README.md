@@ -5,7 +5,7 @@ Nuage est une application basée sur Qt pour visualiser un rendu volumique de nu
 ## Fonctionnalités
 
 -Visualisation du nuage / d'une scène. 
--Paramétrable (taille de la texture des bruits, fréquence des bruits, intensitée du bruit, couleurs, nombre d'échantillons, forme du nuage (SDF), lumière ...).
+-Paramétrable (taille de la texture des bruits, fréquence des bruits, intensité du bruit, couleurs, nombre d'échantillons, forme du nuage (SDF), lumière ...).
 
 ## Prérequis
 - **Qt** (version 5) installé.
