@@ -83,10 +83,11 @@ vec3 point_i_in_tex3D(vec3 pos, float dist, vec3 dir, int i) {
     return pos + (i * dist * dir);
 }
 
-float anisotropic_scattering(float g , vec3 point_j,  vec3 dir){
-    float costh = max(dot(normalize(point_j - LightPos) , dir) , 0 );
-    return mix(HenyeyGreenstein(g , costh) , HenyeyGreenstein(-g , costh) , 0.3);
+float anisotropic_scattering(float g, vec3 point_j, vec3 dir) {
+    float costh = max(dot(normalize(point_j - LightPos), dir), 0.0);
+    return HenyeyGreenstein(g, costh);
 }
+
 float powder_effect(vec3 lightDir, vec3 viewDir) {
     float dotLV = dot(normalize(lightDir), normalize(viewDir));
     return pow(max(dotLV, 0.0), 4.0); // Adjust exponent for intensity
@@ -106,23 +107,13 @@ void main() {
     IntersectionPlan(camPos, epsilon, dir, entryPoint, exitPoint);
     float dist = length(exitPoint - entryPoint);
 
-    if(dist < 0.1){
-        discard;
-    }
-
-    // Taille d'une cellule de la texture 3D
-    vec3 texResolution = vec3(textureSize(tex, 0)); // Résolution de la texture 3D
-    vec3 cellSize = 1.0 / texResolution;
-
-    // Aligner entryPoint sur la grille
-    vec3 alignedEntryPoint = floor((entryPoint - BBmin) / cellSize) * cellSize + BBmin;
+    if (dist < 0.1) discard;
 
     vec3 LightEnergy = vec3(0.0);
     vec4 textureValue;
 
-    for (int i = 0 ; i < NuageSample; i++){
-
-        vec3 point_i = point_i_in_tex3D(alignedEntryPoint , dist * NuageDensity , dir  , i );
+    for (int i = 0; i < NuageSample; i++) {
+        vec3 point_i = point_i_in_tex3D(entryPoint, dist * (1.0 / float(NuageSample)), dir, i);
         vec3 point_i_tex_coord = translate_in_tex_coord(point_i);
 
         textureValue = texture(tex, point_i_tex_coord);
@@ -133,17 +124,16 @@ void main() {
             float dist_light = 0.0;
 
             for (int j = 0; j < LightSample; j++) {
-
                 vec3 point_j = point_i_in_tex3D(point_i, dist * (1.0 / float(LightSample)), dir_light, j);
                 vec3 point_light_tex_coord = translate_in_tex_coord(point_j);
 
                 vec4 lightTexture = texture(tex, point_light_tex_coord);
                 float luminance = dot(lightTexture.rgb, facteurWorley.rgb) + lightTexture.a * facteurWorley.a;
-                dist_light += luminance * anisotropic_scattering(0.3, point_j, -dir_light);
+                dist_light += luminance * anisotropic_scattering(0.3, point_j, dir_light);
             }
 
             float shadowTerm = beersLaw(dist_light, LightDensity);
-            float powder = powder_effect(-dir_light, dir);
+            float powder = powder_effect(dir_light, -dir);
 
             vec3 absorbed_light = density * NuageDensity * shadowTerm * LightColor * powder;
             LightEnergy += absorbed_light * transparence;
