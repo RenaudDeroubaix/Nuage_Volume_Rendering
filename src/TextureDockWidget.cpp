@@ -626,8 +626,13 @@ void TextureDockWidget::presetButton3ClickedSlot()
     zBBmaxSpinBox->setValue(7.0f);
 
     LightPosX->setValue(0.0f);
-    LightPosY->setValue(8.0f);
-    LightPosZ->setValue(-3.0f);
+    LightPosY->setValue(80.0f);
+    LightPosZ->setValue(-30.0f);
+
+    NuageSampleBox->setValue(50);
+
+    LightSampleBox->setValue(20);
+
     emit (setboolCameraOrbital(true));
     emit(setboolOnlyCloud(false));
     emit(setIsLightUtime(true));
@@ -644,8 +649,12 @@ void TextureDockWidget::presetButton4ClickedSlot()
     zBBmaxSpinBox->setValue(7.0f);
 
     LightPosX->setValue(0.0f);
-    LightPosY->setValue(8.0f);
-    LightPosZ->setValue(-3.0f);
+    LightPosY->setValue(80.0f);
+    LightPosZ->setValue(-30.0f);
+
+    NuageSampleBox->setValue(50);
+
+    LightSampleBox->setValue(20);
     emit (setboolCameraOrbital(false));
     emit(setboolOnlyCloud(false));
     emit(setIsLightUtime(true));
@@ -698,8 +707,8 @@ void TextureDockWidget::presetButton5ClickedSlot(){
 
     // Position et couleur de la lumière
     LightPosX->setValue(0.0f);
-    LightPosY->setValue(-200.0f);
-    LightPosZ->setValue(0.0f);
+    LightPosY->setValue(50.0f);
+    LightPosZ->setValue(-50.0f);
 
     LightColorR->setValue(1.0f);
     LightColorG->setValue(1.0f);
@@ -714,6 +723,8 @@ void TextureDockWidget::presetButton5ClickedSlot(){
     LightSampleBox->setValue(20);
 
     vitesseSlider->setValue(7000);
+    emit(setboolOnlyCloud(true));
+    emit(setIsLightUtime(false));
 }
 void TextureDockWidget::presetButton6ClickedSlot(){
     emit (setboolCameraOrbital(true)); //la camera devient orbital autour (0,0,0)
@@ -762,8 +773,8 @@ void TextureDockWidget::presetButton6ClickedSlot(){
 
     // Position et couleur de la lumière
     LightPosX->setValue(0.0f);
-    LightPosY->setValue(-200.0f);
-    LightPosZ->setValue(0.0f);
+    LightPosY->setValue(50.0f);
+    LightPosZ->setValue(-50.0f);
 
     LightColorR->setValue(1.0f);
     LightColorG->setValue(1.0f);
@@ -778,4 +789,6 @@ void TextureDockWidget::presetButton6ClickedSlot(){
     LightSampleBox->setValue(33);
 
     vitesseSlider->setValue(4500);
+    emit(setboolOnlyCloud(true));
+    emit(setIsLightUtime(false));
 }

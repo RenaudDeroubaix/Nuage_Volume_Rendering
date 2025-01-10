@@ -326,8 +326,9 @@ void Texture::initTexture(){
 }
 
 void Texture::updateTextureData(){
-    glFunctions->glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA32F, resolutionBruit[0], resolutionBruit[1], resolutionBruit[2], 0, GL_RGBA, GL_FLOAT, nullptr);
-    computePass();
+    initTexture();
+    //glFunctions->glTexImage3D(GL_TEXTURE_3D, 0, GL_RGBA32F, resolutionBruit[0], resolutionBruit[1], resolutionBruit[2], 0, GL_RGBA, GL_FLOAT, nullptr);
+    //computePass();
 }
 
 
