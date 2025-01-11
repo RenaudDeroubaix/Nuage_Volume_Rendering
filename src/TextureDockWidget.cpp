@@ -708,7 +708,7 @@ void TextureDockWidget::presetButton5ClickedSlot(){
     // Position et couleur de la lumière
     LightPosX->setValue(0.0f);
     LightPosY->setValue(50.0f);
-    LightPosZ->setValue(-50.0f);
+    LightPosZ->setValue(10.0f);
 
     LightColorR->setValue(1.0f);
     LightColorG->setValue(1.0f);
