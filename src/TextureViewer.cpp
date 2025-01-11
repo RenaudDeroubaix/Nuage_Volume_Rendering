@@ -76,7 +76,7 @@ void TextureViewer::draw() {
     glCullFace(GL_FRONT);
     light->draw(camera() , isLightUtime);
     glCullFace(GL_BACK);
-    //glDepthMask(GL_FALSE);
+    glDepthMask(GL_FALSE);
     texture->draw(light->getpos(), light->getcol(), camera());
 
     update();

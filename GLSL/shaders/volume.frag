@@ -83,9 +83,9 @@ vec3 point_i_in_tex3D(vec3 pos, float dist, vec3 dir, int i) {
     return pos + (i * dist * dir);
 }
 
-float anisotropic_scattering(float g, vec3 point_j, vec3 dir) {
-    float costh = max(dot(normalize(point_j - LightPos), dir), 0.0);
-    return HenyeyGreenstein(g, costh);
+float anisotropic_scattering(float g, vec3 dir_light, vec3 dir) {
+    float costh = dot(dir_light , dir);
+    return mix(HenyeyGreenstein(0, costh) ,HenyeyGreenstein(g, costh),0.7) ;
 }
 
 float powder_effect(vec3 lightDir, vec3 viewDir) {
@@ -120,19 +120,21 @@ void main() {
         float density = dot(textureValue.rgb, facteurWorley.rgb) + textureValue.a * facteurWorley.a;
 
         if (density > epsilon) {
+
             vec3 dir_light = normalize(LightPos - point_i);
-            float dist_light = 0.0;
+            float dist_light = length(LightPos - point_i);
+            float P_light = 0.0;
 
             for (int j = 0; j < LightSample; j++) {
-                vec3 point_j = point_i_in_tex3D(point_i, dist * (1.0 / float(LightSample)), dir_light, j);
+                vec3 point_j = point_i_in_tex3D(point_i, dist_light * (1.0 / float(LightSample)), dir_light, j);
                 vec3 point_light_tex_coord = translate_in_tex_coord(point_j);
 
                 vec4 lightTexture = texture(tex, point_light_tex_coord);
                 float luminance = dot(lightTexture.rgb, facteurWorley.rgb) + lightTexture.a * facteurWorley.a;
-                dist_light += luminance * anisotropic_scattering(0.3, point_j, dir_light);
+                P_light += luminance * anisotropic_scattering(0.5, dir_light, dir);
             }
 
-            float shadowTerm = beersLaw(dist_light, LightDensity);
+            float shadowTerm = beersLaw(P_light, LightDensity);
             float powder = powder_effect(dir_light, -dir);
 
             vec3 absorbed_light = density * NuageDensity * shadowTerm * LightColor * powder;
