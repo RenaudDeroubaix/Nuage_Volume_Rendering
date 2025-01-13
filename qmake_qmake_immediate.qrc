@@ -1,16 +1,16 @@
 <!DOCTYPE RCC><RCC version="1.0">
 <qresource prefix="/">
-<file alias="GLSL/shaders/tex3D.glsl">/mnt/e/VR_UNREAL_PROJECT/Nuage_Volume_Rendering/GLSL/shaders/tex3D.glsl</file>
-<file alias="GLSL/shaders/tex2D.glsl">/mnt/e/VR_UNREAL_PROJECT/Nuage_Volume_Rendering/GLSL/shaders/tex2D.glsl</file>
-<file alias="GLSL/shaders/volume.frag">/mnt/e/VR_UNREAL_PROJECT/Nuage_Volume_Rendering/GLSL/shaders/volume.frag</file>
-<file alias="GLSL/shaders/volume.vert">/mnt/e/VR_UNREAL_PROJECT/Nuage_Volume_Rendering/GLSL/shaders/volume.vert</file>
-<file alias="GLSL/shaders/light.frag">/mnt/e/VR_UNREAL_PROJECT/Nuage_Volume_Rendering/GLSL/shaders/light.frag</file>
-<file alias="GLSL/shaders/light.vert">/mnt/e/VR_UNREAL_PROJECT/Nuage_Volume_Rendering/GLSL/shaders/light.vert</file>
-<file alias="GLSL/shaders/plan.frag">/mnt/e/VR_UNREAL_PROJECT/Nuage_Volume_Rendering/GLSL/shaders/plan.frag</file>
-<file alias="GLSL/shaders/plan.vert">/mnt/e/VR_UNREAL_PROJECT/Nuage_Volume_Rendering/GLSL/shaders/plan.vert</file>
-<file alias="GLSL/shaders/skybox.frag">/mnt/e/VR_UNREAL_PROJECT/Nuage_Volume_Rendering/GLSL/shaders/skybox.frag</file>
-<file alias="GLSL/shaders/skybox.vert">/mnt/e/VR_UNREAL_PROJECT/Nuage_Volume_Rendering/GLSL/shaders/skybox.vert</file>
-<file alias="Ressources/mountain/Mountain.obj">/mnt/e/VR_UNREAL_PROJECT/Nuage_Volume_Rendering/Ressources/mountain/Mountain.obj</file>
-<file alias="Ressources/mountain/textures/aerial_grass_rock_diff_4k.jpg">/mnt/e/VR_UNREAL_PROJECT/Nuage_Volume_Rendering/Ressources/mountain/textures/aerial_grass_rock_diff_4k.jpg</file>
+<file alias="GLSL/shaders/tex3D.glsl">/home/e20170003790/Bureau/Master2/test/Nuage_Volume_Rendering/GLSL/shaders/tex3D.glsl</file>
+<file alias="GLSL/shaders/tex2D.glsl">/home/e20170003790/Bureau/Master2/test/Nuage_Volume_Rendering/GLSL/shaders/tex2D.glsl</file>
+<file alias="GLSL/shaders/volume.frag">/home/e20170003790/Bureau/Master2/test/Nuage_Volume_Rendering/GLSL/shaders/volume.frag</file>
+<file alias="GLSL/shaders/volume.vert">/home/e20170003790/Bureau/Master2/test/Nuage_Volume_Rendering/GLSL/shaders/volume.vert</file>
+<file alias="GLSL/shaders/light.frag">/home/e20170003790/Bureau/Master2/test/Nuage_Volume_Rendering/GLSL/shaders/light.frag</file>
+<file alias="GLSL/shaders/light.vert">/home/e20170003790/Bureau/Master2/test/Nuage_Volume_Rendering/GLSL/shaders/light.vert</file>
+<file alias="GLSL/shaders/plan.frag">/home/e20170003790/Bureau/Master2/test/Nuage_Volume_Rendering/GLSL/shaders/plan.frag</file>
+<file alias="GLSL/shaders/plan.vert">/home/e20170003790/Bureau/Master2/test/Nuage_Volume_Rendering/GLSL/shaders/plan.vert</file>
+<file alias="GLSL/shaders/skybox.frag">/home/e20170003790/Bureau/Master2/test/Nuage_Volume_Rendering/GLSL/shaders/skybox.frag</file>
+<file alias="GLSL/shaders/skybox.vert">/home/e20170003790/Bureau/Master2/test/Nuage_Volume_Rendering/GLSL/shaders/skybox.vert</file>
+<file alias="Ressources/mountain/Mountain.obj">/home/e20170003790/Bureau/Master2/test/Nuage_Volume_Rendering/Ressources/mountain/Mountain.obj</file>
+<file alias="Ressources/mountain/textures/aerial_grass_rock_diff_4k.jpg">/home/e20170003790/Bureau/Master2/test/Nuage_Volume_Rendering/Ressources/mountain/textures/aerial_grass_rock_diff_4k.jpg</file>
 </qresource>
 </RCC>
