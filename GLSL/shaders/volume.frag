@@ -112,8 +112,12 @@ void main() {
     vec3 LightEnergy = vec3(0.0);
     vec4 textureValue;
 
+    vec3 texResolution = vec3(textureSize(tex, 0)); // Résolution de la texture 3D
+    vec3 cellSize = 1.0 / texResolution;
+    vec3 alignedEntryPoint = floor((entryPoint - BBmin) / cellSize) * cellSize + BBmin;
+
     for (int i = 0; i < NuageSample; i++) {
-        vec3 point_i = point_i_in_tex3D(entryPoint, dist * (1.0 / float(NuageSample)), dir, i);
+        vec3 point_i = point_i_in_tex3D(alignedEntryPoint, dist * (1.0 / float(NuageSample)), dir, i);
         vec3 point_i_tex_coord = translate_in_tex_coord(point_i);
 
         textureValue = texture(tex, point_i_tex_coord);
